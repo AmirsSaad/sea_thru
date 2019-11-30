@@ -79,16 +79,31 @@ def depth_envelopes(histogram,bins):
     mid = np.sum(np.multiply(histogram,bins))
     # high = np.where(np.cumsum(histogram)>0.95)[0][0]
     return(mid)
-    return([low,mid,high])
+    # return([low,mid,high])
 
-def depth():
+def channel_depth_curve(plot = False , savefig = False):
     histogram = accumulate_histograms('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/T*')
     bins = np.load('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/bins.npy')
     bins = (bins[1:]+bins[:-1])/2
     channels = list()
-    for c in range (3):
+    for d in range(histogram.shape[2]):
         depth = list()
-        for d in range(histogram.shape[2]):
+        for c in range (3):
             depth.append(depth_envelopes(histogram[:,c,d],bins))
         channels.append(depth)
-    
+
+    if plot:
+        colors = ['r','g','b']
+        plt.figure
+        for mid,color in zip(channels,colors):
+            plt.plot(mid,color=color)
+        plt.xlabel('Depth[cm]')
+        plt.ylabel('Mean Histogram Value')
+        plt.legend(['red channel','green channel','blue channel'])
+        plt.grid()
+        plt.show()
+        
+        if savefig:
+            plt.savefig('C:\\Users\\amirsaa\Documents\GitHub\sea_thru\histogram_database\channel_depth_characterization.png',bbox_inches='tight',dpi=100)
+
+    return(channels)

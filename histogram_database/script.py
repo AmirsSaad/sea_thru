@@ -3,37 +3,34 @@ import numpy as np
 from matplotlib import pyplot as plt
 from os import listdir
 from utils import generate_depth_quantized_histograms, accumulate_histograms , plot_depth_quantized_histograms, depth_envelopes
-
-
-# hist = utils.accumulate_histograms('D:/sea_thru/3148_3248/histograms/')
-# lower,mid,upper = utils.depth_envelopes(hist)
-# plt.plot(lower[0,:])
-# plt.plot(mid[0,:])
-# plt.plot(upper[0,:])
+from utils import channel_depth_curve
+import pandas as pd
 
 def main3():
-    histogram = accumulate_histograms('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/T*')
-    bins = np.load('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/bins.npy')
-    bins = (bins[1:]+bins[:-1])/2
-    channels = list()
-    for c in range (3):
-        depth = list()
-        for d in range(histogram.shape[2]):
-            depth.append(depth_envelopes(histogram[:,c,d],bins))
-        channels.append(depth)
+
+    channels = channel_depth_curve()
+    df = pd.DataFrame.from_records(channels)
+    df.columns=(['r','g','b'])
+    df = df.interpolate()
+    # df = df - df.mean()
+    # print(df)
+    for (ch,color) in zip(df,['r','g','b']):
+        plt.plot(df[ch],color=color)
+
+    plt.plot(df.b.div(df.r))
+    # df[['b']].div(df.r, axis=0)
+
+
     
-    colors = ['r','g','b']
-    plt.figure
-    for mid,color in zip(channels,colors):
-        plt.plot(mid,color=color)
 
-    plt.xlabel('Depth[cm]')
-    plt.ylabel('Mean Histogram Value')
-    plt.legend(['red channel','green channel','blue channel'])
-    plt.grid()
-    plt.savefig('C:\\Users\\amirsaa\Documents\GitHub\sea_thru\histogram_database\channel_depth_characterization.png',bbox_inches='tight',dpi=100)
+    # print(channel_stat)
+    # print(np.mean(blue))
+    # # print(blue-np.mean(blue))
+    # # print(red-np.mean(red))
+    # plt.plot((blue-np.mean(blue)),color='b')
+    # plt.plot(2*(red-np.mean(red)),color='r')
+    # plt.plot(blue-red)
     plt.show()
-
 
 def main2():
     histogram = accumulate_histograms('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/T*')
