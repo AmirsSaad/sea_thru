@@ -4,7 +4,10 @@ from matplotlib import pyplot as plt
 from os import listdir
 from utils import generate_depth_quantized_histograms, accumulate_histograms , plot_depth_quantized_histograms, depth_envelopes
 from utils import channel_depth_curve
+from utils import generate_depth_histogram
 import pandas as pd
+
+
 
 def main3():
 
@@ -42,4 +45,6 @@ def main():
     generate_depth_quantized_histograms()
 
 if __name__ == "__main__":
-    main3()
+    main()
+    # generate_depth_histogram('C:\\Users/amirsaa/Documents/sea_thru_data/3047_3147/depthMaps/','C:\\Users\\amirsaa\Documents\\sea_thru_data\\3047_3147')
+    
