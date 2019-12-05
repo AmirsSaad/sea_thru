@@ -11,11 +11,11 @@ def rgb_histogram(img):
     plt.show()
 
 def generate_depth_quantized_histograms():
-    raw_folder = 'C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/tifs/'
-    depth_folder = 'C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/depthMaps/'
-    histograms = 'C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/'
+    raw_folder = 'C:/Users/amirsaa/Documents/sea_thru_data/3047_3147/tifs/'
+    depth_folder = 'C:/Users/amirsaa/Documents/sea_thru_data/3047_3147/depthMaps/'
+    histograms = 'C:/Users/amirsaa/Documents/sea_thru_data/3047_3147/histograms/'
 
-    drange = np.arange(0.5,1.76,0.01)
+    drange = np.arange(0,11,0.01)
     N = drange.shape[0]-1
 
     for raw_file in listdir(raw_folder):
@@ -37,13 +37,19 @@ def generate_depth_quantized_histograms():
 
     np.save('bins',bins)
 
-def generate_depth_histogram(depthMaps_path):
+def generate_depth_histogram(depthMaps_path,figrue_save_path=None):
     
     depth_hist = np.empty(shape=[200])
     for depth_file in listdir(depthMaps_path):    
         depth = cv2.imread(depthMaps_path+depth_file,-1)
-        temp_hist , _ = np.histogram(depth.reshape([-1,1]),bins=200,range=(0,2))
+        temp_hist , bins = np.histogram(depth,bins=200,range=(0,11))
         depth_hist += temp_hist
+    
+    plt.figure()
+    plt.hist(bins[:-1], bins, weights=depth_hist)
+    plt.show()
+    if figrue_save_path:
+        plt.savefig(figrue_save_path+'\depth_histogram')
     
     return(depth_hist)
     
@@ -79,16 +85,31 @@ def depth_envelopes(histogram,bins):
     mid = np.sum(np.multiply(histogram,bins))
     # high = np.where(np.cumsum(histogram)>0.95)[0][0]
     return(mid)
-    return([low,mid,high])
+    # return([low,mid,high])
 
-def depth():
+def channel_depth_curve(plot = False , savefig = False):
     histogram = accumulate_histograms('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/T*')
     bins = np.load('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/bins.npy')
     bins = (bins[1:]+bins[:-1])/2
     channels = list()
-    for c in range (3):
+    for d in range(histogram.shape[2]):
         depth = list()
-        for d in range(histogram.shape[2]):
+        for c in range (3):
             depth.append(depth_envelopes(histogram[:,c,d],bins))
         channels.append(depth)
-    
+
+    if plot:
+        colors = ['r','g','b']
+        plt.figure
+        for mid,color in zip(channels,colors):
+            plt.plot(mid,color=color)
+        plt.xlabel('Depth[cm]')
+        plt.ylabel('Mean Histogram Value')
+        plt.legend(['red channel','green channel','blue channel'])
+        plt.grid()
+        plt.show()
+        
+        if savefig:
+            plt.savefig('C:\\Users\\amirsaa\Documents\GitHub\sea_thru\histogram_database\channel_depth_characterization.png',bbox_inches='tight',dpi=100)
+
+    return(channels)
