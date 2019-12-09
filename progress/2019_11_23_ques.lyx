@@ -120,5 +120,97 @@
 על מה המודל אומן?
 \end_layout
 
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+מה הלאה
+\end_layout
+
+\begin_layout Standard
+
+\numeric on
+1
+\numeric off
+.
+ עבודת סטטיסטיקה
+\end_layout
+
+\begin_layout Standard
+
+\numeric on
+2
+\numeric off
+.
+ פאטצ'ים
+\end_layout
+
+\begin_layout Standard
+
+\numeric on
+3
+\numeric off
+.
+ מציאת מקדמים
+\end_layout
+
+\begin_layout Standard
+מה במצגת
+\end_layout
+
+\begin_layout Standard
+הצגת הבעיה כולל משוואת 
+\begin_inset Formula $image\,formation$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+סקר ספרות - פתרונות קיימים
+\end_layout
+
+\begin_layout Standard
+מה עשינו ונעשה
+\end_layout
+
+\begin_layout Standard
+דאטאסט - על מה עובדים
+\end_layout
+
+\begin_layout Section
+מעבר נוסף על המאמר
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $backscattering$
+\end_inset
+
+ - התייחסות לאורכי גל מסויימים )ירוק ומעלה(
+\end_layout
+
+\begin_layout Enumerate
+להעריך מה יותר קרוב - גודל וקמירות
+\end_layout
+
+\begin_layout Enumerate
+בסיסי צבע אחרים - מה עם 
+\begin_inset Formula $HSV$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $dehazing$
+\end_inset
+
+ במים - הקווים לא לינאריים - דועכים לנק' הרקע כחול-ירוק אבסולוטי
+\end_layout
+
 \end_body
 \end_document
