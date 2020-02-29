@@ -1,50 +1,49 @@
-import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from os import listdir
-from utils import generate_depth_quantized_histograms, accumulate_histograms , plot_depth_quantized_histograms, depth_envelopes
-from utils import channel_depth_curve
-from utils import generate_depth_histogram
+from utils import accumulate_histograms,channel_depth_curve 
 import pandas as pd
+from os.path import join
+import glob
+import utils
+import cv2
 
-
-
-def main3():
-
-    channels = channel_depth_curve()
-    df = pd.DataFrame.from_records(channels)
-    df.columns=(['r','g','b'])
-    df = df.interpolate()
-    # df = df - df.mean()
-    # print(df)
-    for (ch,color) in zip(df,['r','g','b']):
-        plt.plot(df[ch],color=color)
-
-    plt.plot(df.b.div(df.r))
-    # df[['b']].div(df.r, axis=0)
-
-
+def scene_statistics(data_path):
+    histograms_path_list = [x for x in glob.glob(join(data_path,'*.npy')) if (('rgb_bins' not in x) and ('depth_bins' not in x))]
+    rgb_bins = np.load(join(data_path,'rgb_bins.npy'))
+    dbins = np.load(join(data_path,'depth_bins.npy'))
     
+    
+    rgb_bins = (rgb_bins[1:]+rgb_bins[:-1])/2
+    dbins = (dbins[1:]+dbins[:-1])/2
 
-    # print(channel_stat)
-    # print(np.mean(blue))
-    # # print(blue-np.mean(blue))
-    # # print(red-np.mean(red))
-    # plt.plot((blue-np.mean(blue)),color='b')
-    # plt.plot(2*(red-np.mean(red)),color='r')
-    # plt.plot(blue-red)
-    plt.show()
+    accum_histogram = accumulate_histograms(histograms_path_list,rgb_bins)
+    channels,bs_channels = channel_depth_curve(histogram=accum_histogram,rgb_bins=rgb_bins)
+    mean_hist = pd.DataFrame.from_records(channels)
+    mean_hist.columns=(['r','g','b'])
+    mean_hist = mean_hist.interpolate()
+    
+    for (ch,color) in zip(mean_hist,['r','g','b']):
+        plt.plot(dbins,mean_hist[ch],color=color)
+    
+    bs = pd.DataFrame.from_records(bs_channels)
+    bs['depth_bins'] = dbins
+    bs.columns=(['r','g','b','d'])
 
-def main2():
-    histogram = accumulate_histograms('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/T*')
-    bins = np.load('C:/Users/amirsaa/Documents/sea_thru_data/3148_3248/histograms/bins.npy')
-    drange = np.arange(0.5,1.76,0.01)
-    plot_depth_quantized_histograms(histogram,bins,drange)
+    for (ch,color) in zip(bs,['r','g','b']):
+        plt.plot(dbins,bs[ch],'.',color=color,markersize=3)
 
-def main():
-    generate_depth_quantized_histograms()
-
+    # plt.ylim([0,70])
+    fig = plt.figure(1)
+    ax = fig.add_subplot(111)
+    ax.set_xlabel('z[m]')
+    ax.set_ylabel('Intensity')
+    lgd = ax.legend([r"$E[I_R|z]$",r"$E[I_G|z]$",r"$E[I_B|z]$",r"$E_{0.5\%}[I_R|z]$",r"$E_{0.5\%}[I_G|z]$",r"$E_{0.5\%}[I_B|z]$"],bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+    ax.grid('on')
+    fig.savefig('histogram_statistics/figs/D3.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    
 if __name__ == "__main__":
-    main()
-    # generate_depth_histogram('C:\\Users/amirsaa/Documents/sea_thru_data/3047_3147/depthMaps/','C:\\Users\\amirsaa\Documents\\sea_thru_data\\3047_3147')
+    # scene_statistics(data_path = 'C:/Users/amirsaa/Documents/sea_thru_data/D3/histograms')
     
+    from utils import generate_depth_histogram
+    generate_depth_histogram('C:/Users/amirsaa/Documents/sea_thru_data/D5/depthMaps',plot=True,figrue_save_path=r"C:\Users\amirsaa\Documents\GitHub\sea_thru\histogram_statistics\figs\D5_dhist.png")
