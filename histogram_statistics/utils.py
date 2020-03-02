@@ -111,7 +111,7 @@ def accumulate_histograms(histograms_path_list,rgb_bins,mean_shift='gray'):
 def depth_envelopes(histogram,bins):
     histogram =  histogram/np.sum(histogram)
     low_idx = np.cumsum(histogram)<0.005
-    low = np.sum(np.multiply(histogram[low_idx],bins[low_idx])) / np.sum(histogram[low_idx])
+    low = np.sum(np.multiply(histogram[low_idx],bins[low_idx])) / (np.sum(histogram[low_idx])+0.0001)
     mid = np.sum(np.multiply(histogram,bins))
     # high = np.where(np.cumsum(histogram)>0.95)[0][0]
     return(mid,low)
