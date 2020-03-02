@@ -24,7 +24,6 @@ bright_srgb = min(1,lin_srgb*grayscale);
 nl_srgb = bright_srgb.^(1/2.2);
 %histRGB(nl_srgb)
 % - - - Display output - - -
-figure()
-histRGB(nl_srgb)
+%histRGB(nl_srgb)
 
 end
