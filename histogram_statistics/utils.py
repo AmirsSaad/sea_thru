@@ -108,24 +108,24 @@ def accumulate_histograms(histograms_path_list,rgb_bins,mean_shift='gray'):
             summed_histogram += hist
     return(summed_histogram)
 
-def depth_envelopes(histogram,bins):
+def depth_envelopes(histogram,bins,low_percentile = 0.01):
     histogram =  histogram/np.sum(histogram)
-    low_idx = np.cumsum(histogram)<0.005
-    low = np.sum(np.multiply(histogram[low_idx],bins[low_idx])) / np.sum(histogram[low_idx])
+    low_idx = np.cumsum(histogram)<low_percentile
+    low = np.sum(np.multiply(histogram[low_idx],bins[low_idx])) / (np.sum(histogram[low_idx])+0.0001)
     mid = np.sum(np.multiply(histogram,bins))
     # high = np.where(np.cumsum(histogram)>0.95)[0][0]
     return(mid,low)
     # return([low,mid,high])
 
-def channel_depth_curve(histogram , rgb_bins ):
+def channel_depth_curve(histogram , rgb_bins ,low_percentile):
     channels = list()
     bs_channels = list()
     for d in range(histogram.shape[2]):
         depth = list()
         bs_depth = list()
         for c in range (3):
-            depth.append(depth_envelopes(histogram[:,c,d],rgb_bins)[0])
-            bs_depth.append(depth_envelopes(histogram[:,c,d],rgb_bins)[1])
+            depth.append(depth_envelopes(histogram[:,c,d],rgb_bins,low_percentile)[0])
+            bs_depth.append(depth_envelopes(histogram[:,c,d],rgb_bins,low_percentile)[1])
         channels.append(depth)
         bs_channels.append(bs_depth)
     return(channels,bs_channels)

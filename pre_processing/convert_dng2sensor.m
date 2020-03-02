@@ -49,7 +49,7 @@ end
 
 % - - - Demosaicing - - -
 temp = uint16(balanced_bayer/max(balanced_bayer(:))*2^16);
-lin_rgb = single(demosaic(temp,bayer_type))/65535;
+lin_rgb = double(demosaic(temp,bayer_type))/65535;
 
 out = lin_rgb;
 info= meta_info;
