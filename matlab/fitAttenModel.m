@@ -1,21 +1,18 @@
-function coefs = fitAttenModel(meanH,lowH)
-z=lowH.data(:,5);
+function coefs = fitAttenModel(meanH,z)
 coefs=zeros(3,3);
 figure;
 hold on;
-for i=2:4
-    y=meanH.data(:,i);
+upper_c=min(meanH);
+for i=1:3
+    y=meanH(:,i);
     ft = fittype('a*exp(-b*x)+c');
     opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
     opts.StartPoint = [1 1 1];
     opts.Lower = [0 0 0];
-    opts.Upper = [inf inf inf];
+    opts.Upper = [inf inf upper_c(i)];
     f1 = fit(z,y,ft,opts);
-    coefs(i-1,1:3)=[f1.a f1.b f1.c];
+    coefs(i,1:3)=[f1.a f1.b f1.c];
     plot(f1,z,y);
-    
-
-
 end
 
 end
