@@ -5,7 +5,7 @@ function [Iout,BS] = removeBS(I,depth,coefs)
     meangray=mean(gray,'all');
     I=I*(MEAN_VALUE/meangray);
     for i=1:3    
-       BStemp=coefs(i,1)*(1-exp(-coefs(i,2).*depth));
+       BStemp=coefs(i,1)*(1-exp(-coefs(i,2).*(depth-coefs(i,3))));
        %BStemp(depth==0)=coefs(i,1);
        BS(:,:,i)=BStemp;
     end
