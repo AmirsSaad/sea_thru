@@ -9,7 +9,7 @@ function [JD,betaD,Binf,betaB,zOS,C,photonEQ] = fitPhyModel(strMeanHist,strLowHi
         z=Istruct.data(:,5);
         lb=[min(I) 0 0 0 -inf 0];
         ub=[255 1 log(255) 1 inf min(I)];
-        fun = @(a) [I - a(1)*(1-exp(-a(2)*(z-a(5))))-exp(a(3)-a(4)*z)-a(6), ones(size(I))*a(6)*1, ...
+        fun = @(a) [I - a(1)*(1-exp(-a(2)*(z-a(5))))-exp(a(3)-a(4)*z)-a(6), ones(size(I))*a(6)*10,ones(size(I))*a(5)*10 ...
                 lambda(i)*(Jb - a(1)*(1-exp(-a(2)*(z-a(5)))))]; %lambda*(log(I-Jb) - (a(3)-a(4)*z))
         x = lsqnonlin(fun,[1 1 1 1 1 1],lb,ub);
         Binf(i)=x(1); betaB(i)=x(2); zOS(i)=x(5); JD(i)=exp(x(3)); betaD(i)=x(4); C(i)=x(6);
