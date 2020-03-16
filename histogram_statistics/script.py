@@ -8,9 +8,12 @@ import glob
 import utils
 import cv2
 
+## PARAMS ##############################
 LOW_PERCENTILE = 0.05
 DB = 'D5'
-MEAN_SHIFT = 'gray'
+MEAN_SHIFT = 'gray' ##  None / 'gray'
+#######################################
+
 if MEAN_SHIFT == None:
     is_norm = 'unnormalized'
 else:
