@@ -8,8 +8,13 @@ import glob
 import utils
 import cv2
 
-LOW_PERCENTILE = 0.01
+LOW_PERCENTILE = 0.05
 DB = 'D5'
+MEAN_SHIFT = 'gray'
+if MEAN_SHIFT == None:
+    is_norm = 'unnormalized'
+else:
+    is_norm = 'normalized'
 
 def scene_statistics(data_path):
     histograms_path_list = [x for x in glob.glob(join(data_path,'*.npy')) if (('rgb_bins' not in x) and ('depth_bins' not in x))]
@@ -20,7 +25,7 @@ def scene_statistics(data_path):
     rgb_bins = (rgb_bins[1:]+rgb_bins[:-1])/2
     dbins = (dbins[1:]+dbins[:-1])/2
 
-    accum_histogram = accumulate_histograms(histograms_path_list,rgb_bins)
+    accum_histogram = accumulate_histograms(histograms_path_list,rgb_bins,mean_shift=MEAN_SHIFT)
     channels,bs_channels = channel_depth_curve(histogram=accum_histogram,rgb_bins=rgb_bins,low_percentile=LOW_PERCENTILE)
     mean_hist = pd.DataFrame.from_records(channels)
     mean_hist.columns=(['r','g','b'])
@@ -44,10 +49,10 @@ def scene_statistics(data_path):
     ax.set_ylabel('Intensity')
     lgd = ax.legend([r"$E[I_R|z]$",r"$E[I_G|z]$",r"$E[I_B|z]$",r"$E_{0.5\%}[I_R|z]$",r"$E_{0.5\%}[I_G|z]$",r"$E_{0.5\%}[I_B|z]$"],bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
     ax.grid('on')
-    fig.savefig('histogram_statistics/figs/'+DB+'_'+str(LOW_PERCENTILE)+'_sensor.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    fig.savefig('histogram_statistics/figs/'+DB+ '_'+ str(LOW_PERCENTILE)+ '_' + is_norm +'_sensor.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
     
-    mean_hist.to_csv('mean_hist.csv',index=False)
-    bs.to_csv('bs_' + str(LOW_PERCENTILE) +'.csv',index=False)
+    mean_hist.to_csv('mean_hist_'+DB+ '_' + is_norm +'.csv',index=False)
+    bs.to_csv('bs_' +DB+ '_'+ str(LOW_PERCENTILE)+ '_' + is_norm +'.csv',index=False)
 if __name__ == "__main__":
     scene_statistics(data_path = 'C:/Users/amirsaa/Documents/sea_thru_data/'+DB+'/sensor_histograms')
     
