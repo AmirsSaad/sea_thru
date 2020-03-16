@@ -7,10 +7,11 @@ from os.path import join
 import glob
 import utils
 import cv2
+from utils import generate_depth_quantized_histograms
 
 ## PARAMS ##############################
-LOW_PERCENTILE = 0.05
-DB = 'D5'
+LOW_PERCENTILE = 0.01
+DB = 'D3'
 MEAN_SHIFT = 'gray' ##  None / 'gray'
 #######################################
 
@@ -54,13 +55,14 @@ def scene_statistics(data_path):
     ax.grid('on')
     fig.savefig('histogram_statistics/figs/'+DB+ '_'+ str(LOW_PERCENTILE)+ '_' + is_norm +'_sensor.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
     
-    mean_hist.to_csv('mean_hist_'+DB+ '_' + is_norm +'.csv',index=False)
-    bs.to_csv('bs_' +DB+ '_'+ str(LOW_PERCENTILE)+ '_' + is_norm +'.csv',index=False)
+    mean_hist.to_csv('statistics/mean_hist_'+DB+ '_' + is_norm +'.csv',index=False)
+    bs.to_csv('statistics/bs_' +DB+ '_'+ str(LOW_PERCENTILE)+ '_' + is_norm +'.csv',index=False)
 if __name__ == "__main__":
+    
+    # generate_depth_quantized_histograms(r"C:/Users/amirsaa/Documents/sea_thru_data/"+DB+"/depthMaps",r"C:/Users/amirsaa/Documents/sea_thru_data/"+DB+"/sensor_tifs",r"C:/Users/amirsaa/Documents/sea_thru_data/"+DB+"/sensor_histograms")
     scene_statistics(data_path = 'C:/Users/amirsaa/Documents/sea_thru_data/'+DB+'/sensor_histograms')
     
-    # from utils import generate_depth_histogram
-    # generate_depth_histogram('C:/Users/amirsaa/Documents/sea_thru_data/D5/depthMaps',plot=True,figrue_save_path=r"C:/Users/amirsaa/Documents/GitHub/sea_thru/histogram_statistics/figs/D5_sensor_dhist.png")
     
-    # from utils import generate_depth_quantized_histograms
-    # generate_depth_quantized_histograms(r"C:/Users/amirsaa/Documents/sea_thru_data/D5/depthMaps",r"C:/Users/amirsaa/Documents/sea_thru_data/D3/sensor_tifs",r"C:/Users/amirsaa/Documents/sea_thru_data/D3/sensor_histograms")
+    
+    
+    
