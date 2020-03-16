@@ -1,30 +1,37 @@
 
 close all;
-strmeanHist='mean_hist_0.02.csv';
+strMeanHist='mean_hist_0.02.csv';
 strBSHist='bs_0.02.csv';
 
-[JD,betaD,Binf,betaB,zOS,C,photonEQ] = fitPhyModel('mean_hist_0.02.csv','bs_0.02.csv',[0.5 0.5 0.5],1);
+[JD,betaD,Binf,betaB,zOS,C,photonEQ] = fitPhyModel(strMeanHist,strBSHist,[0.5 0.5 0.5],1);
 
 close all;
-folder = 'sandbox/D3/';
-savepath = 'sandbox/D3/pairsAtten/';
+folder = 'sandbox/D5/';
+savepath = 'sandbox/D5/pairsAtten/';
 dngs = dir([folder,'*.dng']);
 deps = dir([folder,'*.tif']);
-files=length(dngs);
+files=length(dngs);folder
 for file = 1:files
 file_path = [folder,dngs(file).name];
 [I,info] = convert_dng2sensor(file_path);
 file_path = [folder,deps(file).name];
 depth=imread(file_path);
+
+depth(depth==0)=max(max(depth));
+
 [IremBS,BS] = removeBS(I*255,depth,[Binf' betaB' zOS']);
-IremBS=AttenFix(IremBS,depth,[JD' betaD' C'],1);
-for i=1:3;
-    IremBS(:,:,i)=IremBS(:,:,i)*photonEQ(i);
+Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],1);
+for i=1:3
+    Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i);
 end
-IpostBS = convert_sensors2viewable(IremBS/255,info);
+IremBS = convert_sensors2viewable(IremBS/255,info);
+Ifixed = convert_sensors2viewable(Ifixed/255,info);
 Ipre = convert_sensors2viewable(I,info);
 figure();
-imshowpair(Ipre,IpostBS,'montage');
+subplot 221; imshow(Ipre); title('Original');
+subplot 222; imshow(IremBS); title('BS removed');
+subplot 223; imshow(Ifixed); title('Attenuation fixed');
+subplot 224; imshow(imadjust(Ifixed,stretchlim(Ifixed),[])); title('Hist Stretch');
 %BS =convert_sensors2viewable(BS/255,info);
 
 saveas(gcf,[savepath,strrep(dngs(file).name,'.dng','.png')])
