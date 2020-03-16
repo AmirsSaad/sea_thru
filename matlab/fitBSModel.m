@@ -1,12 +1,12 @@
 function coefs = fitBSModel(meanH,lowH)
-z=lowH.data(:,5);
+z=lowH.data(:,4);
 coefs=zeros(3,2);
 upper_a=meanH.data(end,2:4);
 figure;
 hold on;
 rgb=['#D95319';'#77AC30';'#0072BD'];
 for i=2:4
-    y=lowH.data(:,i);
+    y=lowH.data(:,i-1);
     ft = fittype('a*(1-exp(-b*(x)))');
     opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
     opts.StartPoint = [1 1];
