@@ -2,7 +2,7 @@ function [JD,betaD,Binf,betaB,zOS,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHi
     Istruct=importdata(strMeanHist,',');
     Jbstruct=importdata(strLowHist,',');
     %z is distances vector
-    z=Istruct.data(:,5);
+    z=Istruct.data(:,4);
     
     %init vars
     Binf=zeros(1,3); betaB=zeros(1,3); zOS=zeros(1,3); JD=zeros(1,3); betaD=zeros(4,3); C=zeros(1,3);
@@ -11,14 +11,14 @@ function [JD,betaD,Binf,betaB,zOS,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHi
 
    
     for i=1:3 %each color independetly
-        I=Istruct.data(:,i+1); %I is mean value vector
-        Jb=Jbstruct.data(:,i+1); %Jb is lower percentile vector
+        I=Istruct.data(:,i); %I is mean value vector
+        Jb=Jbstruct.data(:,i); %Jb is lower percentile vector
         
         %bounderies
         lb=[min(I)  0 log(max(I)*0.85) 0 -inf 0      -10 0   -10];
         ub=[255     1 log(255)         10 inf  min(I) 0    10 0   ];
         
-        fun = @(a) [I - a(1)*(1-exp(-a(2)*(z-a(5))))-exp(a(3)-(a(4)*exp(a(7)*z)+a(8)*exp(a(9)*z)).*z)-a(6), ones(size(I))*a(6)*10,ones(size(I))*a(5)*10, ...
+        fun = @(a) [I - a(1)*(1-exp(-a(2)*(z-a(5))))-exp(a(3)-(a(4)*exp(a(7)*z)+a(8)*exp(a(9)*z)).*z)-a(6), ones(size(I))*(a(6)^2+a(7)^2+a(8)^2+a(9)^2)*1000,ones(size(I))*a(5)*1000, ...
                 lambda(i)*(Jb - a(1)*(1-exp(-a(2)*(z-a(5)))))]; %lambda*(log(I-Jb) - (a(3)-a(4)*z))
         
         x = lsqnonlin(fun,[1 1 1 1 1 1 0.5 0.5 0.5],lb,ub);

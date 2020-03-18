@@ -1,7 +1,7 @@
 
 close all;
-strMeanHist='mean_hist_0.02.csv';
-strBSHist='bs_0.02.csv';
+strMeanHist='mean_hist_D5_unnormalized.csv';
+strBSHist='bs_D5_0.05_unnormalized.csv';
 lambda=ones(1,3)*2;
 [JD,betaD,Binf,betaB,zOS,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,strBSHist,lambda,1);
 
