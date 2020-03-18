@@ -1,7 +1,7 @@
 
 close all;
 strMeanHist='mean_hist_0.02.csv';
-strBSHist='bs_0.05.csv';
+strBSHist='bs_0.02.csv';
 lambda=ones(1,3)*2;
 [JD,betaD,Binf,betaB,zOS,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,strBSHist,lambda,1);
 
@@ -20,6 +20,7 @@ depth=imread(file_path);
 % fix depth map zeros to far
 depth(depth==0)=max(max(depth));
 
+
 %remove backscatter with modeled coefs
 [IremBS,BS] = removeBS(I*255,depth,[Binf' betaB' zOS']);
 
@@ -31,18 +32,19 @@ Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],1);
 for i=1:3
     Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i);
 end
+%[~,Ifixed]=wb_adj(Ifixed/255);
 
 % from sensors data to viewable photo
 IremBS = convert_sensors2viewable(IremBS/255,info);
 Ifixed = convert_sensors2viewable(Ifixed/255,info);
 Ipre = convert_sensors2viewable(I,info);
 
-
 figure();
 subplot 221; imshow(Ipre); title('Original');
 subplot 222; imshow(IremBS); title('BS removed');
 subplot 223; imshow(Ifixed); title('Attenuation fixed');
 IfixedHS=imadjust(Ifixed,stretchlim(Ifixed),[]);
+
 subplot 224; imshow(IfixedHS); title('Hist Stretch');
 %BS =convert_sensors2viewable(BS/255,info);
 

@@ -12,11 +12,11 @@ function [JD,betaD,Binf,betaB,zOS,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHi
    
     for i=1:3 %each color independetly
         I=Istruct.data(:,i+1); %I is mean value vector
-        Jb=Jbstruct.data(:,i); %Jb is lower percentile vector
+        Jb=Jbstruct.data(:,i+1); %Jb is lower percentile vector
         
         %bounderies
-        lb=[min(I)  0 log(max(I)*0.85) 0 -inf 0      -inf 0   -inf];
-        ub=[255     1 log(255)         1 inf  min(I) 0    1 0   ];
+        lb=[min(I)  0 log(max(I)*0.85) 0 -inf 0      -10 0   -10];
+        ub=[255     1 log(255)         10 inf  min(I) 0    10 0   ];
         
         fun = @(a) [I - a(1)*(1-exp(-a(2)*(z-a(5))))-exp(a(3)-(a(4)*exp(a(7)*z)+a(8)*exp(a(9)*z)).*z)-a(6), ones(size(I))*a(6)*10,ones(size(I))*a(5)*10, ...
                 lambda(i)*(Jb - a(1)*(1-exp(-a(2)*(z-a(5)))))]; %lambda*(log(I-Jb) - (a(3)-a(4)*z))
