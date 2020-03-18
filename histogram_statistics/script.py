@@ -10,9 +10,9 @@ import cv2
 from utils import generate_depth_quantized_histograms
 
 ## PARAMS ##############################
-LOW_PERCENTILE = 0.01
+LOW_PERCENTILE = 0.05
 DB = 'D3'
-MEAN_SHIFT = 'gray' ##  None / 'gray'
+MEAN_SHIFT = None ##  None / 'gray'
 #######################################
 
 if MEAN_SHIFT == None:
