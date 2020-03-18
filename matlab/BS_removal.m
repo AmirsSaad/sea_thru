@@ -1,7 +1,7 @@
 
 
 meanH=importdata('mean_hist_0.02.csv',',');
-lowH=importdata('bs_0.02.csv',',');
+lowH=importdata('bs_0.05.csv',',');
 
 BScoefs = fitBSModel(meanH,lowH);
 modeledBShist=BScoefs(:,1)'.*(1-exp(-((meanH.data(:,5))*BScoefs(:,2)')));
