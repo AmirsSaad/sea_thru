@@ -18,6 +18,7 @@ file_path = [folder,dngs(file).name];
 [I,info] = convert_dng2sensor(file_path);
 file_path = [folder,deps(file).name];
 depth=imread(file_path);
+
 [IremBS,BS] = removeBS(I*255,depth,[ BScoefs [0;0;0] ]);
 IremBS=AttenFix(IremBS,depth,AttenCoeffs,1);
 IpostBS = convert_sensors2viewable(IremBS/255,info);
