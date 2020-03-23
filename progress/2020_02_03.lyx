@@ -125,6 +125,19 @@
 \end_layout
 
 \begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+R(z)= & a\cdot e^{-bz}\\
+\\
+\\
+\\
+\\
+\\
+(1-e^{-x})'= & 0+e^{-x}
+\end{align*}
+
+\end_inset
+
 
 \end_layout
 
