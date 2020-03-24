@@ -8,10 +8,11 @@ import glob
 import utils
 import cv2
 from utils import generate_depth_quantized_histograms
+# import argparse
 
 ## PARAMS ##############################
 LOW_PERCENTILE = 0.05
-DB = 'D3'
+DB = '3249_3349'
 MEAN_SHIFT = None ##  None / 'gray'
 #######################################
 
@@ -19,6 +20,13 @@ if MEAN_SHIFT == None:
     is_norm = 'unnormalized'
 else:
     is_norm = 'normalized'
+
+# def parse_args():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('-DB_path',type=str,required=True)
+#     parser.add_argument('-low_perc',type=float,default=0.01)
+#     parser.add_argument('-normalize',type=bool,default=False)
+    
 
 def scene_statistics(data_path):
     histograms_path_list = [x for x in glob.glob(join(data_path,'*.npy')) if (('rgb_bins' not in x) and ('depth_bins' not in x))]
@@ -59,8 +67,8 @@ def scene_statistics(data_path):
     bs.to_csv('statistics/bs_' +DB+ '_'+ str(LOW_PERCENTILE)+ '_' + is_norm +'.csv',index=False)
 if __name__ == "__main__":
     
-    # generate_depth_quantized_histograms(r"C:/Users/amirsaa/Documents/sea_thru_data/"+DB+"/depthMaps",r"C:/Users/amirsaa/Documents/sea_thru_data/"+DB+"/sensor_tifs",r"C:/Users/amirsaa/Documents/sea_thru_data/"+DB+"/sensor_histograms")
-    scene_statistics(data_path = 'C:/Users/amirsaa/Documents/sea_thru_data/'+DB+'/sensor_histograms')
+    generate_depth_quantized_histograms(r"D:/sea_thru/D1/"+DB+"/depthMaps",r"D:/sea_thru/D1/"+DB+"/sensor_tifs",r"D:/sea_thru/D1/"+DB+"/sensor_histograms")
+    # scene_statistics(data_path = 'D:/sea_thru/D1/'+DB+'/sensor_histograms')
     
     
     
