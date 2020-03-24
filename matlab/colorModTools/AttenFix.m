@@ -1,8 +1,11 @@
-function [Iout] = AttenFix(I,depth,coefs,ver)
-    MEAN_VALUE = 10.234190813810601;
-    gray = 0.2989 * I(:,:,1) + 0.5870 * I(:,:,2) + 0.1140 * I(:,:,3);
-    meangray=mean(gray,'all');
-    I=I*(MEAN_VALUE/meangray);
+function [Iout] = AttenFix(I,depth,coefs,ver,withNorm,normMeanVal)
+    if withNorm
+        %MEAN_VALUE = 10.234190813810601;
+        gray = 0.2989 * I(:,:,1) + 0.5870 * I(:,:,2) + 0.1140 * I(:,:,3);
+        meangray=mean(gray,'all');
+        I=I+(normMeanVal-meangray);
+    end
+    ratiomap=zeros(size(I));
     for i=1:3
         if ver<=2
             if ver==1
@@ -19,15 +22,24 @@ function [Iout] = AttenFix(I,depth,coefs,ver)
                for m=1:size(depth,2)
                     cz=depth(n,m);
                     k=1;
-                    while z(k)<cz;
+                    while k<length(z) && z(k)<cz
                         k=k+1;
+                   
                     end
-                    depth(n,m)=h(k,i);
+                    ratiomap(n,m,i)=h(k,i);
                end
-           end
-           I(:,:,i)=I(:,:,i).*depth;
+           end     
         end
         
     end
-    Iout= I/(MEAN_VALUE/meangray);
+    
+    if ver==3
+        Iout=I.*ratiomap;
+    else
+        Iout=I;
+    end
+    
+    if withNorm
+        Iout= Iout-(normMeanVal-meangray);
+    end
 end
