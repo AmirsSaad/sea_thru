@@ -72,7 +72,7 @@ def verify_histogram(histograms_path_list):
         print(np.sum(hist[:,0,:]))
         break
 
-def accumulate_histograms(histograms_path_list,rgb_bins,mean_shift='gray'):
+def accumulate_histograms(histograms_path_list,rgb_bins,mean_shift=None):
     
     for i,file in enumerate(histograms_path_list):
         hist = np.load(file)
