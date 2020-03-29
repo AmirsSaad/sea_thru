@@ -33,10 +33,13 @@ if strcmpi(read_app,'DNG')
     %clear raw
     
     % - - - White Balance - - -
-    wb_multipliers = (meta_info.AsShotNeutral).^-1;
-    wb_multipliers = wb_multipliers/wb_multipliers(2);
-    mask = wbmask(height,width,wb_multipliers,bayer_type);
-    balanced_bayer = lin_bayer .* mask;
+%     wb_multipliers = (meta_info.AsShotNeutral).^-1;
+%     wb_multipliers = wb_multipliers/wb_multipliers(2);
+%     mask = wbmask(height,width,wb_multipliers,bayer_type);
+%     balanced_bayer = lin_bayer .* mask;
+
+    balanced_bayer = lin_bayer;
+
     %clear lin_bayer mask
     
 else
@@ -48,7 +51,8 @@ end
 % % % - - - - - The rest of the processing chain - - - - -
 
 % - - - Demosaicing - - -
-temp = uint16(balanced_bayer/max(balanced_bayer(:))*2^16);
+temp = uint16(balanced_bayer*2^16);
+% temp = uint16(balanced_bayer/max(balanced_bayer(:))*2^16);
 lin_rgb = double(demosaic(temp,bayer_type))/65535;
 
 out = lin_rgb;
