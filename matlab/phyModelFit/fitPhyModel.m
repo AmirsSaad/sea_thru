@@ -7,7 +7,7 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,s
     
     %init vars
     Binf=zeros(1,3); betaB=zeros(1,3); JD=zeros(1,3); betaD=zeros(4,3); C=zeros(1,3);
-    intH=zeros(1,3); ratiovec=zeros(length(z),3); % zOS=zeros(1,3);
+    intH=zeros(1,3); ratiovec=zeros(length(z),3); fixedRatio=zeros(length(z),3);% zOS=zeros(1,3);
     Imbsr=zeros(length(z),3);I=zeros(length(z),3);Jb=zeros(length(z),3);
     switch betaBtype
         case 'const'
@@ -31,7 +31,7 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,s
                     ones(size(I(:,i)))*a(5)*factorDC, ...
                     lambda(i)*(Jb(:,i) - a(1)*(1-exp(-a(2)*z)))]; %lambda*(log(I-Jb) - (a(3)-a(4)*z))
         
-        x = lsqnonlin(fun,[max(Jb(:,i)) 0.25 log(max(I(:,i))*0.85) 0.25 1 0.25 0.25 0.25],lb,ub);
+        x = lsqnonlin(fun,[max(Jb(:,i)) 0.25 log(max(I(:,i))) 0.25 1 0.25 0.25 0.25],lb,ub);
         %x = lsqnonlin(fun,[1 1 1 1 1 0.25 0.25 0.25],lb,ub);
         
         Binf(i)=x(1); betaB(i)=x(2);  JD(i)=exp(x(3)); betaD(:,i)=[x(4);x(6);x(7);x(8)]; C(i)=x(5);
@@ -42,10 +42,15 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,s
         
         %ratio vector for attenuation fix
         ratiovec(:,i)=getRatioVec(Imbsr(:,i),10);
-                
-        %integral on the IMBSR vector for later white balance/ photonEQ
-        intH(i)=sum((Imbsr(:,i)-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
         
+        fixedRatio(:,i)=(Imbsr(:,i)-C(i)).*ratiovec(:,i);
+        
+        %integral on the IMBSR vector for later white balance/ photonEQ
+        if ver<=2
+        intH(i)=sum((Imbsr(:,i)-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
+        else
+        intH(i)=mean(fixedRatio(:,i));
+        end
     end
     photonEQ=max(intH)./intH; %normalize photonEQ RGB coefs
     if isplot
@@ -87,7 +92,7 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,s
 
         figure(2)
         if ver==3
-            plot(z,(Imbsr(:,i)-C(i)).*ratiovec(:,i)*photonEQ(i),'Color',rgb(i,:));
+            plot(z,fixedRatio(:,i)*photonEQ(i),'Color',rgb(i,:));
         else
             plot(z,(Imbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
         end
