@@ -41,13 +41,19 @@ else
     Ifixed=AttenFix(IremBS,depth,[ratiovec z],3,withNorm,normMeanVal);
 end
 
+
 % photon equalizer / white balancing 
 if WB>0
     disp('PhotonEQ...');
     for i=1:3
-        Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i);
+
+            Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i)/2;
+
     end
 end
+
+
+Ifixed=Ifixed/max(Ifixed,[],'all');
 
 if WB==1
     [~,Ifixed]=wb_adj(Ifixed/255);
@@ -75,7 +81,7 @@ end
 
 if WB==3
     disp('White Balancing...');
-    [~,Ifixed]=wb_adj(Ifixed);
+    [~,Ifixed]=wb_adj(Ifixed.*(depth>0));
 end
 %subplot 224; imshow(IfixedHS); title('Hist Stretch');
 %BS =convert_sensors2viewable(BS/255,info);

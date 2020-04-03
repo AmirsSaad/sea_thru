@@ -1,8 +1,8 @@
 function [adj, img_color_out] = wb_adj(img_in)
 
-mask1 = img_in(:,:,1)>0.75 & img_in(:,:,2)>0.75;
-mask2 = img_in(:,:,1)>0.75 & img_in(:,:,3)>0.75;
-mask3 = img_in(:,:,2)>0.75 & img_in(:,:,3)>0.75;
+mask1 = img_in(:,:,1)>0.75 & img_in(:,:,2)>0.75;% & img_in(:,:,1)<0.95 & img_in(:,:,2)<0.99; 
+mask2 = img_in(:,:,1)>0.75 & img_in(:,:,3)>0.75;% & img_in(:,:,1)<0.95 & img_in(:,:,3)<0.99;
+mask3 = img_in(:,:,2)>0.75 & img_in(:,:,3)>0.75;% & img_in(:,:,2)<0.95 & img_in(:,:,3)<0.99;
 mask=~(mask1|mask2|mask3);
 
 adj_orig=max(max(img_in.*(repmat(mask,1,1,3))));
