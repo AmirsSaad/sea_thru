@@ -14,7 +14,16 @@ def unused_rgb_histogram(img):
 
 def generate_depth_quantized_histograms(depths_path,raw_path,histogram_path,resume=True):
     
+    dbins_path = os.path.join(depths_path,'dbins.npy')
+    depth_hist_path = os.path.join(depths_path,'depth_hist.npy')
+    if os.path.exists(dbins_path) and os.path.exists(depth_hist_path):
+        dbins = np.load(dbins_path)
+        depth_hist = np.load(depth_hist_path)
+    else:
     dbins,depth_hist = generate_depth_histogram(depths_path,plot=True)
+        np.save(dbins_path,dbins)
+        np.save(depth_hist_path,depth_hist)
+    
     dbins = dbins[1:-1]
     lower_bound = np.min(dbins[depth_hist[1:]>0],axis=0)
     upper_bound = np.max(dbins[depth_hist[1:]>0],axis=0)
@@ -114,6 +123,7 @@ def depth_envelopes(histogram,bins,low_percentile = 0.01):
     low = np.sum(np.multiply(histogram[low_idx],bins[low_idx])) / (np.sum(histogram[low_idx])+0.0001)
     mid = np.sum(np.multiply(histogram,bins))
     # high = np.where(np.cumsum(histogram)>0.95)[0][0]
+    # low = bins[low_idx][-1]
     return(mid,low)
     # return([low,mid,high])
 
