@@ -20,7 +20,7 @@ def generate_depth_quantized_histograms(depths_path,raw_path,histogram_path,resu
         dbins = np.load(dbins_path)
         depth_hist = np.load(depth_hist_path)
     else:
-    dbins,depth_hist = generate_depth_histogram(depths_path,plot=True)
+        dbins,depth_hist = generate_depth_histogram(depths_path,plot=True)
         np.save(dbins_path,dbins)
         np.save(depth_hist_path,depth_hist)
     
