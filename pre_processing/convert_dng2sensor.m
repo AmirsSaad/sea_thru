@@ -33,12 +33,12 @@ if strcmpi(read_app,'DNG')
     %clear raw
     
     % - - - White Balance - - -
-%     wb_multipliers = (meta_info.AsShotNeutral).^-1;
-%     wb_multipliers = wb_multipliers/wb_multipliers(2);
-%     mask = wbmask(height,width,wb_multipliers,bayer_type);
-%     balanced_bayer = lin_bayer .* mask;
+    wb_multipliers = (meta_info.AsShotNeutral).^-1;
+    wb_multipliers = wb_multipliers/wb_multipliers(2);
+    mask = wbmask(height,width,wb_multipliers,bayer_type);
+    balanced_bayer = lin_bayer .* mask;
 
-    balanced_bayer = lin_bayer;
+%     balanced_bayer = lin_bayer;
 
     %clear lin_bayer mask
     
