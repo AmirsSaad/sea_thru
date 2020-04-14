@@ -1,7 +1,7 @@
 
 close all;
 
-for D=[1 2 3 5]
+for D=[5]
 folder = ['../sandbox/D' num2str(D) '/'];
 savepath = ['../sandbox/D' num2str(D) '/fixed/'];
 if ~exist(['../sandbox/D' num2str(D) '/'], 'dir'), mkdir(['../sandbox/D' num2str(D) '/']); end
