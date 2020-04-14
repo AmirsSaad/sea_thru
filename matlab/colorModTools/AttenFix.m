@@ -1,4 +1,4 @@
-function [Iout] = AttenFix(I,depth,coefs,ver,withNorm,normMeanVal)
+function [Iout] = AttenFix(I,depth,coefs,ver,withNorm,normMeanVal,m,n,A)
     if withNorm
         %MEAN_VALUE = 10.234190813810601;
         gray = 0.2989 * I(:,:,1) + 0.5870 * I(:,:,2) + 0.1140 * I(:,:,3);

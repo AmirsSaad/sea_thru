@@ -1,17 +1,35 @@
-function Ifixed = fixProcess(strDNG,strDepth,strMeanHist,strBSHist,withNorm,normMeanVal,attenFixVer,lambda,betaBtype,DC,WB,contStr,fix_non_depth,blur_red,sigma_red,blur_depth,sigma_depth,isplot)
+function Ifixed = fixProcess(strDNG,strDepth,strMeanHist,strBSHist,withNorm,normMeanVal,attenFixVer,lambda,betaBtype,DC,WB,contStr,fix_non_depth,blur_red,sigma_red,blur_depth,sigma_depth,statModel,isplot)
 
 if DC
     factorDC=0;
 else
-    factorDC=1000;
+    factorDC=10000;
 end
-disp('Fitting Model...');
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z] = fitPhyModel(strMeanHist,strBSHist,lambda,betaBtype,factorDC,isplot,attenFixVer);
 
-%close all;
+depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
-depth=imread(strDepth);
+
+if statModel=="multip"
+    Istruct=importdata(strMeanHist,',');
+    Jbstruct=importdata(strBSHist,',');
+elseif statModel=="single"
+   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,1,0.5);
+elseif statModel=="sandim"
+   [sand,rect]=imcrop(I);
+    dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
+   [Istruct,Jbstruct]= getSinglePhotoStats(sand,dsand,0.5,0); 
+end
+
+disp('Fitting Model...');
+x0=[];
+for k=1
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0);
+[m,n,A] = statisticalWBfit(Imf,Ivf,z,isplot);
+end
+%close all;
+
+
 
 % fix depth map zeros to far
 if fix_non_depth
@@ -36,11 +54,17 @@ end
 
 disp('Fixing Color Attenuation...');
 if attenFixVer<3
-    Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],attenFixVer,withNorm,normMeanVal);
+    Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],attenFixVer,withNorm,normMeanVal,m,n,A);
 else
     Ifixed=AttenFix(IremBS,depth,[ratiovec z],3,withNorm,normMeanVal);
 end
 
+%blacken faraway
+for i=1:3
+    Itemp=Ifixed(:,:,i)/255;
+    Itemp(depth==0) = mean(Itemp(depth>0),'all');
+    Ifixed(:,:,i)=Itemp;
+end
 
 % photon equalizer / white balancing 
 if WB>0
@@ -50,19 +74,18 @@ if WB>0
             Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i)/2;
 
     end
+    Ifixed = applyStatWB(Ifixed*255,depth,m,n,A)/255;
 end
 
-
-Ifixed=Ifixed/max(Ifixed,[],'all');
-
 if WB==1
-    [~,Ifixed]=wb_adj(Ifixed/255);
-    Ifixed=Ifixed*255;
+    [~,Ifixed]=wb_adj(Ifixed);
+    %Ifixed=Ifixed*255;
 end
 
 disp('Converting Sensors space to viewable...');
-Ifixed = convert_sensors2viewable(Ifixed/255,info);
+Ifixed = convert_sensors2viewable(Ifixed,info);
 
+%Ifixed=Ifixed/max(Ifixed,[],'all');
 
 if WB==2
     [~,Ifixed]=wb_adj(Ifixed);
@@ -77,11 +100,17 @@ end
 if contStr
     disp('Stretching contrast...');
     Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
+%     rHist = imhist(Ifixed(:,:,1), 256);
+%     [lims,~]=histsmartedges(rHist);
+%     lims=lims/255;
+%     Ifixed(:,:,1) = imadjust(Ifixed(:,:,1),lims,[]);   
+    %Bhist=imhist(Ifixed(:,:,3),256);
+    %Ifixed(:,:,1) = histeq(Ifixed(:,:,1),Bhist);
 end
 
 if WB==3
     disp('White Balancing...');
-    [~,Ifixed]=wb_adj(Ifixed.*(depth>0));
+    [~,Ifixed]=wb_adj(Ifixed);
 end
 %subplot 224; imshow(IfixedHS); title('Hist Stretch');
 %BS =convert_sensors2viewable(BS/255,info);
