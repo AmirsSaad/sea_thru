@@ -28,7 +28,7 @@ for file = 1:files
             contStr=1; fix_non_depth=0;
         elseif option==2
             attenFixVer=1;
-            lambda=ones(1,3)*2; betaBtype='const'; DC=0; WB=2;
+            lambda=ones(1,3)*2; betaBtype='const'; DC=0; WB=4;
             contStr=1; fix_non_depth=0;
         elseif option==3
             attenFixVer=1;
