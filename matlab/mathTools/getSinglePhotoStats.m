@@ -16,7 +16,7 @@ else
 end
 zlen=length(z);
 
-Imax=zeros(zlen-1,3); Imin=zeros(zlen-1,3);
+Ivar=zeros(zlen-1,3); Imin=zeros(zlen-1,3);
 Ihp=zeros(zlen-1,3); %I5=zeros(zlen-1,3);
 
 
@@ -26,12 +26,12 @@ Ihp=zeros(zlen-1,3); %I5=zeros(zlen-1,3);
        for color=1:3   
            cI=I(:,:,color);
            if max(logical,[],'all')
-            Imax(i,color)=var(cI(logical)*255,[],'all');
-            Imin(i,color)=min(cI(logical),[],'all');
+            Ivar(i,color)=var(cI(logical)*255,[],'all');
+            Imin(i,color)=min(cI(logical)*255,[],'all');
             Ihp(i,color)=prctile(cI(logical)*255,hp);
             %I5(i,color)=prctile(cI(logical),5);
            else
-            Imax(i,color)=Imax(i-1,color);
+            Ivar(i,color)=Ivar(i-1,color);
             Imin(i,color)=Imin(i-1,color);
             Ihp(i,color)=Ihp(i-1,color);
            end
@@ -44,6 +44,6 @@ z=z(:);
 
 Istruct=struct;
 Jbstruct=struct;
-Istruct.data=[Ihp z sqrt(Imax)];
-Jbstruct.data=[Imin*255 z];
+Istruct.data=[Ihp z Ivar];
+Jbstruct.data=[Imin z];
 end

@@ -27,7 +27,7 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
         %   Binf      betaB  log(JD)     betaD(1)  DC   betaD(2 3 4)
         
         fun = @(a) [(I(:,i) -exp(a(3)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                    (Ivar(:,i) -exp(a(9)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(10)), ... %
+                    sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(10)))), ... %
                     ones(size(I(:,i)))*(a(6)^2+a(7)^2+a(8)^2)*mu, ...
                     ones(size(I(:,i)))*a(5)*factorDC, ...
                     lambda(i)*(Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
@@ -70,24 +70,35 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
 
         figure(1);
         subplot(2,1,1);
-        plot(z,Binf(i)*(1-exp(-betaB(i)*z)),'k');
+        plot(z,Binf(i)*(1-exp(-betaB(i)*z)),'LineStyle','--','Color',rgb(i,:));
         hold on;
         plot(z,Jb(:,i),'Marker','.','Color',rgb(i,:));
         grid minor;
         title('Back-Scatter');
-        %legend('Fitted Model','Empirical lower percentile');
-        ylabel('Mean intensity'); xlabel('z distance [m]');
+        if i==3
+            legend('Fitted Model','Empirical darkest percentile',...
+                'Fitted Model','Empirical darkest percentile',...
+                'Fitted Model','Empirical darkest percentile',...
+                'Location','northwest','NumColumns',3);
+        end
+        %legend(,);
+        ylabel('Intensity'); xlabel('z distance [m]');
 
         %figure(2);
         subplot(2,1,2);
-        plot(z,JD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'-.k');
+        plot(z,JD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'LineStyle','--','Color',rgb(i,:));
         hold on;
         %plot(z,Iebsr);
-        plot(z,Imbsr(:,i),'LineStyle','-.','Color',rgb(i,:));
+        plot(z,Imbsr(:,i),'Marker','.','Color',rgb(i,:));
         grid minor;
-        title('Mean post BS removal');
-        %legend('Fitted Model','minus empirical','minus model');
-        ylabel('Mean intensity'); xlabel('z distance [m]');
+        title('I - Post BS removal');
+        if i==3
+            legend('Fitted Attenuated term','Emperical, BS removed',...
+                'Fitted Attenuated term','Emperical, BS removed',...
+                'Fitted Attenuated term','Emperical, BS removed',...
+                'Location','northeast','NumColumns',3);
+        end
+        ylabel('Intensity'); xlabel('z distance [m]');
 
         %subplot(2,2,3);
         %plot(z,x(1)*(1-exp(-x(2)*z))+exp(x(3))*exp(-(x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z)+x(5),'k');
@@ -114,18 +125,41 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
         %plot(z,Imbsr.*(Iebsr(2)/Iebsr));
         plot(z,I(:,i),'--','Color',rgb(i,:));
         grid minor;
-        title('Fixed model');
+        title('I(z) post color correction (pre-WB)');
+        if i==3
         %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
-        %legend('fixed','original'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
-        ylabel('Mean intensity'); xlabel('z distance [m]');
+            legend('Corrected','Original',...
+                'Corrected','Original',...
+                'Corrected','Original',...
+                'Location','southwest','NumColumns',3);
+        end
+        ylabel('Intensity'); xlabel('z distance [m]');
         
         figure(3)
-        plot(z,Ivar(:,i).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
-        hold on;
-        plot(z,Ivar(:,i),'--','Color',rgb(i,:));
-        plot(z,varJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'-.k');
+        
+%         subplot 211
+        plot(z,Ivar(:,i),'Color',rgb(i,:));
+        hold on
+        plot(z,varJD(i)*exp(-2*(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'--','Color',rgb(i,:));
         grid minor;
-        title('Color Variance per distance');
+        if i==3
+        %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
+            legend('Var[I_r|z]','Fitted Attenuated term',...
+                   'Var[I_g|z]','Fitted Attenuated term',...
+                   'Var[I_b|z]','Fitted Attenuated term',...
+                   'Location','northwest','NumColumns',3);
+        end
+%         subplot 212
+%         plot(z,Ivar(:,i).*exp(2*(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
+%         hold on;
+         title('Color Variance over distance (pre-WB)');
+%         if i==3
+%         %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
+%             legend('Corrected','Original',...
+%                 'Corrected','Original',...
+%                 'Corrected','Original',...
+%                 'Location','northeast','NumColumns',3);
+%         end
         %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
         %legend('fixed','original'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
         ylabel('Variance'); xlabel('z distance [m]');

@@ -55,7 +55,7 @@ for file = 1:files
         f4=figure(4);
         Ifixed=imresize(Ifixed,0.5);
         imshow(Ifixed,[]);
-        saveas(f4,[savepath,strrep(dngs(file).name,'.dng',['_op' num2str(option) '_s.png'])]);
+        saveas(f4,[savepath,strrep(dngs(file).name,'.dng',['_op' num2str(option) '_s2.png'])]);
             
 %         if file == 1
             f1=figure(1);
