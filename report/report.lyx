@@ -95,12 +95,111 @@ Histogram Statistics
 Model Fit
 \end_layout
 
+\begin_layout Subsection
+Single photo fit
+\end_layout
+
+\begin_layout Subsubsection
+Backscatter
+\end_layout
+
+\begin_layout Standard
+Estimating the model's backscatter term from a single photo and its depth
+ map, calls for different measures.
+ We'd like to find the darkest pixels in each depth, but we have no guarantee
+ for real shade along the photo's depth range.
+ Moreover, the natural light source causes uneven scene lighting.
+ To overcome this, we take the minimal intensity value 
+\begin_inset Formula $I_{min}$
+\end_inset
+
+ in each distance range 
+\begin_inset Formula $z$
+\end_inset
+
+ (per color channel) and considering we have no 
+\begin_inset Quotes eld
+\end_inset
+
+negative
+\begin_inset Quotes erd
+\end_inset
+
+ light, we use the 
+\begin_inset Formula $I_{min}(z)$
+\end_inset
+
+ vectors as a upper bound (constraint) for the optimization process.
+\end_layout
+
+\begin_layout Subsubsection
+Attenuated light
+\end_layout
+
+\begin_layout Standard
+For the attenuated light term estimation, we use the 
+\begin_inset Formula $I_{max}(z)$
+\end_inset
+
+ vectors in a similar way we used the 
+\begin_inset Formula $I_{min}(z)$
+\end_inset
+
+ term, but this time as a lower bound.
+ In addition, we measure the variance of each color over the photo's depth
+ range, creating three 
+\begin_inset Formula $Var(I_{c}|z)$
+\end_inset
+
+ vectors which should correspond to:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Var(I_{c}|z)= & Var(J_{d}e^{-\beta_{D}z}+B^{\infty}(1-e^{-\beta_{B}z})|z)\\
+= & Var(J_{d}e^{-\beta_{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{B}z})|z)\\
+= & e^{-2\beta_{D}z}Var(J_{d})+Var(B^{\infty})-\bcancel{Var(e^{-\beta_{B}z}|z)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since each photo is not ideal, we have a sensor noise variance term that
+ is added and we conclude:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Var(I_{c}|z)= & e^{-2\beta_{D}z}Var(J_{d})+Var(B^{\infty})+\sigma_{noise}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Back Scatter Removal
 \end_layout
 
+\begin_layout Standard
+Each statistical approach outputs a set of coefficients for the backscatter
+ term.
+ We apply them and using our depth map, we create an estimated backscatter
+ photo which we subtract from the original raw photo.
+\end_layout
+
 \begin_layout Section
 Color Correction
+\end_layout
+
+\begin_layout Subsection
+Statistical White Balance
 \end_layout
 
 \begin_layout Section
