@@ -29,9 +29,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -44,6 +45,7 @@
 \use_package undertilde 1
 \cite_engine basic
 \cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -55,6 +57,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -79,8 +85,19 @@
 Under Water Image Color Correction
 \end_layout
 
-\begin_layout Section
-Abstract
+\begin_layout Author
+Ofer Hazut, Amir Saad
+\begin_inset Newline newline
+\end_inset
+
+Instructor: Tali Treibitz, Ph.D.
+\end_layout
+
+\begin_layout Abstract
+In the following paper we will present our take on ___ , which introduced
+ a physical model for color correction of underwater images.
+ Our paper presenting new approach for the model estimation and its practical
+ implementation.
 \end_layout
 
 \begin_layout Section
@@ -95,8 +112,155 @@ Histogram Statistics
 Model Fit
 \end_layout
 
+\begin_layout Subsection
+Single photo fit
+\end_layout
+
+\begin_layout Subsubsection
+Backscatter
+\end_layout
+
+\begin_layout Standard
+Estimating the model's backscatter term from a single photo and its depth
+ map, calls for different measures.
+ We'd like to find the darkest pixels in each depth, but we have no guarantee
+ for real shade along the photo's depth range.
+ Moreover, the natural light source causes uneven scene lighting.
+ To overcome this, we take the minimal intensity value 
+\begin_inset Formula $I_{min}$
+\end_inset
+
+ in each distance range 
+\begin_inset Formula $z$
+\end_inset
+
+ (per color channel) and considering we have no 
+\begin_inset Quotes eld
+\end_inset
+
+negative
+\begin_inset Quotes erd
+\end_inset
+
+ light, we use the 
+\begin_inset Formula $I_{min}(z)$
+\end_inset
+
+ vectors as a upper bound (constraint) for the optimization process.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figs/01_BS_fit_op2_pic1.png
+	lyxscale 10
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Attenuated light
+\end_layout
+
+\begin_layout Standard
+For the attenuated light term estimation, we use the 
+\begin_inset Formula $I_{max}(z)$
+\end_inset
+
+ vectors in a similar way we used the 
+\begin_inset Formula $I_{min}(z)$
+\end_inset
+
+ term, but this time as a lower bound.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figs/02_fix_op2_pic1.png
+	lyxscale 10
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In addition, we measure the variance of each color over the photo's depth
+ range, creating three 
+\begin_inset Formula $Var(I_{c}|z)$
+\end_inset
+
+ vectors which should correspond to:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Var(I_{c}|z)= & Var(J_{d}e^{-\beta_{D}z}+B^{\infty}(1-e^{-\beta_{B}z})|z)\\
+= & Var(J_{d}e^{-\beta_{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{B}z})|z)\\
+= & e^{-2\beta_{D}z}Var(J_{d})+Var(B^{\infty})-\bcancel{Var(e^{-\beta_{B}z}|z)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since each photo is not ideal, we have a sensor noise variance term that
+ is added and we conclude:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+Var(I_{c}|z)= & e^{-2\beta_{D}z}Var(J_{d})+Var(B^{\infty})+\sigma_{noise}^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Both 
+\begin_inset Formula $Var(B^{\infty})$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma_{noise}^{2}$
+\end_inset
+
+ can be extracted from the photo or act as a joint constant which will be
+ estimated in the optimization process.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figs/03_var_op2_pic1.png
+	lyxscale 10
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Back Scatter Removal
+\end_layout
+
+\begin_layout Standard
+Each statistical approach outputs a set of coefficients for the backscatter
+ term.
+ We apply them and using our depth map, we create an estimated backscatter
+ photo which we subtract from the original raw photo.
 \end_layout
 
 \begin_layout Section
@@ -105,6 +269,108 @@ Color Correction
 
 \begin_layout Section
 Post CC Processing
+\end_layout
+
+\begin_layout Subsection
+Statistical White Balance
+\end_layout
+
+\begin_layout Standard
+One of the core problems we face is the uneven lightning of the scene.
+ This is a problem of both magnitude and spectral problem.
+ The light coming from the sun is attenuated and diffracted on its way to
+ the objects.
+\end_layout
+
+\begin_layout Standard
+To overcome this problem we developed simulate even lighting in each depth
+\end_layout
+
+\begin_layout Standard
+We think of the 
+\begin_inset Formula $I_{c}$
+\end_inset
+
+ as sum of 
+\begin_inset Formula $\tilde{I}_{c}(z)+h_{affine}(z)$
+\end_inset
+
+ where 
+\begin_inset Formula $h_{affine}(z)=m\cdot z+n$
+\end_inset
+
+ and equal to the three color channels.
+\end_layout
+
+\begin_layout Standard
+Also, we assuming the lighting spectral difference is in a form of multiplicity,
+ meaning:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+a_{r}I_{r}= & a_{g}I_{g}=a_{b}I_{b}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To avoid redundancy, we set 
+\begin_inset Formula $a_{b}=1$
+\end_inset
+
+.
+ Also, to regulate the multiplication, we are taking the color variance
+ into consideration with 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ coefficient.
+\end_layout
+
+\begin_layout Standard
+We then solve the following optimization problem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\min_{m,n,a_{r},a_{g}} & \sum_{c=1}^{3}I_{c}-h_{affine}\\
+ & \epsilon_{ijk}(a_{i}(I_{i}-(m\cdot z+n))-a_{j}I_{j})\\
+ & \epsilon_{ijk}\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\\
+s.t. & \frac{E(I)}{2}<n<2E(I)\\
+ & -2<m<2\\
+ & 0.9<a_{r}<10\\
+ & 0.5<a_{g}<2
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figs/04_fixwb_op2_pic1.png
+	lyxscale 10
+	width 7cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/05_varwb_op2_pic1.png
+	lyxscale 10
+	width 7cm
+
+\end_inset
+
+
 \end_layout
 
 \end_body
