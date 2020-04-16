@@ -53,10 +53,11 @@ def scene_statistics(data_path , db_name ,lp ,norm):
     is_norm = 'normalized' if norm else 'unnormalized'
     lgd = ax.legend([r"$E[I_R|z]$",r"$E[I_G|z]$",r"$E[I_B|z]$",r"$E_{0.5\%}[I_R|z]$",r"$E_{0.5\%}[I_G|z]$",r"$E_{0.5\%}[I_B|z]$"],bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
     ax.grid('on')
-    fig.savefig('histogram_statistics/figs/'+db_name+ '_'+ str(lp)+ '_' + is_norm +'_sensor.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    ax.set_ylim(0,35)
+    fig.savefig('histogram_statistics/figs/'+db_name+ '_'+ str(lp)+ '_' + is_norm +'_sensor.v5.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
     
-    mean_hist.to_csv('statistics/mean_hist_'+db_name+ '_' + is_norm +'.csv',index=False)
-    bs.to_csv('statistics/bs_' +db_name+ '_'+ str(lp)+ '_' + is_norm +'.csv',index=False)
+    mean_hist.to_csv('statistics/mean_hist_'+db_name+ '_' + is_norm +'.v5.csv',index=False)
+    bs.to_csv('statistics/bs_' +db_name+ '_'+ str(lp)+ '_' + is_norm +'.v5.csv',index=False)
 
 if __name__ == "__main__":
 
