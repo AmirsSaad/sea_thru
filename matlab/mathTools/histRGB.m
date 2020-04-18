@@ -2,7 +2,7 @@
 % PhD student in Sogang University. Korea
 % sidra@sogang.ac.kr
 
-function histRGB(I)
+function histRGB(I,varargin)
 
 
 if (size(I, 3) ~= 3)
@@ -19,7 +19,13 @@ bHist = imhist(I(:,:,3), nBins);
 hFig = figure;
 
 subplot(2,1,1); 
-imshow(I); 
+
+if nargin > 1
+    [varargin{:}] = convertStringsToChars(varargin{:});
+    imshow(I,varargin{1})
+else
+    imshow(I)
+end
 title('Input image');
 
 subplot(2,1,2);
