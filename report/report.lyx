@@ -310,7 +310,7 @@ Also, we assuming the lighting spectral difference is in a form of multiplicity,
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-a_{r}I_{r}= & a_{g}I_{g}=a_{b}I_{b}
+a_{r}\tilde{I}_{r}= & a_{g}\tilde{I}_{g}=a_{b}\tilde{I}_{b}
 \end{align*}
 
 \end_inset
@@ -339,8 +339,7 @@ We then solve the following optimization problem:
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\min_{m,n,a_{r},a_{g}} & \sum_{c=1}^{3}I_{c}-h_{affine}\\
- & \epsilon_{ijk}(a_{i}(I_{i}-(m\cdot z+n))-a_{j}I_{j})\\
+\min_{m,n,a_{r},a_{g}} & \epsilon_{ijk}(a_{i}(I_{i}-(m\cdot z+n))-a_{j}(I_{j}-(m\cdot z+n)))^{2}\\
  & \epsilon_{ijk}\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\\
 s.t. & \frac{E(I)}{2}<n<2E(I)\\
  & -2<m<2\\
