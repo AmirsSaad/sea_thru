@@ -14,7 +14,7 @@ if statModel=="multip"
     Istruct=importdata(strMeanHist,',');
     Jbstruct=importdata(strBSHist,',');
 elseif statModel=="single"
-   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,1,0.5);
+   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99,1,0.5);
 elseif statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
@@ -24,8 +24,9 @@ end
 disp('Fitting Model...');
 x0=[];
 for k=1
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0);
-[m,n,A] = statisticalWBfit(Imf,Ivf,z,isplot);
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0);
+%[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
+[m,n,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,isplot);
 end
 %close all;
 
@@ -54,7 +55,7 @@ end
 
 disp('Fixing Color Attenuation...');
 if attenFixVer<3
-    Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],attenFixVer,withNorm,normMeanVal,m,n,A);
+    Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],attenFixVer,withNorm,normMeanVal);
 else
     Ifixed=AttenFix(IremBS,depth,[ratiovec z],3,withNorm,normMeanVal);
 end
@@ -71,7 +72,7 @@ if WB>0
     disp('PhotonEQ...');
     for i=1:3
 
-            Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i)/2;
+            Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i);%*A(i);
 
     end
     Ifixed = applyStatWB(Ifixed*255,depth,m,n,A)/255;

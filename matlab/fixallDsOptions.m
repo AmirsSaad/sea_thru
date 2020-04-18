@@ -11,7 +11,7 @@ strBSHist=['../statistics/bs_D' num2str(D) '_0.05_unnormalized.csv'];
 dngs = dir([folder,'*.dng']);
 deps = dir([folder,'*.tif']);
 files=length(dngs);
-for file = 1:files
+for file = 1 %:files
     
     strDNG = [folder,dngs(file).name];
     strDepth = [folder,deps(file).name];
@@ -19,7 +19,7 @@ for file = 1:files
     blur_red=0; sigma_red=10;
     blur_depth=0; sigma_depth=1;
     withNorm=0; normMeanVal=10.234190813810601;
-    statModel="single"; %"multip" "sandim
+    statModel="single"; %"multip" "sandim"
     
     for option = 2
         if option==1
@@ -28,7 +28,7 @@ for file = 1:files
             contStr=1; fix_non_depth=0;
         elseif option==2
             attenFixVer=1;
-            lambda=ones(1,3)*2; betaBtype='const'; DC=0; WB=4;
+            lambda=ones(1,3)*2; betaBtype='const'; DC=0; WB=3;
             contStr=1; fix_non_depth=0;
         elseif option==3
             attenFixVer=1;
@@ -53,21 +53,21 @@ for file = 1:files
         Ifixed = fixProcess(strDNG,strDepth,strMeanHist,strBSHist,withNorm,normMeanVal,attenFixVer,lambda,betaBtype,DC,WB,contStr,fix_non_depth,blur_red,sigma_red,blur_depth,sigma_depth,statModel,isplot);
 
         f4=figure(4);
-        Ifixed=imresize(Ifixed,0.5);
+        %Ifixed=imresize(Ifixed,0.5);
         imshow(Ifixed,[]);
-        saveas(f4,[savepath,strrep(dngs(file).name,'.dng',['_op' num2str(option) '_s2.png'])]);
-            
+        %saveas(f4,[savepath,strrep(dngs(file).name,'.dng',['_op' num2str(option) '_s2.png'])]);
+        imwrite(Ifixed,[savepath,strrep(dngs(file).name,'.dng','.jpg')])
 %         if file == 1
             f1=figure(1);
             saveas(f1,[savepath '01_BS_fit_op' num2str(option) '_pic' num2str(file) '.png']);
             f2=figure(2);
             saveas(f2,[savepath '02_fix_op' num2str(option) '_pic' num2str(file) '.png']);
-            f3=figure(3);
-            saveas(f3,[savepath '03_var_op' num2str(option) '_pic' num2str(file) '.png']);
-            f5=figure(5);
-            saveas(f5,[savepath '04_fixwb_op' num2str(option) '_pic' num2str(file) '.png']);
-            f6=figure(6);
-            saveas(f6,[savepath '05_varwb_op' num2str(option) '_pic' num2str(file) '.png']);
+%             f3=figure(3);
+%             saveas(f3,[savepath '03_var_op' num2str(option) '_pic' num2str(file) '.png']);
+%             f5=figure(5);
+%             saveas(f5,[savepath '04_fixwb_op' num2str(option) '_pic' num2str(file) '.png']);
+%             f6=figure(6);
+%             saveas(f6,[savepath '05_varwb_op' num2str(option) '_pic' num2str(file) '.png']);
 %         end
         close all;
         

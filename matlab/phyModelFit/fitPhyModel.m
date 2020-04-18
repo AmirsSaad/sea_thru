@@ -1,13 +1,13 @@
-function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
+function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
     
 
     %z is distances vector
     z=double(Istruct.data(:,4));
     
     %init vars
-    Binf=zeros(1,3); betaB=zeros(1,3); JD=zeros(1,3); betaD=zeros(4,3); C=zeros(1,3);
+    Binf=zeros(1,3); betaB=zeros(1,3); hpJD=zeros(1,3); betaD=zeros(4,3); C=zeros(1,3);
     intH=zeros(1,3); ratiovec=zeros(length(z),3); fixedRatio=zeros(length(z),3);% zOS=zeros(1,3);
-    Imbsr=zeros(length(z),3);I=zeros(length(z),3);Jb=zeros(length(z),3);
+    Ihpbsr=zeros(length(z),3);Ihp=zeros(length(z),3);Jb=zeros(length(z),3);
     
     switch betaBtype
         case 'const'
@@ -18,50 +18,69 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
     
    
     for i=1:3 %each color independetly
-        I(:,i)=double(Istruct.data(:,i)); %I is mean value vector
+        Imean(:,i)=double(Istruct.data(:,i)); %I is mean value vector
         Jb(:,i)=double(Jbstruct.data(:,i)); %Jb is lower percentile vector
         Ivar(:,i)=double(Istruct.data(:,i+4));
+        %Ivar(:,i)=medfilt1(Ivar(:,i),3);
+        Ihp(:,i)=double(Istruct.data(:,i+7));
+        Ilp(:,i)=double(Istruct.data(:,i+10));
         %bounderies
-        lb=[max(Jb(:,i))*0.85  0  log(max(I(:,i))*0.85) 0  0           -1  0   -1    log(max(Ivar(:,i))*0.85)   0];
-        ub=[max(I(:,i))        1  log(255)              10 min(I(:,i)) 0   1    0    log(255)                   10];
-        %   Binf      betaB  log(JD)     betaD(1)  DC   betaD(2 3 4)
+        %   1                  2      3                         4  5               6   7      8     9                          10  11                       12
+        lb=[max(Jb(:,i))*0.5   0      log(max(Ihp(:,i))*0.85)   0  0              -10   0   -10     log(max(Ivar(:,i))*0.85)    0  log(max(Ilp(:,i)))       log(max(Ilp(:,i))*0.5)];
+        ub=[max(Jb(:,i))       2      log(255)                 inf  min(Jb(:,i))    0   inf    0     log(255)                   10  log(max(Ihp(:,i)))       log(max(Imean(:,i))) ];
+        x0=[max(Jb(:,i))*0.75  0.25   log(max(Ihp(:,i))*1.2)    0  0                0   0      0  log(max(Ivar(:,i)))         0  log(max(Imean(:,i)))     log(max(Ilp(:,i)))];
+        %   Binf               betaB  log(hpJD           betaD(a)  DC        betaD(b    c    d)     varJD                    minVar meanJD                  lpJD )      
         
-        fun = @(a) [(I(:,i) -exp(a(3)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                    sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(10)))), ... %
-                    ones(size(I(:,i)))*(a(6)^2+a(7)^2+a(8)^2)*mu, ...
-                    ones(size(I(:,i)))*a(5)*factorDC, ...
-                    lambda(i)*(Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
-                    max(0,-Jb(:,i) + a(1)*(1-exp(-a(2)*z)))*100, ...
-                    max(0,(I(:,i) - a(1)*(1-exp(-a(2)*z)))-exp(a(3)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5))*100 ...
+      
+        fun = @(a) [0.33 * (Ihp(:,i)  -exp(a(3) -(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                    3.3 * (Ilp(:,i)  -exp(a(12)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                    3.3 * (Imean(:,i)-exp(a(11)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                      10*  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(10)))), ... %
+                           lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
+                     mu * ones(size(Imean(:,i)))*(a(6)^2+a(7)^2+a(8)^2), ...
+                1000000 * max(0, -a(4)*exp(a(6)*z)-a(7)*exp(a(8)*z)),...
+               factorDC * ones(size(Imean(:,i)))*a(5), ...
+                    100 * max(0,-Jb(:,i) + a(1)*(1-exp(-a(2)*z))), ...
+                    100/mean(Ilp(:,i)) * max(0,(Ilp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(12)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)), ...
+                  100/mean(Imean(:,i)) * max(0,(Imean(:,i) - a(1)*(1-exp(-a(2)*z)))-exp(a(11)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)), ...
+                    100/mean(Ihp(:,i)) * max(0,(Ihp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(3) -(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)) ...
                     ]; %lambda*(log(I-Jb) - (a(3)-a(4)*z))
         
-        x = lsqnonlin(fun,[max(Jb(:,i)) 0.25 log(max(I(:,i))) 0.25 1 0.25 0.25 0.25 log(max(I(:,i))) 0],lb,ub);
+        x = lsqnonlin(fun,x0,lb,ub);
         %x = lsqnonlin(fun,[1 1 1 1 1 0.25 0.25 0.25],lb,ub);
         
-        Binf(i)=x(1); betaB(i)=x(2);  JD(i)=exp(x(3)); varJD(i)=exp(x(9)); betaD(:,i)=[x(4);x(6);x(7);x(8)]; C(i)=x(5);
+        Binf(i)=x(1); betaB(i)=x(2);  hpJD(i)=exp(x(3)); lpJD(i)=exp(x(12)); meanJD(i)=exp(x(11)); varJD(i)=exp(x(9)); betaD(:,i)=[x(4);x(6);x(7);x(8)]; C(i)=x(5);
         %zOS(i)=x(5);
         % I Emperical/Modeled Back Scatter Removed 
         %Iebsr=I-Jb;
-        Imbsr(:,i)=I(:,i)-x(1)*(1-exp(-x(2)*z));
-        
+        Ihpbsr(:,i)=Ihp(:,i)-x(1)*(1-exp(-x(2)*z));
+        Ilpbsr(:,i)=Ilp(:,i)-x(1)*(1-exp(-x(2)*z));
+        Imeanbsr(:,i)=Imean(:,i)-x(1)*(1-exp(-x(2)*z));
         %ratio vector for attenuation fix
-        ratiovec(:,i)=getRatioVec(Imbsr(:,i),10);
+        ratiovec(:,i)=getRatioVec(Ihpbsr(:,i),10);
         
-        fixedRatio(:,i)=(Imbsr(:,i)-C(i)).*ratiovec(:,i);
+        fixedRatio(:,i)=(Ihpbsr(:,i)-C(i)).*ratiovec(:,i);
         
         %integral on the IMBSR vector for later white balance/ photonEQ
-        if ver<=2
-        intH(i)=sum((Imbsr(:,i)-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
-        else
-        intH(i)=mean(fixedRatio(:,i));
-        end
+%         if ver<=2
+%         intH(i)=sum((Imeanbsr(:,i)-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
+%         else
+%         intH(i)=mean(fixedRatio(:,i));
+%         end
         x0=[x0 x];
     end
-    
-    photonEQ=max(intH)./intH; %normalize photonEQ RGB coefs
+    mat=[meanJD'./lpJD' hpJD'./lpJD' varJD'];
+    mat=mat./mat(2,:);
+    mat=mean(mat,2);
+    mat=mat/max(mat);
+    photonEQ=1./mat;
+    %photonEQ=max(intH)./intH; %normalize photonEQ RGB coefs
     for i=1:3
-        Imf(:,i)=(Imbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
+        Imef(:,i)=(Imeanbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
+        Ihpf(:,i)=(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
+        Ilpf(:,i)=(Ilpbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
         Ivf(:,i)=Ivar(:,i).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
+        
     end
     
     if isplot
@@ -69,7 +88,6 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
         rgb=['#D95319';'#77AC30';'#0072BD'];
 
         figure(1);
-        subplot(2,1,1);
         plot(z,Binf(i)*(1-exp(-betaB(i)*z)),'LineStyle','--','Color',rgb(i,:));
         hold on;
         plot(z,Jb(:,i),'Marker','.','Color',rgb(i,:));
@@ -84,18 +102,37 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
         %legend(,);
         ylabel('Intensity'); xlabel('z distance [m]');
 
-        %figure(2);
-        subplot(2,1,2);
-        plot(z,JD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'LineStyle','--','Color',rgb(i,:));
+        figure(2);
+        subplot(3,1,i);
+        plot(z,hpJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'Color',rgb(i,:));
         hold on;
         %plot(z,Iebsr);
-        plot(z,Imbsr(:,i),'Marker','.','Color',rgb(i,:));
-        grid minor;
-        title('I - Post BS removal');
+        plot(z,Ihpbsr(:,i),'+','Color',rgb(i,:));
+        plot(z,lpJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'Color',rgb(i,:));
+        plot(z,Ilpbsr(:,i),'.','Color',rgb(i,:));
+        plot(z,meanJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'Color',rgb(i,:));
+        plot(z,Imeanbsr(:,i),'o','Color',rgb(i,:));
+%         grid minor;
+%         title('I max - Post BS removal');
+%         if i==3
+%             legend('Fitted Attenuated term','Emperical, BS removed',...
+%                 'Fitted Attenuated term','Emperical, BS removed',...
+%                 'Fitted Attenuated term','Emperical, BS removed',...
+%                 'Location','northeast','NumColumns',3);
+%         end
+%         ylabel('Intensity'); xlabel('z distance [m]');
+                
+        %subplot(2,1,2);
+        %hold on;
+        %plot(z,Iebsr);
+
+        
+        title('I mean - Post BS removal');
         if i==3
+            grid minor;
             legend('Fitted Attenuated term','Emperical, BS removed',...
-                'Fitted Attenuated term','Emperical, BS removed',...
-                'Fitted Attenuated term','Emperical, BS removed',...
+                ...%'Fitted Attenuated term','Emperical, BS removed',...
+                ...%'Fitted Attenuated term','Emperical, BS removed',...
                 'Location','northeast','NumColumns',3);
         end
         ylabel('Intensity'); xlabel('z distance [m]');
@@ -112,18 +149,18 @@ function [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Imf,Ivf] = fitPhyModel(Is
         %ylabel('Mean intensity'); xlabel('z distance [m]');
 
 
-        figure(2)
+        figure(7)
         if ver==3
             plot(z,fixedRatio(:,i)*photonEQ(i),'Color',rgb(i,:));
         else
-            plot(z,(Imbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
+            plot(z,(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
         end
         hold on;
         %plot(z,(I-(Jb+x(1)*(1-exp(-x(2)*z)))/2).*exp(x(4)*z));
         %plot(z,(Iebsr-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
         %plot(z,min((Iebsr-x(6)).*exp(x(4)*z)+x(6),(Iebsr-x(6)).*exp(x(4)*z(1))+x(6)));
         %plot(z,Imbsr.*(Iebsr(2)/Iebsr));
-        plot(z,I(:,i),'--','Color',rgb(i,:));
+        plot(z,Ihp(:,i),'--','Color',rgb(i,:));
         grid minor;
         title('I(z) post color correction (pre-WB)');
         if i==3
