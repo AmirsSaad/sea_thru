@@ -6,9 +6,20 @@ else
     factorDC=10000;
 end
 
+
+
 depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
+
+disp('Extracting "sky" properties..');
+if sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
+  [BS , BSvar] = bg_pdf_estimation(I*255,depth) ;
+  boolBS=1;
+else
+    boolBS=0;
+end
+
 
 if statModel=="multip"
     Istruct=importdata(strMeanHist,',');
@@ -24,7 +35,7 @@ end
 disp('Fitting Model...');
 x0=[];
 for k=1
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0);
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0,BS,BSvar,boolBS);
 %[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
 [m,n,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,isplot);
 end

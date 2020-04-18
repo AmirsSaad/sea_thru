@@ -1,4 +1,4 @@
-function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
+function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0,BS,BSvar,boolBS)
     
 
     %z is distances vector
@@ -25,11 +25,26 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         Ihp(:,i)=double(Istruct.data(:,i+7));
         Ilp(:,i)=double(Istruct.data(:,i+10));
         %bounderies
-        %   1                  2      3                         4  5               6   7      8     9                          10  11                       12
-        lb=[max(Jb(:,i))*0.5   0      log(max(Ihp(:,i))*0.85)   0  0              -10   0   -10     log(max(Ivar(:,i))*0.85)    0  log(max(Ilp(:,i)))       log(max(Ilp(:,i))*0.5)];
-        ub=[max(Jb(:,i))       2      log(255)                 inf  min(Jb(:,i))    0   inf    0     log(255)                   10  log(max(Ihp(:,i)))       log(max(Imean(:,i))) ];
-        x0=[max(Jb(:,i))*0.75  0.25   log(max(Ihp(:,i))*1.2)    0  0                0   0      0  log(max(Ivar(:,i)))         0  log(max(Imean(:,i)))     log(max(Ilp(:,i)))];
-        %   Binf               betaB  log(hpJD           betaD(a)  DC        betaD(b    c    d)     varJD                    minVar meanJD                  lpJD )      
+        if boolBS
+           Binf_lb=BS(i).low;
+           Binf_ub=BS(i).high;
+           Binf_x0=(BS(i).high+BS(i).low)/2;
+           BSvar_lb=BSvar(i).low;
+           BSvar_ub=BSvar(i).high;
+           BSvar_x0=(BSvar(i).low+BSvar(i).high)/2;
+        else
+           Binf_lb=max(Jb(:,i))*0.5;
+           Binf_ub=max(Jb(:,i));
+           Binf_x0=max(Jb(:,i))*0.75;
+           BSvar_lb=0;
+           BSvar_ub=10;
+           BSvar_x0= 0;
+        end
+        %   1         2      3                         4  5               6   7      8     9                        10           11                       12
+        lb=[Binf_lb   0      log(max(Ihp(:,i))*0.85)   0  0              -10   0   -10     log(max(Ivar(:,i))*0.85) BSvar_lb  log(max(Ilp(:,i)))       log(max(Ilp(:,i))*0.5)];
+        ub=[Binf_ub   2      log(255)                 inf  min(Jb(:,i))    0   inf    0     log(255)                BSvar_ub  log(max(Ihp(:,i)))       log(max(Imean(:,i))) ];
+        x0=[Binf_x0   0.25   log(max(Ihp(:,i))*1.2)    0  0                0   0      0  log(max(Ivar(:,i)))        BSvar_x0  log(max(Imean(:,i)))     log(max(Ilp(:,i)))];
+        %   Binf               betaB  log(hpJD           betaD(a)  DC        betaD(b    c    d)     varJD           minVar    meanJD                  lpJD )      
         
       
         fun = @(a) [0.33 * (Ihp(:,i)  -exp(a(3) -(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
