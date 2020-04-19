@@ -1,12 +1,16 @@
 function [BS , BSvar] = bg_pdf_estimation(I,depth)
 
-VarFiltSize = 101;
+VarFiltSize = 51;
 dmask = zeros(size(depth));
 dmask(depth==0) = 1;
 
-vx = movvar(I.*dmask,VarFiltSize,0,1);
-vy = movvar(I.*dmask,VarFiltSize,0,2);
-v = sqrt(vx.^2 + vy.^2);
+% vx = movvar(I.*dmask,VarFiltSize,0,1);
+% vy = movvar(I.*dmask,VarFiltSize,0,2);
+% v = sqrt(vx.^2 + vy.^2);
+v=zeros(size(I));
+for i=1:3
+    v(:,:,i) = stdfilt(I(:,:,i).*dmask,true(VarFiltSize)).^2;
+end
 
 % t = sqrt(v(:,:,1).^2 + v(:,:,2).^2 + v(:,:,3).^2);
 thrsh = prctile(v(v(:)>0),50);

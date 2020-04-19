@@ -21,7 +21,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         Imean(:,i)=double(Istruct.data(:,i)); %I is mean value vector
         Jb(:,i)=double(Jbstruct.data(:,i)); %Jb is lower percentile vector
         Ivar(:,i)=double(Istruct.data(:,i+4));
-        %Ivar(:,i)=medfilt1(Ivar(:,i),3);
+        Ivar(:,i)=medfilt1(Ivar(:,i),3);
         Ihp(:,i)=double(Istruct.data(:,i+7));
         Ilp(:,i)=double(Istruct.data(:,i+10));
         %bounderies
@@ -47,18 +47,18 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         %   Binf               betaB  log(hpJD           betaD(a)  DC        betaD(b    c    d)     varJD           minVar    meanJD                  lpJD )      
         
       
-        fun = @(a) [0.33 * (Ihp(:,i)  -exp(a(3) -(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                    3.3 * (Ilp(:,i)  -exp(a(12)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                    3.3 * (Imean(:,i)-exp(a(11)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                      10*  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(10)))), ... %
+        fun = @(a) [0.33 * (Ihp(:,i)  -exp(a(3) -(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                    3.3 * (Ilp(:,i)  -exp(a(12)-(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                    3.3 * (Imean(:,i)-exp(a(11)-(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                     10 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./sqrt(z+a(6))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
                            lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
                      mu * ones(size(Imean(:,i)))*(a(6)^2+a(7)^2+a(8)^2), ...
                 1000000 * max(0, -a(4)*exp(a(6)*z)-a(7)*exp(a(8)*z)),...
                factorDC * ones(size(Imean(:,i)))*a(5), ...
                     100 * max(0,-Jb(:,i) + a(1)*(1-exp(-a(2)*z))), ...
-                    100/mean(Ilp(:,i)) * max(0,(Ilp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(12)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)), ...
-                  100/mean(Imean(:,i)) * max(0,(Imean(:,i) - a(1)*(1-exp(-a(2)*z)))-exp(a(11)-(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)), ...
-                    100/mean(Ihp(:,i)) * max(0,(Ihp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(3) -(a(4)*exp(a(6)*z)+a(7)*exp(a(8)*z)).*z)-a(5)) ...
+                    1000/mean(Ilp(:,i)) * max(0,(Ilp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(12)-(a(4)./sqrt(z+a(6))).*z)-a(5)), ...
+                  1000/mean(Imean(:,i)) * max(0,(Imean(:,i) - a(1)*(1-exp(-a(2)*z)))-exp(a(11)-(a(4)./sqrt(z+a(6))).*z)-a(5)), ...
+                    1000/mean(Ihp(:,i)) * max(0,(Ihp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(3) -(a(4)./sqrt(z+a(6))).*z)-a(5)) ...
                     ]; %lambda*(log(I-Jb) - (a(3)-a(4)*z))
         
         x = lsqnonlin(fun,x0,lb,ub);
@@ -71,6 +71,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         Ihpbsr(:,i)=Ihp(:,i)-x(1)*(1-exp(-x(2)*z));
         Ilpbsr(:,i)=Ilp(:,i)-x(1)*(1-exp(-x(2)*z));
         Imeanbsr(:,i)=Imean(:,i)-x(1)*(1-exp(-x(2)*z));
+        Ivarbsr(:,i)=Ivar(:,i)-x(10)*(1-exp(-x(2)*z)).^2;
         %ratio vector for attenuation fix
         ratiovec(:,i)=getRatioVec(Ihpbsr(:,i),10);
         
@@ -84,20 +85,26 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
 %         end
         x0=[x0 x];
     end
-    mat=[meanJD'./lpJD' hpJD'./lpJD' varJD'];
+
+    for i=1:3
+        Imef(:,i)=(Imeanbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);
+        Ihpf(:,i)=(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);
+        Ilpf(:,i)=(Ilpbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);
+        Ivf(:,i)=Ivarbsr(:,i).*exp(2*(betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);  
+    end
+    mat=[sum(Imef,1)'./sum(Ilpf,1)' sum(Ihpf,1)'./sum(Ilpf,1)' sum(sqrt(Ivf),1)'];
+    %mat=[meanJD'./lpJD' hpJD'./lpJD' varJD'];
     mat=mat./mat(2,:);
     mat=mean(mat,2);
     mat=mat/max(mat);
     photonEQ=1./mat;
-    %photonEQ=max(intH)./intH; %normalize photonEQ RGB coefs
     for i=1:3
-        Imef(:,i)=(Imeanbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
-        Ihpf(:,i)=(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
-        Ilpf(:,i)=(Ilpbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
-        Ivf(:,i)=Ivar(:,i).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i);
-        
+        Imef(:,i)=Imef(:,i)*photonEQ(i);
+        Ihpf(:,i)=Ihpf(:,i)*photonEQ(i);
+        Ilpf(:,i)=Ilpf(:,i)*photonEQ(i);
+        Ivf(:,i)=Ivf(:,i)*photonEQ(i).^2;  
     end
-    
+    %photonEQ=max(intH)./intH; %normalize photonEQ RGB coefs
     if isplot
         for i=1:3
         rgb=['#D95319';'#77AC30';'#0072BD'];
@@ -119,13 +126,13 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
 
         figure(2);
         subplot(3,1,i);
-        plot(z,hpJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'Color',rgb(i,:));
+        plot(z,hpJD(i)*exp(-(betaD(1,i)./sqrt(z+betaD(2,i))).*z)+C(i),'Color',rgb(i,:));
         hold on;
         %plot(z,Iebsr);
         plot(z,Ihpbsr(:,i),'+','Color',rgb(i,:));
-        plot(z,lpJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'Color',rgb(i,:));
+        plot(z,lpJD(i)*exp(-(betaD(1,i)./sqrt(z+betaD(2,i))).*z)+C(i),'Color',rgb(i,:));
         plot(z,Ilpbsr(:,i),'.','Color',rgb(i,:));
-        plot(z,meanJD(i)*exp(-(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'Color',rgb(i,:));
+        plot(z,meanJD(i)*exp(-(betaD(1,i)./sqrt(z+betaD(2,i))).*z)+C(i),'Color',rgb(i,:));
         plot(z,Imeanbsr(:,i),'o','Color',rgb(i,:));
 %         grid minor;
 %         title('I max - Post BS removal');
@@ -168,7 +175,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         if ver==3
             plot(z,fixedRatio(:,i)*photonEQ(i),'Color',rgb(i,:));
         else
-            plot(z,(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
+            plot(z,(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
         end
         hold on;
         %plot(z,(I-(Jb+x(1)*(1-exp(-x(2)*z)))/2).*exp(x(4)*z));
@@ -192,7 +199,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
 %         subplot 211
         plot(z,Ivar(:,i),'Color',rgb(i,:));
         hold on
-        plot(z,varJD(i)*exp(-2*(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)+C(i),'--','Color',rgb(i,:));
+        plot(z,varJD(i)*exp(-2*(betaD(1,i)./sqrt(z+betaD(2,i))).*z)+C(i),'--','Color',rgb(i,:));
         grid minor;
         if i==3
         %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
@@ -202,7 +209,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
                    'Location','northwest','NumColumns',3);
         end
 %         subplot 212
-%         plot(z,Ivar(:,i).*exp(2*(betaD(1,i)*exp(betaD(2,i)*z)+betaD(3,i)*exp(betaD(4,i)*z)).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
+%         plot(z,Ivar(:,i).*exp(2*(betaD(1,i)./sqrt(z+betaD(2,i))).*z)*photonEQ(i),'Marker','.','Color',rgb(i,:));
 %         hold on;
          title('Color Variance over distance (pre-WB)');
 %         if i==3

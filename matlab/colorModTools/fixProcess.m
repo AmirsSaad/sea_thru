@@ -17,7 +17,8 @@ if sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
   [BS , BSvar] = bg_pdf_estimation(I*255,depth) ;
   boolBS=1;
 else
-    boolBS=0;
+   boolBS=0;
+   BS=[]; BSvar=[];
 end
 
 
@@ -25,7 +26,7 @@ if statModel=="multip"
     Istruct=importdata(strMeanHist,',');
     Jbstruct=importdata(strBSHist,',');
 elseif statModel=="single"
-   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99,1,0.5);
+   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99.5,1,0.5);
 elseif statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
@@ -37,7 +38,7 @@ x0=[];
 for k=1
 [JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0,BS,BSvar,boolBS);
 %[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
-[m,n,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,isplot);
+[m,n,l,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,isplot);
 end
 %close all;
 
@@ -86,7 +87,7 @@ if WB>0
             Ifixed(:,:,i)=Ifixed(:,:,i)*photonEQ(i);%*A(i);
 
     end
-    Ifixed = applyStatWB(Ifixed*255,depth,m,n,A)/255;
+    %Ifixed = applyStatWB(Ifixed*255,depth,m,n,l,A)/255;
 end
 
 if WB==1

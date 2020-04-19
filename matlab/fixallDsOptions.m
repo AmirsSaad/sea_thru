@@ -21,18 +21,18 @@ for file = 1 %:files
     withNorm=0; normMeanVal=10.234190813810601;
     statModel="single"; %"multip" "sandim"
     
-    for option = 2
+    for option = 3
         if option==1
             attenFixVer=1;
             lambda=ones(1,3)*10; betaBtype='const'; DC=1; WB=0;
             contStr=1; fix_non_depth=0;
         elseif option==2
             attenFixVer=1;
-            lambda=ones(1,3)*2; betaBtype='const'; DC=0; WB=3;
+            lambda=ones(1,3)*2; betaBtype='const'; DC=0; WB=4;
             contStr=1; fix_non_depth=0;
         elseif option==3
             attenFixVer=1;
-            lambda=ones(1,3)*2; betaBtype='atten'; DC=0; WB=3;
+            lambda=ones(1,3)*2; betaBtype='atten'; DC=0; WB=4;
             contStr=1; fix_non_depth=0;
         elseif option==4
             attenFixVer=3;
