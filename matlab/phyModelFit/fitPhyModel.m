@@ -18,12 +18,12 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
     
    
     for i=1:3 %each color independetly
-        Imean(:,i)=double(Istruct.data(:,i)); %I is mean value vector
-        Jb(:,i)=double(Jbstruct.data(:,i)); %Jb is lower percentile vector
+        Imean(:,i)=vec2qconv(double(Istruct.data(:,i))); %I is mean value vector
+        Jb(:,i)=-vec2qconv(-double(Jbstruct.data(:,i))); %Jb is lower percentile vector
         Ivar(:,i)=double(Istruct.data(:,i+4));
         Ivar(:,i)=medfilt1(Ivar(:,i),3);
-        Ihp(:,i)=double(Istruct.data(:,i+7));
-        Ilp(:,i)=double(Istruct.data(:,i+10));
+        Ihp(:,i)=vec2qconv(double(Istruct.data(:,i+7)));
+        Ilp(:,i)=vec2qconv(double(Istruct.data(:,i+10)));
         %bounderies
         if boolBS
            Binf_lb=BS(i).low;
@@ -63,6 +63,13 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         
         x = lsqnonlin(fun,x0,lb,ub);
         %x = lsqnonlin(fun,[1 1 1 1 1 0.25 0.25 0.25],lb,ub);
+        
+        % for graphing
+        Imean(:,i)=double(Istruct.data(:,i)); %I is mean value vector
+        Jb(:,i)=double(Jbstruct.data(:,i)); %Jb is lower percentile vector
+        Ihp(:,i)=double(Istruct.data(:,i+7));
+        Ilp(:,i)=double(Istruct.data(:,i+10));
+        
         
         Binf(i)=x(1); betaB(i)=x(2);  hpJD(i)=exp(x(3)); lpJD(i)=exp(x(12)); meanJD(i)=exp(x(11)); varJD(i)=exp(x(9)); betaD(:,i)=[x(4);x(6);x(7);x(8)]; C(i)=x(5);
         %zOS(i)=x(5);

@@ -32,7 +32,7 @@ for file = 1 %:files
             contStr=1; fix_non_depth=0;
         elseif option==3
             attenFixVer=1;
-            lambda=ones(1,3)*2; betaBtype='atten'; DC=0; WB=4;
+            lambda=ones(1,3)*2; betaBtype='atten'; DC=0; WB=3;
             contStr=1; fix_non_depth=0;
         elseif option==4
             attenFixVer=3;

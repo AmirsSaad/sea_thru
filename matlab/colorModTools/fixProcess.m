@@ -112,7 +112,8 @@ end
 %%apply contrast strech
 if contStr
     disp('Stretching contrast...');
-    Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
+    Ifixed=cntStretch(Ifixed);
+    %Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
 %     rHist = imhist(Ifixed(:,:,1), 256);
 %     [lims,~]=histsmartedges(rHist);
 %     lims=lims/255;
