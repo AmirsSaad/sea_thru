@@ -202,8 +202,7 @@ In addition, we measure the variance of each color over the photo's depth
 \begin_inset Formula 
 \begin{align*}
 Var(I_{c}|z)= & Var(J_{d}e^{-\beta_{D}z}+B^{\infty}(1-e^{-\beta_{B}z})|z)\\
-= & Var(J_{d}e^{-\beta_{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{B}z})|z)\\
-= & e^{-2\beta_{D}z}Var(J_{d})+Var(B^{\infty})-\bcancel{Var(e^{-\beta_{B}z}|z)}
+= & Var(J_{d}e^{-\beta_{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{B}z})|z)
 \end{align*}
 
 \end_inset
@@ -219,7 +218,7 @@ Since each photo is not ideal, we have a sensor noise variance term that
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Var(I_{c}|z)= & e^{-2\beta_{D}z}Var(J_{d})+Var(B^{\infty})+\sigma_{noise}^{2}
+Var(I_{c}|z)= & e^{-2\beta_{D}z}Var(J_{d})+(1-e^{-\beta_{B}z})^{2}Var(B^{\infty})+\sigma_{noise}^{2}
 \end{align*}
 
 \end_inset
@@ -247,6 +246,75 @@ Both
 	lyxscale 10
 	width 15cm
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Decay of 
+\begin_inset Formula $\beta_{C}^{D}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The original paper stated that 
+\begin_inset Formula $\beta_{C}^{D}$
+\end_inset
+
+ is a sum of two exponential terms such as 
+\begin_inset Formula $(a\cdot e^{bz}+d\cdot e^{cz})$
+\end_inset
+
+, where 
+\begin_inset Formula $a,c>0$
+\end_inset
+
+ and 
+\begin_inset Formula $b,d<0$
+\end_inset
+
+, which indeed, 
+\begin_inset Formula $\lim_{z\rightarrow\infty}(a\cdot e^{bz}+d\cdot e^{cz})=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Having said that, this term is approaching 0 faster than 
+\begin_inset Formula $\frac{1}{z^{t}}$
+\end_inset
+
+, where 
+\begin_inset Formula $t>1$
+\end_inset
+
+, which causes a non-monotonic attenuated light term that reaches 
+\begin_inset Formula $J_{c}^{D}$
+\end_inset
+
+, since: 
+\begin_inset Formula 
+\begin{align*}
+\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & 0\\
+\implies\lim_{z\rightarrow\infty}J_{c}^{D}e^{-\beta_{c}^{D}z}= & J_{c}^{D}>0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Realizing that, we can set a constraint such as 
+\begin_inset Formula $\beta_{C}^{D}>(a\cdot e^{bz}+d\cdot e^{cz})>\frac{1}{z}$
+\end_inset
+
+ or change the decay model to another form such as 
+\begin_inset Formula $a\frac{1}{\sqrt{z+b}}$
 \end_inset
 
 
