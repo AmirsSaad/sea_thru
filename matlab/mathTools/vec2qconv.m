@@ -2,7 +2,8 @@ function out = vec2qconv(vec)
 len=length(vec);
 [pks,locs] = findpeaks(vec);
 %vecmin=min(vec)-1;
-
+pks=[pks;vec(end)];
+locs=[locs;len];
 oldlen=len; newlen=oldlen-1;
 while oldlen>newlen
     i=1;
