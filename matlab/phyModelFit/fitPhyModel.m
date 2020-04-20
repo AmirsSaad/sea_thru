@@ -19,7 +19,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
    
     for i=1:3 %each color independetly
         Imean(:,i)=vec2qconv(double(Istruct.data(:,i))); %I is mean value vector
-        Jb(:,i)=-vec2qconv(-double(Jbstruct.data(:,i))); %Jb is lower percentile vector
+        Jb(:,i)=-double(vec2qconv(-Jbstruct.data(:,i))); %Jb is lower percentile vector
         Ivar(:,i)=double(Istruct.data(:,i+4));
         Ivar(:,i)=medfilt1(Ivar(:,i),3);
         Ihp(:,i)=vec2qconv(double(Istruct.data(:,i+7)));
@@ -37,21 +37,22 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
            Binf_ub=max(Jb(:,i));
            Binf_x0=max(Jb(:,i))*0.75;
            BSvar_lb=0;
-           BSvar_ub=10;
+           BSvar_ub=prctile(Ivar(:,i),5);
            BSvar_x0= 0;
         end
-        %   1         2      3                         4  5               6   7      8     9                        10           11                       12
-        lb=[Binf_lb   0      log(max(Ihp(:,i))*0.85)   0  0              -10   0   -10     log(max(Ivar(:,i))*0.85) BSvar_lb  log(max(Ilp(:,i)))       log(max(Ilp(:,i))*0.5)];
-        ub=[Binf_ub   2      log(255)                 inf  min(Jb(:,i))    0   inf    0     log(255)                BSvar_ub  log(max(Ihp(:,i)))       log(max(Imean(:,i))) ];
-        x0=[Binf_x0   0.25   log(max(Ihp(:,i))*1.2)    0  0                0   0      0  log(max(Ivar(:,i)))        BSvar_x0  log(max(Imean(:,i)))     log(max(Ilp(:,i)))];
-        %   Binf               betaB  log(hpJD           betaD(a)  DC        betaD(b    c    d)     varJD           minVar    meanJD                  lpJD )      
+                            %log(max(Ihp(:,i))*0.85)
+        %   1         2      3                         4  5                  6    7     8     9                        10           11                       12
+        lb=[Binf_lb   0     log(max(Ihp(:,i)))         0  0                  0    0   -10     log(max(Ivar(:,i))*0.85) BSvar_lb  log(max(Ilp(:,i)))       log(max(Ilp(:,i))*0.5)];
+        ub=[Binf_ub   2     log(max(Ihp(:,i))*2)     inf  min(Jb(:,i))       inf  inf   0     log(max(Ivar(:,i))*2)    BSvar_ub  log(max(Ihp(:,i)))       log(max(Ilp(:,i))*2) ];
+        x0=[Binf_x0   0.25  log(max(Ihp(:,i))*1.5)     0  0                  0    0     0     log(max(Ivar(:,i)))      BSvar_x0  log(max(Ihp(:,i)))       log(max(Ilp(:,i)))];
+        %   Binf               betaB  log(hpJD           betaD(a)  DC  betaD(b    c    d)     varJD                     minVar    meanJD                   lpJD )      
         
       
-        fun = @(a) [0.33 * (Ihp(:,i)  -exp(a(3) -(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                    3.3 * (Ilp(:,i)  -exp(a(12)-(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                    3.3 * (Imean(:,i)-exp(a(11)-(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
-                     10 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./sqrt(z+a(6))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
-                           lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
+        fun = @(a) [  1 * (Ihp(:,i)  -exp(a(3) -(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                      3 * (Ilp(:,i)  -exp(a(12)-(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                      1 * (Imean(:,i)-exp(a(11)-(a(4)./sqrt(z+a(6))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+                      5 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./sqrt(z+a(6))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
+                      5 *  lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
                      mu * ones(size(Imean(:,i)))*(a(6)^2+a(7)^2+a(8)^2), ...
                 1000000 * max(0, -a(4)*exp(a(6)*z)-a(7)*exp(a(8)*z)),...
                factorDC * ones(size(Imean(:,i)))*a(5), ...
@@ -98,13 +99,21 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         Ihpf(:,i)=(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);
         Ilpf(:,i)=(Ilpbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);
         Ivf(:,i)=Ivarbsr(:,i).*exp(2*(betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);  
+        [hp(i).pks,hp(i).locs]=findpeaks(Ihpf(:,i));
+        
     end
-    mat=[sum(Imef,1)'./sum(Ilpf,1)' sum(Ihpf,1)'./sum(Ilpf,1)' sum(sqrt(Ivf),1)'];
-    %mat=[meanJD'./lpJD' hpJD'./lpJD' varJD'];
-    mat=mat./mat(2,:);
-    mat=mean(mat,2);
-    mat=mat/max(mat);
-    photonEQ=1./mat;
+    whitefactor=252.5/max(Ihpf,[],'all');
+    hplocs=intersect(intersect(hp(1).locs,hp(2).locs),hp(3).locs);
+    [~,maxloc]=max(vecnorm(Ihpf(hplocs,:),2,2));
+    mat=Ihpf(hplocs(maxloc),:)./Ihpf(hplocs(maxloc),2);
+    
+    %photonEQ=252./mat;
+%     mat=[sum(Imef,1)' sum(Ihpf,1)' sum(sqrt(Ivf),1)'];
+%     %mat=[meanJD'./lpJD' hpJD'./lpJD' varJD'];
+%     mat=mat./mat(2,:);
+     %mat=mean(mat,1);
+     mat=mat/max(mat);
+     photonEQ=(1./mat)*whitefactor;
     for i=1:3
         Imef(:,i)=Imef(:,i)*photonEQ(i);
         Ihpf(:,i)=Ihpf(:,i)*photonEQ(i);
