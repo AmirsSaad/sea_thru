@@ -1,11 +1,11 @@
-exp_root = 'D:\sea_thru_experiments\04_20__00_57';
+exp_root = 'D:\sea_thru_experiments\04_21__13_48';
 data = readtable(fullfile(exp_root,'data.csv'),'Format','%s%s%s');
 config = parse_config(fullfile(exp_root,'config.json'));
 
 failed = {};
 for i = 1:size(data,1)
     try
-    [Ifixed,results] = fixProcess(data.dng{i},data.depth{i},config);
+    [Ifixed,results] = configed_fixProcess(data.dng{i},data.depth{i},config);
     imshow(Ifixed,[]);
     
     [~,name,~] = fileparts(data.dng{i});

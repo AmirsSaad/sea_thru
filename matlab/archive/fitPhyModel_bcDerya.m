@@ -1,4 +1,4 @@
-function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0,BS,BSvar,boolBS)
+function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel_bcDerya(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0,BS,BSvar,boolBS)
     
 
     %z is distances vector

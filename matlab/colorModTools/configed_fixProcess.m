@@ -1,24 +1,24 @@
-function [Ifixed,results] = fixProcess(strDNG,strDepth,config)
+function [Ifixed,results] = configed_fixProcess(strDNG,strDepth,config)
 
 depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
 
-disp('Extracting "sky" properties..');
-if sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
-  [BS , BSvar] = bg_pdf_estimation(I*255,depth) ;
-  boolBS=1;
-else
+% disp('Extracting "sky" properties..');
+% if sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
+%   [BS , BSvar] = bg_pdf_estimation(I*255,depth) ;
+%   boolBS=1;
+% else
    boolBS=0;
    BS=[]; BSvar=[];
-end
+% end
 
 
 if config.statModel=="multip"
     Istruct=importdata(config.MeanHist,',');
     Jbstruct=importdata(config.BSHist,',');
 elseif config.statModel=="single"
-   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99.5,1,0.5);
+   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99,1,0.5);
 elseif config.statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
@@ -107,7 +107,8 @@ end
 %%apply contrast strech
 if config.contStr
     disp('Stretching contrast...');
-    Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
+    Ifixed=cntStretch(Ifixed);
+    % Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
 %     rHist = imhist(Ifixed(:,:,1), 256);
 %     [lims,~]=histsmartedges(rHist);
 %     lims=lims/255;
