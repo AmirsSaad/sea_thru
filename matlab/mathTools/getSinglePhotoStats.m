@@ -30,6 +30,7 @@ Ihp=zeros(zlen-1,3); Ilp=zeros(zlen-1,3); Imean=zeros(zlen-1,3);
            if max(logical,[],'all')
             Ivar(i,color)=var(cI(logical)*255,[],'all');
             Imin(i,color)=min(cI(logical)*255,[],'all');
+            %Imin(i,color)=prctile(cI(logical)*255,0.5);
             %if max(logical & mnGrayI,[],'all')
             Imean(i,color)=mean(cI(logical)*255,'all');%prctile(cI(logical)*255,50);%
             %else
@@ -56,5 +57,5 @@ z=z(:);
 Istruct=struct;
 Jbstruct=struct;
 Istruct.data=[Imean z Ivar Ihp Ilp];% Ilambda];
-Jbstruct.data=[Imin z];
+Jbstruct.data=[Ilp z];
 end
