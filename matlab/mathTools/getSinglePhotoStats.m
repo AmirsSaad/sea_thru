@@ -1,6 +1,6 @@
 function [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,hp,lp,resizeIM)
 if resizeIM>0
-    I=imresize(I,0.5);
+    I=imresize(I,0.5,'method','nearest');
 end
 depth=depth(1:2:end,1:2:end);
 %Igray=rgb2gray(I);

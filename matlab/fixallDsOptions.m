@@ -1,7 +1,7 @@
 
 close all;
 
-for D=[5]
+for D=[3]
 folder = ['../sandbox/D' num2str(D) '/'];
 savepath = ['../sandbox/D' num2str(D) '/fixed/'];
 if ~exist(['../sandbox/D' num2str(D) '/'], 'dir'), mkdir(['../sandbox/D' num2str(D) '/']); end
@@ -11,7 +11,7 @@ strBSHist=['../statistics/bs_D' num2str(D) '_0.05_unnormalized.csv'];
 dngs = dir([folder,'*.dng']);
 deps = dir([folder,'*.tif']);
 files=length(dngs);
-for file = 1 %:files
+for file = 1:files
     
     strDNG = [folder,dngs(file).name];
     strDepth = [folder,deps(file).name];
@@ -32,7 +32,7 @@ for file = 1 %:files
             contStr=1; fix_non_depth=0;
         elseif option==3
             attenFixVer=1;
-            lambda=ones(1,3)*2; betaBtype='atten'; DC=0; WB=4;
+            lambda=ones(1,3)*2; betaBtype='atten'; DC=0; WB=3;
             contStr=1; fix_non_depth=0;
         elseif option==4
             attenFixVer=3;
@@ -64,8 +64,8 @@ for file = 1 %:files
             saveas(f2,[savepath '02_fix_op' num2str(option) '_pic' num2str(file) '.png']);
 %             f3=figure(3);
 %             saveas(f3,[savepath '03_var_op' num2str(option) '_pic' num2str(file) '.png']);
-%             f5=figure(5);
-%             saveas(f5,[savepath '04_fixwb_op' num2str(option) '_pic' num2str(file) '.png']);
+             f5=figure(5);
+             saveas(f5,[savepath '04_fixwb_op' num2str(option) '_pic' num2str(file) '.png']);
 %             f6=figure(6);
 %             saveas(f6,[savepath '05_varwb_op' num2str(option) '_pic' num2str(file) '.png']);
 %         end
