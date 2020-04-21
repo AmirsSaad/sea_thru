@@ -143,10 +143,11 @@ negative
 \end_inset
 
  light, we use the 
-\begin_inset Formula $I_{min}(z)$
+\begin_inset Formula $I_{c}^{min}(z)$
 \end_inset
 
- vectors as a upper bound (constraint) for the optimization process.
+ vectors as a upper bound (constraint) for a concave function in the optimizatio
+n process.
 \end_layout
 
 \begin_layout Standard
@@ -166,15 +167,28 @@ Attenuated light
 \end_layout
 
 \begin_layout Standard
-For the attenuated light term estimation, we use the 
-\begin_inset Formula $I_{max}(z)$
+For the attenuated light term estimation, we use four vectors:
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $I_{c}^{hp}(z)$
 \end_inset
 
- vectors in a similar way we used the 
-\begin_inset Formula $I_{min}(z)$
+ and 
+\begin_inset Formula $I_{c}^{lp}(z)$
 \end_inset
 
- term, but this time as a lower bound.
+ which are the highest and lowest percentiles of brightness per depth ,and
+ the 
+\begin_inset Formula $I_{c}^{mean}(z)$
+\end_inset
+
+ vector, which we use in a similar way we used the 
+\begin_inset Formula $I_{c}^{min}(z)$
+\end_inset
+
+ term, but this time as a lower bound for convex function.
 \end_layout
 
 \begin_layout Standard
@@ -201,8 +215,8 @@ In addition, we measure the variance of each color over the photo's depth
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Var(I_{c}|z)= & Var(J_{d}e^{-\beta_{D}z}+B^{\infty}(1-e^{-\beta_{B}z})|z)\\
-= & Var(J_{d}e^{-\beta_{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{B}z})|z)
+Var(I_{c}|z)= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)\\
+= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)
 \end{align*}
 
 \end_inset
@@ -218,7 +232,7 @@ Since each photo is not ideal, we have a sensor noise variance term that
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-Var(I_{c}|z)= & e^{-2\beta_{D}z}Var(J_{d})+(1-e^{-\beta_{B}z})^{2}Var(B^{\infty})+\sigma_{noise}^{2}
+Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}Var(J_{c}^{D})+(1-e^{-\beta_{c}^{B}z})^{2}Var(B^{\infty})+\sigma_{c}^{2}
 \end{align*}
 
 \end_inset
@@ -232,11 +246,11 @@ Both
 \end_inset
 
  and 
-\begin_inset Formula $\sigma_{noise}^{2}$
+\begin_inset Formula $\sigma_{c}^{2}$
 \end_inset
 
- can be extracted from the photo or act as a joint constant which will be
- estimated in the optimization process.
+ can be extracted from the photo or be estimated during the optimization
+ process.
 \end_layout
 
 \begin_layout Standard
@@ -249,6 +263,10 @@ Both
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Backscatter Extraction
 \end_layout
 
 \begin_layout Subsubsection
@@ -310,14 +328,18 @@ Having said that, this term is approaching 0 faster than
 
 \begin_layout Standard
 Realizing that, we can set a constraint such as 
-\begin_inset Formula $\beta_{C}^{D}>(a\cdot e^{bz}+d\cdot e^{cz})>\frac{1}{z}$
+\begin_inset Formula $\beta_{C}^{D}>(a\cdot e^{bz}+d\cdot e^{cz})>\frac{1}{z};\forall z>0$
 \end_inset
 
- or change the decay model to another form such as 
+ or choose another decay model to another form such as 
 \begin_inset Formula $a\frac{1}{\sqrt{z+b}}$
 \end_inset
 
+, where 
+\begin_inset Formula $a,b>0$
+\end_inset
 
+.
 \end_layout
 
 \begin_layout Section
@@ -340,7 +362,34 @@ Post CC Processing
 \end_layout
 
 \begin_layout Subsection
-Statistical White Balance
+White Balance
+\end_layout
+
+\begin_layout Subsubsection
+Chosen method: Whitest Balance
+\end_layout
+
+\begin_layout Standard
+While extracting the statistics of an image, we get a vector that states
+ the value of the brightest pixels (highest percentile, 
+\begin_inset Formula $hp=99\%$
+\end_inset
+
+) in each depth.
+ Since we an RGB image (three vectors), we look for highest of the 
+\series bold
+common peaks
+\series default
+ and we multiply each color channel by a factor that equalize this peak
+ to a value of 
+\begin_inset Formula $hp\cdot255$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Other method: Statistical White/Gray Balance
 \end_layout
 
 \begin_layout Standard
