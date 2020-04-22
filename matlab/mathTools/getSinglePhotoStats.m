@@ -29,7 +29,7 @@ Ihp=zeros(zlen-1,3); Ilp=zeros(zlen-1,3); Imean=zeros(zlen-1,3);
            cI=I(:,:,color);
            if max(logical,[],'all')
             Ivar(i,color)=var(cI(logical)*255,[],'all');
-            Imin(i,color)=min(cI(logical)*255,[],'all');
+            %Imin(i,color)=min(cI(logical)*255,[],'all');
             %Imin(i,color)=prctile(cI(logical)*255,0.5);
             %if max(logical & mnGrayI,[],'all')
             Imean(i,color)=mean(cI(logical)*255,'all');%prctile(cI(logical)*255,50);%
@@ -42,13 +42,14 @@ Ihp=zeros(zlen-1,3); Ilp=zeros(zlen-1,3); Imean=zeros(zlen-1,3);
             %Ilambda(i,color) = poissfit(cI(logical)*255-Imin(i,color));
            else
             Ivar(i,color)=Ivar(i-1,color);
-            Imin(i,color)=Imin(i-1,color);
+            %Imin(i,color)=Imin(i-1,color);
             Imean(i,color)=Imean(i-1,color);
             Ihp(i,color)=Ihp(i-1,color);
+            Ilp(i,color)=Ilp(i-1,color);
             %Ilambda(i,color)=lambdahat(i-1,color);
            end
        end
-       disp(i/zlen)
+       %disp(i/zlen)
     end
     
 z=(z(1:end-1)+z(2:end))/2;

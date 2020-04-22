@@ -1,13 +1,16 @@
-function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0,BS,BSvar,boolBS)
+function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,DC,isplot,ver,BS,BSvar,boolBS)
     
 
     %z is distances vector
     z=double(Istruct.data(:,4));
     
     %init vars
-    Binf=zeros(1,3); betaB=zeros(1,3); hpJD=zeros(1,3); betaD=zeros(4,3); C=zeros(1,3);
-    intH=zeros(1,3); ratiovec=zeros(length(z),3); fixedRatio=zeros(length(z),3);% zOS=zeros(1,3);
-    Ihpbsr=zeros(length(z),3);Ihp=zeros(length(z),3);Jb=zeros(length(z),3);
+    Binf=zeros(1,3); betaB=zeros(1,3); hpJD=zeros(1,3); varJD=zeros(1,3); lpJD=zeros(1,3); betaD=zeros(4,3); C=zeros(1,3);
+    %intH=zeros(1,3); 
+    ratiovec=zeros(length(z),3); fixedRatio=zeros(length(z),3);% zOS=zeros(1,3);
+    Ihp=zeros(length(z),3); Ilp=zeros(length(z),3); Imean=zeros(length(z),3); Ivar=zeros(length(z),3);
+    Jb=zeros(length(z),3);
+    Ihpbsr=zeros(length(z),3); Ilpbsr=zeros(length(z),3); Imeanbsr=zeros(length(z),3); Ivarbsr=zeros(length(z),3);
     
     switch betaBtype
         case 'const'
@@ -15,7 +18,12 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
         case 'atten'
             mu=0;
     end
-    
+    switch DC
+        case 1
+            factorDC=0;
+        case 0
+            factorDC=10000;
+    end
    
     for i=1:3 %each color independetly
         Imean(:,i)=vec2qconv(double(Istruct.data(:,i))); %I is mean value vector
@@ -91,9 +99,10 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = f
 %         else
 %         intH(i)=mean(fixedRatio(:,i));
 %         end
-        x0=[x0 x];
+         %x0=[x0 x];
     end
-
+    Imef=zeros(length(z),3); Ihpf=zeros(length(z),3); Ilpf=zeros(length(z),3); Ivf=zeros(length(z),3);
+    hp=struct;
     for i=1:3
         Imef(:,i)=(Imeanbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);
         Ihpf(:,i)=(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)./sqrt(z+betaD(2,i))).*z);%*photonEQ(i);

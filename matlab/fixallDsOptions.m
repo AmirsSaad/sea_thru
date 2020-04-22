@@ -1,20 +1,20 @@
 
 close all;
 
-for D=[3]
+for D=[5]
 folder = ['../sandbox/D' num2str(D) '/'];
 savepath = ['../sandbox/D' num2str(D) '/fixed/'];
 if ~exist(['../sandbox/D' num2str(D) '/'], 'dir'), mkdir(['../sandbox/D' num2str(D) '/']); end
 if ~exist(['../sandbox/D' num2str(D) '/fixed/'], 'dir'), mkdir(['../sandbox/D' num2str(D) '/fixed/']); end
 strMeanHist=['../statistics/mean_hist_D' num2str(D) '_unnormalized.csv'];
 strBSHist=['../statistics/bs_D' num2str(D) '_0.05_unnormalized.csv'];
-dngs = dir([folder,'*.dng']);
-deps = dir([folder,'*.tif']);
+dngs = dir([[folder '/dng_sensor/'],'*.dng']);
+deps = dir([[folder '/depthMaps/'],'*.tif']);
 files=length(dngs);
 for file = 1:files
     
-    strDNG = [folder,dngs(file).name];
-    strDepth = [folder,deps(file).name];
+    strDNG = [folder,'/dng_sensor/',dngs(file).name];
+    strDepth = [folder,'/depthMaps/',deps(file).name];
     
     blur_red=0; sigma_red=10;
     blur_depth=0; sigma_depth=1;

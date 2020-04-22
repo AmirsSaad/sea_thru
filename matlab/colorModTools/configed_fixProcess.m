@@ -4,15 +4,23 @@ depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
 
-% disp('Extracting "sky" properties..');
-% if sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
-%   [BS , BSvar] = bg_pdf_estimation(I*255,depth) ;
-%   boolBS=1;
-% else
-   boolBS=0;
-   BS=[]; BSvar=[];
-% end
 
+if config.plotAllStages
+    figure(10)
+    subplot 331
+    imshow(convert_sensors2viewable(I,info))
+    title('Original Photo');
+    subplot 332
+    imagesc(depth); colorbar;
+    title('Depth Map');
+end
+
+if config.extractBS  %sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
+    disp('Extracting "sky" properties..');
+  [BS , BSvar] = bg_pdf_estimation(I*255,depth) ;
+else
+   BS=[]; BSvar=[];
+end
 
 if config.statModel=="multip"
     Istruct=importdata(config.MeanHist,',');
@@ -25,14 +33,14 @@ elseif config.statModel=="sandim"
    [Istruct,Jbstruct]= getSinglePhotoStats(sand,dsand,0.5,0); 
 end
 
+
 disp('Fitting Model...');
-x0=[];
 for k=1
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,config.lambda,config.betaBtype,config.factorDC,config.isplot,config.attenFixVer,x0,BS,BSvar,boolBS);
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,~,~,~,~] = fitPhyModel(Istruct,Jbstruct,config.lambda,config.betaBtype,config.DC,config.isplot,config.attenFixVer,BS,BSvar,config.extractBS);
 results = struct('betaD',betaD,'Binf',Binf,'betaB',betaB);
 
 %[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,config.lambda,config.betaBtype,config.factorDC,config.isplot,ver,x0)
-[m,n,l,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,config.isplot);
+%[m,n,l,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,config.isplot);
 end
 %close all;
 
@@ -52,7 +60,17 @@ end
 %remove backscatter with modeled coefs
 disp('Removing Backscatter...');
 
-[IremBS,~] = removeBS(I*255,depth,[Binf' betaB'],config.withNorm,config.normMeanVal);
+[IremBS,BSimage] = removeBS(I*255,depth,[Binf' betaB'],config.withNorm,config.normMeanVal);
+
+if config.plotAllStages
+    figure(10)
+    subplot 333
+    imshow(convert_sensors2viewable(IremBS/255,info))
+    title('BackScatter Removed');
+    subplot 334
+    imshow(convert_sensors2viewable(BSimage/255,info))
+    title('BS term');
+end
 
 if config.blur_red
     disp('Blurring Red Channel...');
@@ -65,6 +83,13 @@ if config.attenFixVer<3
     Ifixed=AttenFix(IremBS,depth,[JD' betaD' C'],config.attenFixVer,config.withNorm,config.normMeanVal);
 else
     Ifixed=AttenFix(IremBS,depth,[ratiovec z],3,config.withNorm,config.normMeanVal);
+end
+
+if config.plotAllStages
+    figure(10)
+    subplot 335
+    imshow(convert_sensors2viewable(Ifixed/255,info))
+    title('Fixed, Pre-WB');
 end
 
 %blacken faraway
@@ -93,6 +118,7 @@ end
 disp('Converting Sensors space to viewable...');
 Ifixed = convert_sensors2viewable(Ifixed,info);
 
+
 %Ifixed=Ifixed/max(Ifixed,[],'all');
 
 if config.WB==2
@@ -103,6 +129,13 @@ end
 % subplot 221; imshow(Ipre); title('Original');
 % subplot 222; imshow(IremBS); title('BS removed');
 % subplot 223; imshow(Ifixed); title('Attenuation fixed');
+
+if config.plotAllStages
+    figure(10)
+    subplot 336
+    imshow(Ifixed)
+    title('Fixed, Post-WB');
+end
 
 %%apply contrast strech
 if config.contStr
@@ -115,6 +148,13 @@ if config.contStr
 %     Ifixed(:,:,1) = imadjust(Ifixed(:,:,1),lims,[]);   
     %Bhist=imhist(Ifixed(:,:,3),256);
     %Ifixed(:,:,1) = histeq(Ifixed(:,:,1),Bhist);
+end
+
+if config.plotAllStages
+    figure(10)
+    subplot 337
+    imshow(Ifixed)
+    title('Post Blackening/Contrast Stretch');
 end
 
 if config.WB==3
