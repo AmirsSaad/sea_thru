@@ -150,7 +150,11 @@ The mean intensity, will be represented as
 \begin_inset Formula $I_{c}^{mean}(z)$
 \end_inset
 
-, and the lower and upper percentiles of the intensities - 
+, and the lower and upper percentiles (
+\begin_inset Formula $lp,hp$
+\end_inset
+
+) of the intensities - 
 \begin_inset Formula $I_{c}^{1\%}(z),I_{c}^{99\%}(z)$
 \end_inset
 
@@ -179,6 +183,71 @@ The Intensity variance of each depth,
 .
 \end_layout
 
+\begin_layout Subsection
+Intensity as upper and lower bound
+\end_layout
+
+\begin_layout Standard
+Looking at the intensities and the physical model, we understand that the
+ backscatter (BS) term is will be added to each pixel, regardless and independen
+t of the attenuated light (AL) term, so we assume that in the lower percentile
+ vector 
+\begin_inset Formula $AL\ll BS$
+\end_inset
+
+ and we'll use it to extract the backscatter characteristics.
+ Taking into consideration the uneven lighting of the scene, we'd like to
+ emphasize the darkest intensities, assuming they represent real shade (There
+ is no 
+\begin_inset Quotes eld
+\end_inset
+
+negative
+\begin_inset Quotes erd
+\end_inset
+
+ light that causes illuminated areas be darker than non-illuminated) and
+ in addition we know that the backscatter is a positive term (since the
+ haze is monotonically increasing with distance), we conclude that the estimated
+ BS term must not be higher than the darkest areas measured.
+ Therefore, we will bound it using a barrier function in the optimization
+ process, such as: 
+\begin_inset Formula $h(z)=max\left(0,BS_{c}-I_{c}^{1\%}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In a similar manner, we can look at the lightest parts of each intensity
+ vector.
+ In each color channel, we assume that the light will attenuate in a similar
+ trend, but with different starting points.
+ Therefore, we will attribute the same decay coefficients to the three intensity
+ vectors 
+\begin_inset Formula $(1\%,mean,99\%)$
+\end_inset
+
+, but with different amplitude.
+ In the brighter areas of the picture, we can assume that 
+\begin_inset Formula $AL\gg BS$
+\end_inset
+
+ , but still obey the attenuation, so we will use these three vectors as
+ a lower bound for the attenuated light model.
+ Again, we will use a barrier function, such as 
+\begin_inset Formula $g^{(i)}(z)=\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We cannot use the variance vector the same way, since the local variance
+ in the photo might be both above or below the general attenuation trend,
+ depending on the scene.
+\end_layout
+
 \begin_layout Section
 Model Fit
 \end_layout
@@ -195,7 +264,7 @@ For each color channel (
 \begin_inset Formula 
 \begin{align*}
 \min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
-_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
+_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
 _{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
  & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
 \end{align*}
@@ -411,6 +480,10 @@ Both
 
 \begin_layout Subsubsection
 Backscatter Extraction
+\end_layout
+
+\begin_layout Standard
+In the process there's an option to look for
 \end_layout
 
 \begin_layout Subsubsection
