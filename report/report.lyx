@@ -234,6 +234,11 @@ Parallel color fit with internal WB
 \begin_layout Standard
 We decided to try find the best fit for the three colors in parallel, but
  this time, also aiming for best fit in between the fixed color vectors.
+ (Notice 
+\begin_inset Formula $\epsilon_{lmn}$
+\end_inset
+
+ to represent all colors' permutations with Einstein notation)
 \end_layout
 
 \begin_layout Standard
