@@ -108,8 +108,147 @@ Preprocessing
 Histogram Statistics
 \end_layout
 
+\begin_layout Standard
+Each photo is analyzed using its depth map.
+ We'd like to extract a set of statistics as a function of the distance
+ from the camera (
+\begin_inset Formula $z$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+In this paper we will explore the options of extracting these from a single
+ image or multiple images taken around the same time and area.
+\end_layout
+
+\begin_layout Standard
+Since we have finite number of pixels per image, we have to set a distance/depth
+ resolution and divide our depth map into sections of 
+\begin_inset Formula $10[cm]$
+\end_inset
+
+ each and take into account all the pixels in range.
+\end_layout
+
+\begin_layout Standard
+The main statistics we're going to use are per color channel (represented
+ as 
+\begin_inset Formula $c$
+\end_inset
+
+ subscript) and per depth (usually referred as a function of 
+\begin_inset Formula $z$
+\end_inset
+
+) and are:
+\end_layout
+
+\begin_layout Itemize
+The mean intensity, will be represented as 
+\begin_inset Formula $I_{c}^{mean}(z)$
+\end_inset
+
+, and the lower and upper percentiles of the intensities - 
+\begin_inset Formula $I_{c}^{1\%}(z),I_{c}^{99\%}(z)$
+\end_inset
+
+.
+ These three vectors will be treated in a similar manner and usually be
+ referred with a superscript 
+\begin_inset Formula $(i)$
+\end_inset
+
+, such as 
+\begin_inset Formula $I_{c}^{(i)}(z)$
+\end_inset
+
+ or 
+\begin_inset Formula $J_{cD}^{99\%}$
+\end_inset
+
+ when talking about related coefficients.
+\end_layout
+
+\begin_layout Itemize
+The Intensity variance of each depth, 
+\begin_inset Formula $Var(I_{c}|z)$
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 Model Fit
+\end_layout
+
+\begin_layout Standard
+For each color channel (
+\begin_inset Formula $c=r,g,b$
+\end_inset
+
+) we solve an independent optimization problem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
+_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
+_{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
+ & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where our coefficients vector 
+\begin_inset Formula $\nu_{c}$
+\end_inset
+
+ and the physical model are represented as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
+BS_{c}(z,B_{c}^{\infty},\beta_{c}^{B}) & =B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
+AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\\
+D(i) & =[1\%,mean,99\%]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Parallel color fit with internal WB
+\end_layout
+
+\begin_layout Standard
+We decided to try find the best fit for the three colors in parallel, but
+ this time, also aiming for best fit in between the fixed color vectors.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\min_{\nu_{c}}\sum_{c=1}^{3}\alpha\{ & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
+ & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
+ & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
+ & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\}\\
+ & +\sum_{i=1}^{3}\epsilon_{lmn}\left(a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]-a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\right)^{2}
+\end{align*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
