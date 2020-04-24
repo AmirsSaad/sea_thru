@@ -183,73 +183,12 @@ The Intensity variance of each depth,
 .
 \end_layout
 
-\begin_layout Subsection
-Intensity as upper and lower bound
-\end_layout
-
-\begin_layout Standard
-Looking at the intensities and the physical model, we understand that the
- backscatter (BS) term is will be added to each pixel, regardless and independen
-t of the attenuated light (AL) term, so we assume that in the lower percentile
- vector 
-\begin_inset Formula $AL\ll BS$
-\end_inset
-
- and we'll use it to extract the backscatter characteristics.
- Taking into consideration the uneven lighting of the scene, we'd like to
- emphasize the darkest intensities, assuming they represent real shade (There
- is no 
-\begin_inset Quotes eld
-\end_inset
-
-negative
-\begin_inset Quotes erd
-\end_inset
-
- light that causes illuminated areas be darker than non-illuminated) and
- in addition we know that the backscatter is a positive term (since the
- haze is monotonically increasing with distance), we conclude that the estimated
- BS term must not be higher than the darkest areas measured.
- Therefore, we will bound it using a barrier function in the optimization
- process, such as: 
-\begin_inset Formula $h(z)=max\left(0,BS_{c}-I_{c}^{1\%}\right)$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-In a similar manner, we can look at the lightest parts of each intensity
- vector.
- In each color channel, we assume that the light will attenuate in a similar
- trend, but with different starting points.
- Therefore, we will attribute the same decay coefficients to the three intensity
- vectors 
-\begin_inset Formula $(1\%,mean,99\%)$
-\end_inset
-
-, but with different amplitude.
- In the brighter areas of the picture, we can assume that 
-\begin_inset Formula $AL\gg BS$
-\end_inset
-
- , but still obey the attenuation, so we will use these three vectors as
- a lower bound for the attenuated light model.
- Again, we will use a barrier function, such as 
-\begin_inset Formula $g^{(i)}(z)=\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-We cannot use the variance vector the same way, since the local variance
- in the photo might be both above or below the general attenuation trend,
- depending on the scene.
-\end_layout
-
 \begin_layout Section
 Model Fit
+\end_layout
+
+\begin_layout Subsection
+Chosen Method: Series color fit with external WB
 \end_layout
 
 \begin_layout Standard
@@ -327,6 +266,122 @@ We decided to try find the best fit for the three colors in parallel, but
 
 \begin_layout Subsection
 Single photo fit
+\end_layout
+
+\begin_layout Subsubsection
+Intensity as upper and lower bound
+\end_layout
+
+\begin_layout Standard
+Looking at the intensities and the physical model, we understand that the
+ backscatter (BS) term is will be added to each pixel, regardless and independen
+t of the attenuated light (AL) term, so we assume that in the lower percentile
+ vector 
+\begin_inset Formula $AL\ll BS$
+\end_inset
+
+ and we'll use it to extract the backscatter characteristics.
+ Taking into consideration the uneven lighting of the scene, we'd like to
+ emphasize the darkest intensities, assuming they represent real shade (There
+ is no 
+\begin_inset Quotes eld
+\end_inset
+
+negative
+\begin_inset Quotes erd
+\end_inset
+
+ light that causes illuminated areas be darker than non-illuminated) and
+ in addition we know that the backscatter is a positive term (since the
+ haze is monotonically increasing with distance), we conclude that the estimated
+ BS term must not be higher than the darkest areas measured.
+ Therefore, we will bound it using a barrier function in the optimization
+ process, such as: 
+\begin_inset Formula $h(z)=max\left(0,BS_{c}-I_{c}^{1\%}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In a similar manner, we can look at the lightest parts of each intensity
+ vector.
+ In each color channel, we assume that the light will attenuate in a similar
+ trend, but with different starting points.
+ Therefore, we will attribute the same decay coefficients to the three intensity
+ vectors 
+\begin_inset Formula $(1\%,mean,99\%)$
+\end_inset
+
+, but with different amplitude.
+ In the brighter areas of the picture, we can assume that 
+\begin_inset Formula $AL\gg BS$
+\end_inset
+
+ , but still obey the attenuation, so we will use these three vectors as
+ a lower bound for the attenuated light model.
+ Again, we will use a barrier function, such as 
+\begin_inset Formula $g^{(i)}(z)=\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We cannot use the variance vector the same way, since the local variance
+ in the photo might be both above or below the general attenuation trend,
+ depending on the scene.
+\end_layout
+
+\begin_layout Subsubsection
+Backscatter Extraction
+\end_layout
+
+\begin_layout Standard
+It is possible (yet not mandatory) to look for the properties of the backscatter
+ in photos where you have areas of sky-like plain water (will be referred
+ as 
+\begin_inset Quotes eld
+\end_inset
+
+sky
+\begin_inset Quotes erd
+\end_inset
+
+ from now on).
+ The main reason we are looking at these areas is because the sky is where
+ the direct light from faraway objects is completely attenuated (and therefore
+ we cannot see them) and we only have the saturated backscatter light.
+ If There's an area like this in the picture, the depth map will fail in
+ calculating the distance and we will use this fact to our advantage and
+ look for the lowest variance areas (the most smooth/uniform areas) and
+ extract the bounds of the color of the saturated BS light color and will
+ use it to estimate 
+\begin_inset Formula $B_{c}^{\infty}$
+\end_inset
+
+ as well as 
+\begin_inset Formula $\sigma_{cB}^{2}$
+\end_inset
+
+ with the information about the color variance.
+\end_layout
+
+\begin_layout Standard
+If there's no area, or it is small (smaller than a set threshold - 
+\begin_inset Formula $5\%$
+\end_inset
+
+) this step will be skipped.
+ 
+\begin_inset Formula $B_{c}^{\infty}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma_{cB}^{2}$
+\end_inset
+
+ will be estimated spontaneously.
 \end_layout
 
 \begin_layout Subsubsection
@@ -479,14 +534,6 @@ Both
 \end_layout
 
 \begin_layout Subsubsection
-Backscatter Extraction
-\end_layout
-
-\begin_layout Standard
-In the process there's an option to look for
-\end_layout
-
-\begin_layout Subsubsection
 Decay of 
 \begin_inset Formula $\beta_{C}^{D}$
 \end_inset
@@ -549,14 +596,111 @@ Realizing that, we can set a constraint such as
 \end_inset
 
  or choose another decay model to another form such as 
-\begin_inset Formula $a\frac{1}{\sqrt{z+b}}$
+\begin_inset Formula $a\frac{1}{z^{b}+c}$
 \end_inset
 
 , where 
-\begin_inset Formula $a,b>0$
+\begin_inset Formula $a,c>0$
+\end_inset
+
+ and 
+\begin_inset Formula $0<b<1$
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection
+Multiple photo fit
+\end_layout
+
+\begin_layout Standard
+Another way to extract the properties that degrade the color in a photo,
+ is by looking at a set of photos taken in the same area and time.
+ Although this option is not available for a fast single/dual shot immediate
+ processing, it might be useful for videos or an offline processing for
+ a set of photos.
+\end_layout
+
+\begin_layout Standard
+The process is very similar, yet this time the 
+\begin_inset Formula $I_{c}^{(i)}(z)$
+\end_inset
+
+ vectors are derived from several photos and include the full range of distances
+ that are in the set of the photos.
+ It is important to cite that all the photos must have the same shutter
+ speed, ISO and aperture, or they must be normalized.
+\end_layout
+
+\begin_layout Standard
+The advantage of such method lies in its stability.
+ All the photos will be treated in the same way, with the same coefficients,
+ and therefore they will have the same tones.
+ This is why this method is a good option for videos, where you can use
+ a certain number of last frames.
+\end_layout
+
+\begin_layout Standard
+In this method we will not treat the measured intensities as upper and lower
+ bounds, as we did in the single photo process.
+ This time we can solve an easier optimization problem for each color channel
+ (
+\begin_inset Formula $c=r,g,b$
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
+ & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where our coefficients vector 
+\begin_inset Formula $\nu_{c}$
+\end_inset
+
+ and the physical model are represented as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
+BS_{c}(z,B_{c}^{\infty},\beta_{c}^{B}) & =B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
+AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\\
+D(i) & =[5\%,mean,95\%]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+It is important to note that this time the 
+\begin_inset Quotes eld
+\end_inset
+
+Whitest balance
+\begin_inset Quotes erd
+\end_inset
+
+ is now acting on the three 
+\begin_inset Formula $I_{c}^{hp}$
+\end_inset
+
+ vectors that include the whole set of images.
+ The results when WB using a single photo vectors are nearly the same.
 \end_layout
 
 \begin_layout Section
@@ -603,6 +747,19 @@ common peaks
 \end_inset
 
 .
+ In case there's no common peak, we will choose the triplet with the largest
+ norm in the 
+\begin_inset Formula $hp$
+\end_inset
+
+ vector.
+\end_layout
+
+\begin_layout Standard
+This method was chosen, aside from better results, it is more likely to
+ find a white pixel then the scene to be gray on average, especially with
+ underwater rocky scenes, that might have a tint of certain minerals or
+ metals.
 \end_layout
 
 \begin_layout Subsubsection
