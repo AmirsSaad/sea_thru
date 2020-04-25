@@ -6,6 +6,11 @@
 \origin unavailable
 \textclass article
 \use_default_options true
+\begin_modules
+eqs-within-sections
+figs-within-sections
+tabs-within-sections
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -32,7 +37,7 @@
 \spacing single
 \use_hyperref false
 \papersize default
-\use_geometry true
+\use_geometry false
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -90,7 +95,7 @@ Ofer Hazut, Amir Saad
 \begin_inset Newline newline
 \end_inset
 
-Instructor: Tali Treibitz, Ph.D.
+Supervisor: Tali Treibitz, Ph.D.
 \end_layout
 
 \begin_layout Abstract
@@ -420,10 +425,35 @@ n process.
 
 \begin_layout Standard
 \align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename figs/01_BS_fit_op2_pic1.png
+	filename figs/LFT_3374_BS_fit.eps
 	lyxscale 10
-	width 15cm
+	width 10cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Backscatter model is fitted to the lower percentile intensity of each color
+ channel.
+ The intensities are acting as an upper bound for the monotonic-increasing
+ BS model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -461,10 +491,35 @@ The
 
 \begin_layout Standard
 \align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename figs/02_fix_op2_pic1.png
+	filename figs/LFT_3374_ALfit_fix.eps
 	lyxscale 10
-	width 15cm
+	width 10cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Attenuating direct light model is fitted to the intensity vectors of each
+ color channel.
+ The intensities are acting as a lower bound for the monotonic-decreasing
+ AL model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -523,10 +578,67 @@ Both
 
 \begin_layout Standard
 \align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename figs/03_var_op2_pic1.png
+	filename figs/LFT_3374_Var.eps
 	lyxscale 10
-	width 15cm
+	width 10cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Squared sum of AL and BS model is fitted to the variance vectors of each
+ color channel alongside the intensities and applied to the color correction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/LFT_3374_Ifixed_fit.eps
+	lyxscale 10
+	width 10cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The intensity vectors after the applied color correction
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -855,6 +967,100 @@ s.t. & \frac{E(I)}{2}<n<2E(I)\\
 
 \begin_inset Graphics
 	filename figs/05_varwb_op2_pic1.png
+	lyxscale 10
+	width 7cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Math tools
+\end_layout
+
+\begin_layout Subsection
+Vector to quasi-convex vector
+\end_layout
+
+\begin_layout Standard
+In order to fit the best model for our lower bound theorem and we wanted
+ to reduce the penalty of the L2 loss function.
+ We created a function that is looking for the peaks that define the upper
+ limit and the decline of the vector in the following steps:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+out =vec2qconv(vec)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Finding the all the peaks of 
+\series bold
+vec 
+\begin_inset Formula $\rightarrow[peaks,locs]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Removing 
+\series bold
+peaks
+\series default
+ that are smaller than later 
+\series bold
+peaks
+\end_layout
+
+\begin_layout Enumerate
+Setting each value of 
+\series bold
+out
+\series default
+(locs
+\begin_inset Formula $(i)$
+\end_inset
+
+:locs
+\begin_inset Formula $(i+1)$
+\end_inset
+
+) to be the value of the next peak.
+\end_layout
+
+\begin_layout Enumerate
+Set 
+\begin_inset Formula $out=max(vec,out)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename figs/quazi.eps
 	lyxscale 10
 	width 7cm
 
