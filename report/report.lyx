@@ -188,6 +188,50 @@ The Intensity variance of each depth,
 .
 \end_layout
 
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/01_Orig.jpg
+	lyxscale 3
+	width 5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/02_Depth.eps
+	lyxscale 3
+	width 5cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example for underwater photo and its depth map.
+ The steps of the process explained in this paper will be shown on this
+ photo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Model Fit
 \end_layout
@@ -436,7 +480,7 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_BS_fit.eps
 	lyxscale 10
-	width 10cm
+	width 6cm
 
 \end_inset
 
@@ -448,6 +492,79 @@ Backscatter model is fitted to the lower percentile intensity of each color
  channel.
  The intensities are acting as an upper bound for the monotonic-increasing
  BS model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/01_Orig.jpg
+	lyxscale 3
+	width 3.5cm
+
+\end_inset
+
+
+\begin_inset Formula $\begin{array}{c}
+-\\
+\\
+\\
+\\
+\\
+\\
+\end{array}$
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/04_BSonly.jpg
+	lyxscale 3
+	width 3.5cm
+
+\end_inset
+
+
+\begin_inset Formula $\begin{array}{c}
+=\\
+\\
+\\
+\\
+\\
+\\
+\end{array}$
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/03_BSrem.jpg
+	lyxscale 3
+	width 3.5cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An estimated BS image is subtracted from the example photo, resulting a
+ uniform tone and clarity over distance.
 \end_layout
 
 \end_inset
@@ -506,7 +623,7 @@ status open
 
 \end_inset
 
-
+.
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -633,6 +750,40 @@ status open
 
 \begin_layout Plain Layout
 The intensity vectors after the applied color correction
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/05_If_preWB.jpg
+	lyxscale 3
+	width 7cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The example photo post color attenuation correction and before white balancing.
 \end_layout
 
 \end_inset
@@ -874,6 +1025,40 @@ This method was chosen, aside from better results, it is more likely to
  metals.
 \end_layout
 
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/06_If_WBed.jpg
+	lyxscale 3
+	width 7cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The example photo post WB, pre Blacks Deepening
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Other method: Statistical White/Gray Balance
 \end_layout
@@ -960,7 +1145,7 @@ s.t. & \frac{E(I)}{2}<n<2E(I)\\
 \begin_inset Graphics
 	filename figs/04_fixwb_op2_pic1.png
 	lyxscale 10
-	width 7cm
+	width 4cm
 
 \end_inset
 
@@ -968,7 +1153,69 @@ s.t. & \frac{E(I)}{2}<n<2E(I)\\
 \begin_inset Graphics
 	filename figs/05_varwb_op2_pic1.png
 	lyxscale 10
-	width 7cm
+	width 4cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Blacks Deepening
+\end_layout
+
+\begin_layout Standard
+After the white balance, we
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/06_If_WBed.jpg
+	lyxscale 3
+	width 5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/07_IcontrastStr.jpg
+	lyxscale 3
+	width 5cm
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/BlacksDeepening.eps
+	lyxscale 3
+	width 5cm
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The example photo pre post blacks deepening and the intensity histograms.
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -992,6 +1239,7 @@ In order to fit the best model for our lower bound theorem and we wanted
 
 \begin_layout Standard
 \begin_inset Float algorithm
+placement H
 wide false
 sideways false
 status open
