@@ -1,4 +1,4 @@
-exp_root = '../sandbox/2020_04_24_graphext';%'D:\sea_thru_experiments\04_21__13_48';
+exp_root = '../sandbox/2020_04_25_multipWBsingle';%'D:\sea_thru_experiments\04_21__13_48';
 data = readtable(fullfile(exp_root,'data.csv'),'Format','%s%s%s');
 config = parse_config(fullfile(exp_root,'config.json'));
 close all
@@ -16,6 +16,10 @@ for i = 1:size(data,1)
     print(figure(2),fullfile(savepath,[name '_ALfit_fix.eps']),'-depsc');
     print(figure(3),fullfile(savepath,[name '_Ifixed_fit.eps']),'-depsc');
     print(figure(4),fullfile(savepath,[name '_Var.eps']),'-depsc');
+    saveas(figure(1),fullfile(savepath,[name '_BS_fit.png']));
+    saveas(figure(2),fullfile(savepath,[name '_ALfit_fix.png']));
+    saveas(figure(3),fullfile(savepath,[name '_Ifixed_fit.png']));
+    saveas(figure(4),fullfile(savepath,[name '_Var.png']));
     %saveas(figure(1),fullfile(savepath,'01_BS_fit.png'));
     %saveas(figure(2),fullfile(savepath,'02_fix.png'));
     save(fullfile(savepath,'results.mat'),'results')
