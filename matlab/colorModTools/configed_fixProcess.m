@@ -6,13 +6,18 @@ disp('Convertiong DNG to Sensor space...');
 
 
 if config.plotAllStages
-    figure(10)
-    subplot 331
-    imshow(convert_sensors2viewable(I,info))
-    title('Original Photo');
-    subplot 332
+    %figure(10)
+    figure
+    %subplot 331
+    Itemp=convert_sensors2viewable(I,info);
+    %imshow(Itemp)
+    %title('Original Photo');
+    imwrite(Itemp,'01_Orig.jpg');
+    %subplot 332
     imagesc(depth); colorbar;
-    title('Depth Map');
+    %title('Depth Map');
+    print(gcf,'02_Depth.eps','-depsc');
+    close
 end
 
 if config.extractBS  %sum(depth==0,'all')/(size(depth,1)*size(depth,2))>0.05
@@ -24,24 +29,26 @@ end
 
 if config.statModel=="multip"
     Istruct=importdata(config.MeanHist,',');
-    Jbstruct=importdata(config.BSHist,',');
+    %Jbstruct=importdata(config.BSHist,',');
+    Isingle= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
 elseif config.statModel=="single"
-   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99,1,0.5);
+   Istruct= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
+   Isingle=[];
 elseif config.statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
-   [Istruct,Jbstruct]= getSinglePhotoStats(sand,dsand,0.5,0); 
+   Istruct= getSinglePhotoStats(sand,dsand,0.5,0); 
 end
 
 
 disp('Fitting Model...');
-for k=1
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,~,~,~,~] = fitPhyModel(Istruct,Jbstruct,config.lambda,config.betaBtype,config.DC,config.isplot,config.attenFixVer,BS,BSvar,config.extractBS);
+%for k=1
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,~,~,~,~] = fitPhyModel(Istruct,Isingle,config.lambda,config.betaBtype,config.DC,config.isplot,config.attenFixVer,BS,BSvar,config.extractBS,config.lp);
 results = struct('betaD',betaD,'Binf',Binf,'betaB',betaB);
 
 %[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,config.lambda,config.betaBtype,config.factorDC,config.isplot,ver,x0)
 %[m,n,l,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,config.isplot);
-end
+%end
 %close all;
 
 
@@ -63,13 +70,15 @@ disp('Removing Backscatter...');
 [IremBS,BSimage] = removeBS(I*255,depth,[Binf' betaB'],config.withNorm,config.normMeanVal);
 
 if config.plotAllStages
-    figure(10)
-    subplot 333
-    imshow(convert_sensors2viewable(IremBS/255,info))
-    title('BackScatter Removed');
-    subplot 334
-    imshow(convert_sensors2viewable(BSimage/255,info))
-    title('BS term');
+    %figure(10)
+    %subplot 333
+    Itemp=convert_sensors2viewable(IremBS/255,info);
+    imwrite(Itemp,'03_BSrem.jpg');
+    %title('BackScatter Removed');
+    %subplot 334
+    Itemp=convert_sensors2viewable(BSimage/255,info);
+    imwrite(Itemp,'04_BSonly.jpg');
+    %title('BS term');
 end
 
 if config.blur_red
@@ -86,10 +95,12 @@ else
 end
 
 if config.plotAllStages
-    figure(10)
-    subplot 335
-    imshow(convert_sensors2viewable(Ifixed/255,info))
-    title('Fixed, Pre-WB');
+    %figure(10)
+    %subplot 335
+    %imshow(convert_sensors2viewable(Ifixed/255,info))
+    Itemp=convert_sensors2viewable(Ifixed/255,info);
+    imwrite(Itemp,'05_If_preWB.jpg');
+    %title('Fixed, Pre-WB');
 end
 
 %blacken faraway
@@ -131,16 +142,18 @@ end
 % subplot 223; imshow(Ifixed); title('Attenuation fixed');
 
 if config.plotAllStages
-    figure(10)
-    subplot 336
-    imshow(Ifixed)
-    title('Fixed, Post-WB');
+    %figure(10)
+    %subplot 336
+    %imshow(Ifixed)
+    %title('Fixed, Post-WB');
+    Itemp=Ifixed;
+    imwrite(Itemp,'06_If_WBed.jpg');
 end
 
 %%apply contrast strech
 if config.contStr
     disp('Stretching contrast...');
-    Ifixed=cntStretch(Ifixed);
+    Ifixed=cntStretch(Ifixed,'blacks');
     % Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
 %     rHist = imhist(Ifixed(:,:,1), 256);
 %     [lims,~]=histsmartedges(rHist);
@@ -151,15 +164,25 @@ if config.contStr
 end
 
 if config.plotAllStages
-    figure(10)
-    subplot 337
-    imshow(Ifixed)
-    title('Post Blackening/Contrast Stretch');
+%     figure(10)
+%     subplot 337
+%     imshow(Ifixed)
+%     title('Post Blackening/Contrast Stretch');
+    Itemp=Ifixed;
+    imwrite(Itemp,'07_IcontrastStr.jpg');
 end
 
 if config.WB==3
     disp('White Balancing...');
     [~,Ifixed]=wb_adj(Ifixed);
+    if config.plotAllStages
+%     figure(10)
+%     subplot 337
+%     imshow(Ifixed)
+%     title('Post Blackening/Contrast Stretch');
+    Itemp=Ifixed;
+    imwrite(Itemp,'08_IWBpostcontrastStr.jpg');
+    end
 end
 %subplot 224; imshow(IfixedHS); title('Hist Stretch');
 %BS =convert_sensors2viewable(BS/255,info);
