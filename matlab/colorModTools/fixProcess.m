@@ -24,19 +24,19 @@ disp('Convertiong DNG to Sensor space...');
 
 if statModel=="multip"
     Istruct=importdata(strMeanHist,',');
-    Jbstruct=importdata(strBSHist,',');
+    %Jbstruct=importdata(strBSHist,',');
 elseif statModel=="single"
-   [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,99,1,0.5);
+   Istruct= getSinglePhotoStats(I,depth,99,1,0.5);
 elseif statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
-   [Istruct,Jbstruct]= getSinglePhotoStats(sand,dsand,0.5,0); 
+   Istruct= getSinglePhotoStats(sand,dsand,0.5,0); 
 end
 
 disp('Fitting Model...');
 x0=[];
 for k=1
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0,BS,BSvar,boolBS);
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,lambda,betaBtype,factorDC,isplot,attenFixVer,x0,BS,BSvar,boolBS);
 %[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,lambda,betaBtype,factorDC,isplot,ver,x0)
 [m,n,l,A] = statisticalWBfit(Imef,Ihpf,Ilpf,Ivf,z,isplot);
 end
