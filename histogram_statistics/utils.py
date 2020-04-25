@@ -66,7 +66,7 @@ def generate_depth_histogram(depthMaps_path,plot=False,figrue_save_path=None):
         temp_hist , bins = np.histogram(depth,bins = drange)
         depth_hist += temp_hist
 
-    plot=False
+    plot = False
     if plot:
         plt.figure()
         plt.hist(bins[:-1], bins, weights=depth_hist)    
