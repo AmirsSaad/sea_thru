@@ -103,13 +103,17 @@ In the following paper we will present our take on
 \series bold
 Sea-thru: A Method For Removing Water From Underwater Images
 \series default
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
 .
  We'll new approach for the physical model estimation and its practical
  implementation.
-\end_layout
-
-\begin_layout Section
-Preprocessing
 \end_layout
 
 \begin_layout Section
@@ -120,7 +124,7 @@ Histogram Statistics
 Each photo is analyzed using its given depth map, as in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:An-example-for"
+reference "fig:An-example-for-1"
 plural "false"
 caps "false"
 noprefix "false"
@@ -221,6 +225,40 @@ status open
 \end_inset
 
 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:An-example-for"
+
+\end_inset
+
+An example for underwater photo.
+ The steps of the process explained in this paper will be shown on this
+ photo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename figs/fixProcessSteps/02_Depth.eps
 	lyxscale 3
@@ -234,13 +272,11 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:An-example-for"
+name "fig:An-example-for-1"
 
 \end_inset
 
-An example for underwater photo and its depth map.
- The steps of the process explained in this paper will be shown on this
- photo.
+The example photo's depth map.
 \end_layout
 
 \end_inset
@@ -286,22 +322,8 @@ noprefix "false"
 \min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
 _{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
 _{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
- & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
+ & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\label{eq:gamma}
 \end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
-_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
-_{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
- & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
-\end{align*}
 
 \end_inset
 
@@ -313,7 +335,15 @@ where our coefficients vector
 \begin_inset Formula $\nu_{c}$
 \end_inset
 
- and the physical model are represented as:
+ and the physical model
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ are represented as:
 \end_layout
 
 \begin_layout Standard
@@ -350,7 +380,7 @@ We decided to try find the best fit for the three colors in parallel, but
 \min_{\nu_{c}}\sum_{c=1}^{3}\alpha\{ & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
  & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
  & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
- & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\}\\
+ & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\}\\
  & +\sum_{i=1}^{3}\epsilon_{lmn}\left(a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]-a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\right)^{2}
 \end{align*}
 
@@ -518,6 +548,8 @@ upper bound
 monotonic increasing concave function
 \series default
  in the optimization process.
+ Using our depth map and the backscatter coefficients, we create an estimated
+ backscatter photo which we subtract from the original raw photo.
 \end_layout
 
 \begin_layout Standard
@@ -980,8 +1012,7 @@ In this method we will not treat the measured intensities as upper and lower
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
- & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
+\min_{\nu_{c}} & \sum_{i=1}^{3}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
 \end{align*}
 
 \end_inset
@@ -1029,22 +1060,7 @@ Whitest balance
 \end_layout
 
 \begin_layout Section
-Back Scatter Removal
-\end_layout
-
-\begin_layout Standard
-Each statistical approach outputs a set of coefficients for the backscatter
- term.
- We apply them and using our depth map, we create an estimated backscatter
- photo which we subtract from the original raw photo.
-\end_layout
-
-\begin_layout Section
-Color Correction
-\end_layout
-
-\begin_layout Section
-Post CC Processing
+Post Color Correction Processing
 \end_layout
 
 \begin_layout Subsection
@@ -1062,7 +1078,7 @@ While extracting the statistics of an image, we get a vector that states
 \end_inset
 
 ) in each depth.
- Since we an RGB image (three vectors), we look for highest of the 
+ Since it is an RGB image (three vectors), we look for highest of the 
 \series bold
 common peaks
 \series default
@@ -1227,7 +1243,29 @@ Blacks Deepening
 \end_layout
 
 \begin_layout Standard
-After the white balance, we
+After the white balance, we'd like to set the lower baseline of the photo
+ as low as possible.
+ This baseline might be a result of error in the backscatter estimation
+ and later its removal.
+ This is a simple process where we look for the darkest percentile value
+ of the grayscale image 
+\begin_inset Formula $(I_{gs}^{1\%})$
+\end_inset
+
+ and stretch the image 
+\begin_inset Formula $(I_{in}$
+\end_inset
+
+) such that 
+\begin_inset Formula $I_{out}=\frac{I_{in}-I_{gs}^{1\%}}{(1-I_{gs}^{1\%})}$
+\end_inset
+
+.
+ Then we set all the negative values to 0 (blackening 
+\begin_inset Formula $1\%$
+\end_inset
+
+ of the photo's darkest pixels).
 \end_layout
 
 \begin_layout Standard
@@ -1285,19 +1323,7 @@ The example photo pre post blacks deepening and the intensity histograms.
 \end_layout
 
 \begin_layout Section
-Discussion
-\end_layout
-
-\begin_layout Subsection
-Color shift faraway
-\end_layout
-
-\begin_layout Subsection
-Stability vs Speed
-\end_layout
-
-\begin_layout Subsection
-Numerical Analysis
+Results Analysis
 \end_layout
 
 \begin_layout Standard
@@ -1307,7 +1333,7 @@ Each scene have a photo with a calibration palette.
  The result is in a form of an angle that represent the error between the
  corrected 6 grayscale parts and the grayscale 6-piece of the open-air palette.
  We compare the results of representing photos from each scene of out two
- correction methods (S-Single, M-Multiple) in table 
+ correction methods (O-Original, S-Single, M-Multiple) in table 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tab:Multi/Single-shots-statistics"
@@ -1330,7 +1356,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="6">
+<lyxtabular version="3" rows="5" columns="6">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -1389,6 +1415,90 @@ D4
 
 \begin_layout Plain Layout
 D5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+O
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/oD1.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/oD3.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/oD4.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/oD5.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1492,6 +1602,13 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/mD1.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
 
 \end_layout
 
@@ -1510,6 +1627,13 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/mD3.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
 
 \end_layout
 
@@ -1519,6 +1643,13 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/mD4.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
 
 \end_layout
 
@@ -1528,6 +1659,13 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/mD5.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
 
 \end_layout
 
@@ -1551,7 +1689,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $2.02/$
+\begin_inset Formula $2.02/1.64$
 \end_inset
 
 
@@ -1572,7 +1710,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $0.88/$
+\begin_inset Formula $0.88/0.99$
 \end_inset
 
 
@@ -1584,7 +1722,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $1.78/$
+\begin_inset Formula $1.78/2.63$
 \end_inset
 
 
@@ -1596,7 +1734,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $2.6/$
+\begin_inset Formula $2.6/2.16$
 \end_inset
 
 
@@ -1636,7 +1774,28 @@ Multi/Single shots statistics gray error angles
 \end_layout
 
 \begin_layout Section
-Math tools
+Discussion and conclusions
+\end_layout
+
+\begin_layout Subsection
+Stability vs Speed
+\end_layout
+
+\begin_layout Standard
+Although the single photo method is much more applicable as a fast solution,
+ the multiple method is more stable and produces a constant tone images.
+ I also provides more data about depth ranges that are not present in the
+ actual corrected photo and are helping with a better model fitting.
+ It seems that in a shorter range it produces better results, but tends
+ to saturate in faraway areas (such as the red saturation in D5).
+\end_layout
+
+\begin_layout Subsubsection
+M̄-method red saturation
+\end_layout
+
+\begin_layout Section
+Auxiliary Functions
 \end_layout
 
 \begin_layout Subsection
@@ -1647,7 +1806,8 @@ Vector to quasi-convex vector
 In order to fit the best model for our lower bound theorem and we wanted
  to reduce the penalty of the L2 loss function.
  We created a function that is looking for the peaks that define the upper
- limit and the decline of the vector in the following steps:
+ limit and the decline of the vector.
+ We use this function only when estimating with a single photo.
 \end_layout
 
 \begin_layout Standard
@@ -1744,6 +1904,18 @@ Set
 \end_inset
 
 
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Derya Akkaynak, Tali Treibitz; The IEEE Conference on Computer Vision and
+ Pattern Recognition (CVPR), 2019, pp.
+ 1682-1691
 \end_layout
 
 \end_body
