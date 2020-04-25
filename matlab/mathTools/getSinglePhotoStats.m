@@ -1,4 +1,4 @@
-function [Istruct,Jbstruct]= getSinglePhotoStats(I,depth,hp,lp,resizeIM)
+function Istruct = getSinglePhotoStats(I,depth,hp,lp,resizeIM)
 if resizeIM>0
     I=imresize(I,0.5,'method','nearest');
 end
@@ -55,8 +55,8 @@ Ihp=zeros(zlen-1,3); Ilp=zeros(zlen-1,3); Imean=zeros(zlen-1,3);
 z=(z(1:end-1)+z(2:end))/2;
 z=z(:);
 
-Istruct=struct;
-Jbstruct=struct;
-Istruct.data=[Imean z Ivar Ihp Ilp];% Ilambda];
-Jbstruct.data=[Ilp z];
+%Istruct=struct;
+%Jbstruct=struct;
+Istruct=[Imean Ilp Ihp Ivar z];% Ilambda];
+%Jbstruct.data=[Ilp z];
 end
