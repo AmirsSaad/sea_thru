@@ -117,7 +117,17 @@ Histogram Statistics
 \end_layout
 
 \begin_layout Standard
-Each photo is analyzed using its given depth map.
+Each photo is analyzed using its given depth map, as in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:An-example-for"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
  The methods for creating a depth map will not be discussed and we will
  assume we have a true depth map for each photo taken.
  We'd like to extract a set of statistics as a function of the distance
@@ -222,6 +232,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:An-example-for"
+
+\end_inset
+
 An example for underwater photo and its depth map.
  The steps of the process explained in this paper will be shown on this
  photo.
@@ -250,13 +266,24 @@ For each color channel (
 \begin_inset Formula $c=r,g,b$
 \end_inset
 
-) we solve an independent optimization problem:
+) we solve an independent optimization problem: as in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
+\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
 _{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
 _{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
  & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
@@ -304,7 +331,7 @@ D(i) & =[1\%,mean,99\%]
 \end_layout
 
 \begin_layout Subsection
-Parallel color fit with internal WB
+Rejected Method: Parallel color fit with internal WB
 \end_layout
 
 \begin_layout Standard
@@ -1095,7 +1122,7 @@ The example photo post WB, pre Blacks Deepening
 \end_layout
 
 \begin_layout Subsubsection
-Other method: Statistical White/Gray Balance
+Rejected method: Statistical White/Gray Balance
 \end_layout
 
 \begin_layout Standard
@@ -1245,6 +1272,357 @@ status open
 
 \begin_layout Plain Layout
 The example photo pre post blacks deepening and the intensity histograms.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Subsection
+Color shift faraway
+\end_layout
+
+\begin_layout Subsection
+Stability vs Speed
+\end_layout
+
+\begin_layout Subsection
+Numerical Analysis
+\end_layout
+
+\begin_layout Standard
+Each scene have a photo with a calibration palette.
+ Using this palette and a picture of the palette in open air we can estimate
+ the underwater image color's correction.
+ The result is in a form of an angle that represent the error between the
+ corrected 6 grayscale parts and the grayscale 6-piece of the open-air palette.
+ We compare the results of representing photos from each scene of out two
+ correction methods (S-Single, M-Multiple) in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Multi/Single-shots-statistics"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+S
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/sD1.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/sD3.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/sD4.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/sD5.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+M
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\nicefrac{S^{\circ}}{M^{\circ}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $2.02/$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0.88/$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $1.78/$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $2.6/$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Multi/Single-shots-statistics"
+
+\end_inset
+
+Multi/Single shots statistics gray error angles
 \end_layout
 
 \end_inset
