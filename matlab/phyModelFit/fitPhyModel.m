@@ -166,10 +166,12 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
     hplocs=intersect(intersect(hp(1).locs,hp(2).locs),hp(3).locs);
     if isempty(hplocs)
         [~,maxloc]=max(vecnorm(Ihpf(:,:),2,2));
+        mat=Ihpf(maxloc,:)./Ihpf(maxloc,2);
     else
         [~,maxloc]=max(vecnorm(Ihpf(hplocs,:),2,2));
+        mat=Ihpf(hplocs(maxloc),:)./Ihpf(hplocs(maxloc),2);
     end
-    mat=Ihpf(hplocs(maxloc),:)./Ihpf(hplocs(maxloc),2);
+    
     
     %photonEQ=252./mat;
 %     mat=[sum(Imef,1)' sum(Ihpf,1)' sum(sqrt(Ivf),1)'];
@@ -188,8 +190,11 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
     if isplot
         for i=1:3
         rgb=['#D95319';'#77AC30';'#0072BD'];
-
-        figure(1);
+        if i==1
+            figure('Name','Backscatter');
+        else
+            figure(1);
+        end
         plot(z,Binf(i)*(1-exp(-betaB(i)*z)),'LineStyle','--','Color',rgb(i,:));
         hold on;
         plot(z,Jb(:,i),'Marker','.','Color',rgb(i,:));
@@ -203,8 +208,13 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         end
         %legend(,);
         ylabel('Intensity'); xlabel('z distance [m]');
-
-        figure(2);
+        
+        if i==1
+            figure('Name','AL');
+        else
+            figure(2);
+        end
+        
         subplot(1,3,i);
         plot(z,hpJD(i)*exp(-(betaD(1,i)./(z.^betaD(2,i)+betaD(3,i))).*z)+C(i),'--','Color',rgb(i,:));
         hold on;
@@ -257,8 +267,11 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         %legend('fit Model sum','fit BS term','fit Atten term','Empirical mean');
         %ylabel('Mean intensity'); xlabel('z distance [m]');
 
-
-        figure(3)
+        if i==1
+            figure('Name','Iz_fixed');
+        else
+            figure(3);
+        end
         if ver==3
             plot(z,fixedRatio(:,i)*photonEQ(i),'Color',rgb(i,:));
         else
@@ -287,9 +300,11 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
             ylabel('Intensity'); xlabel('z distance [m]');
         end
         
-        
-        figure(4)
-        
+        if i==1
+            figure('Name','Variance');
+        else
+            figure(4);
+        end
         subplot (3,1,i)
         plot(z,Ivar(:,i),'.--','Color',rgb(i,:));
         hold on
