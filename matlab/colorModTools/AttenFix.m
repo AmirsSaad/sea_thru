@@ -12,7 +12,7 @@ function [Iout] = AttenFix(I,depth,coefs,ver,withNorm,normMeanVal)
                 C=ones(size(I(:,:,1)))*coefs(i,6);
                 I(:,:,i)=I(:,:,i)-C;
             end
-           I(:,:,i)=I(:,:,i).*exp((coefs(i,2)./sqrt(coefs(i,3)+depth)).*depth);% (x(4)*exp(x(7)*z)+x(8)*exp(x(9)*z))
+           I(:,:,i)=I(:,:,i).*exp((coefs(i,2)./(depth.^coefs(i,3)+coefs(i,4))).*depth);% (x(4)*exp(x(7)*z)+x(8)*exp(x(9)*z))
            if ver==1
                 I(:,:,i)=I(:,:,i)+C;
            end
