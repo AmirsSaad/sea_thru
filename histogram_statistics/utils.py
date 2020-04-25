@@ -120,25 +120,18 @@ def accumulate_histograms(histograms_path_list,rgb_bins,mean_shift=None):
 def depth_envelopes(histogram,bins,low_percentile = 0.01):
     histogram =  histogram/np.sum(histogram)
     low_idx = np.cumsum(histogram)<low_percentile
+    high_idx = np.cumsum(histogram)>1-low_percentile
     low = np.sum(np.multiply(histogram[low_idx],bins[low_idx])) / (np.sum(histogram[low_idx])+0.0001)
+    high = np.sum(np.multiply(histogram[high_idx],bins[high_idx])) / (np.sum(histogram[high_idx])+0.0001)
     mid = np.sum(np.multiply(histogram,bins))
-    # high = np.where(np.cumsum(histogram)>0.95)[0][0]
-    # low = bins[low_idx][-1]
-    return(mid,low)
-    # return([low,mid,high])
+    var = np.sum(np.multiply(histogram,(bins-mid)**2))
+    return mid,low,high,var 
+    
 
-def channel_depth_curve(histogram , rgb_bins ,low_percentile):
-    channels = list()
-    bs_channels = list()
-    for d in range(histogram.shape[2]):
-        depth = list()
-        bs_depth = list()
-        for c in range (3):
-            depth.append(depth_envelopes(histogram[:,c,d],rgb_bins,low_percentile)[0])
-            bs_depth.append(depth_envelopes(histogram[:,c,d],rgb_bins,low_percentile)[1])
-        channels.append(depth)
-        bs_channels.append(bs_depth)
-    return(channels,bs_channels)
+def channel_depth_curve(histogram , rgb_bins ,lp):
+    
+    measurememts = [[depth_envelopes(histogram[:,c,d],rgb_bins,lp) for c in range(3)] for d in range(histogram.shape[2])]    
+    return measurememts
 
 def npy2mat():
     # data = np.load(r"C:\Users\amirsaa\Documents\sea_thru_data\D3\histograms_linear\T_S04869.npy")
