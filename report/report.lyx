@@ -7,9 +7,9 @@
 \textclass article
 \use_default_options true
 \begin_modules
-eqs-within-sections
-figs-within-sections
 tabs-within-sections
+figs-within-sections
+eqs-within-sections
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -246,6 +246,20 @@ For each color channel (
 \end_inset
 
 ) we solve an independent optimization problem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
+_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
+_{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
+ & +\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}
+\end{align}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1248,7 +1262,15 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-out =vec2qconv(vec)
+
+\series bold
+out 
+\series default
+=vec2qconv(
+\series bold
+vec
+\series default
+)
 \end_layout
 
 \end_inset
@@ -1260,7 +1282,7 @@ out =vec2qconv(vec)
 Finding the all the peaks of 
 \series bold
 vec 
-\begin_inset Formula $\rightarrow[peaks,locs]$
+\begin_inset Formula $\rightarrow[\mathbf{peaks,locs}]$
 \end_inset
 
 
@@ -1281,11 +1303,19 @@ Setting each value of
 \series bold
 out
 \series default
-(locs
+(
+\series bold
+locs
+\series default
+
 \begin_inset Formula $(i)$
 \end_inset
 
-:locs
++1:
+\series bold
+locs
+\series default
+
 \begin_inset Formula $(i+1)$
 \end_inset
 
