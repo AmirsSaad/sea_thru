@@ -4,6 +4,9 @@ depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
 
+if prod(size(I,[1 2]))~=prod(size(depth))
+   I=imresize(I, size(depth),'method','nearest');
+end
 
 if config.plotAllStages
     %figure(10)
@@ -17,6 +20,7 @@ if config.plotAllStages
     imagesc(depth); colorbar;
     %title('Depth Map');
     print(gcf,'02_Depth.eps','-depsc');
+    saveas(gcf,'02_Depth.png');
     close
 end
 
@@ -153,7 +157,7 @@ end
 %%apply contrast strech
 if config.contStr
     disp('Stretching contrast...');
-    Ifixed=cntStretch(Ifixed,'blacks');
+    Ifixed=cntStretch(Ifixed,'biside');
     % Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
 %     rHist = imhist(Ifixed(:,:,1), 256);
 %     [lims,~]=histsmartedges(rHist);
