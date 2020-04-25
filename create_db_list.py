@@ -20,6 +20,6 @@ for d , paths in data_paths.items():
         db.append(d)
 
 df = pd.DataFrame({"dng":dng,"depth":depth,"db":db})
-df.sample(frac=1).to_csv(r'D:\sea_thru_experiments\04_20__00_57\data.csv',index=False)
+df.sample(frac=1).to_csv(r'D:\sea_thru_experiments\04_22_2035\Ddata.csv',index=False)
 
 
