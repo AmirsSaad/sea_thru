@@ -10,15 +10,15 @@ depthmax = max(depth,[],'all');
 depthmin = min(depth(depth>0),[],'all');
 step=0.1; %10cm
 if resizeIM>0
-    z=depthmin:step:depthmax*0.9;
-    z(end)=depthmax*0.9;
+    z=depthmin:step:depthmax*0.95;
+    z(end)=depthmax*0.95;
 else
     z=depthmin:step:depthmax;
     z(end)=depthmax;
 end
 zlen=length(z);
 
-Ivar=zeros(zlen-1,3); Imin=zeros(zlen-1,3);
+Ivar=zeros(zlen-1,3); %Imin=zeros(zlen-1,3);
 Ihp=zeros(zlen-1,3); Ilp=zeros(zlen-1,3); Imean=zeros(zlen-1,3);
 
 
