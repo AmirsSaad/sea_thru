@@ -89,7 +89,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
                     ...%1000/mean(Ihp(:,i)) * max(0,(Ihp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(3) -(a(4)./(z.^a(6)+a(7))).*z)-a(5)) ...
                     ];
         else
-                    fun = @(a) [  1 * (Ihp(:,i)  -exp(a(3) -(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
+        fun = @(a) [  1 * (Ihp(:,i)  -exp(a(3) -(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       3 * (Ilp(:,i)  -exp(a(12)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       1 * (Imean(:,i)-exp(a(11)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       5 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./(z.^a(6)+a(7))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
