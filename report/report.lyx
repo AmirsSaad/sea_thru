@@ -99,9 +99,12 @@ Supervisor: Tali Treibitz, Ph.D.
 \end_layout
 
 \begin_layout Abstract
-In the following paper we will present our take on ___ , which introduced
- a physical model for color correction of underwater images.
- Our paper presenting new approach for the model estimation and its practical
+In the following paper we will present our take on 
+\series bold
+Sea-thru: A Method For Removing Water From Underwater Images
+\series default
+.
+ We'll new approach for the physical model estimation and its practical
  implementation.
 \end_layout
 
@@ -114,7 +117,9 @@ Histogram Statistics
 \end_layout
 
 \begin_layout Standard
-Each photo is analyzed using its depth map.
+Each photo is analyzed using its given depth map.
+ The methods for creating a depth map will not be discussed and we will
+ assume we have a true depth map for each photo taken.
  We'd like to extract a set of statistics as a function of the distance
  from the camera (
 \begin_inset Formula $z$
@@ -474,11 +479,18 @@ negative
 \end_inset
 
  light, we use the 
-\begin_inset Formula $I_{c}^{min}(z)$
+\begin_inset Formula $I_{c}^{lp}(z)$
 \end_inset
 
- vectors as a upper bound (constraint) for a concave function in the optimizatio
-n process.
+ vectors as a 
+\series bold
+upper bound
+\series default
+ (constraint) for a 
+\series bold
+monotonic increasing concave function
+\series default
+ in the optimization process.
 \end_layout
 
 \begin_layout Standard
@@ -608,16 +620,25 @@ The
 \begin_inset Formula $I_{c}^{lp}(z)$
 \end_inset
 
- which are the highest and lowest percentiles of brightness per depth ,and
+ which are the highest and lowest percentiles of brightness per depth, and
  the 
 \begin_inset Formula $I_{c}^{mean}(z)$
 \end_inset
 
  vector, which we use in a similar way we used the 
-\begin_inset Formula $I_{c}^{min}(z)$
+\begin_inset Formula $I_{c}^{lp}(z)$
 \end_inset
 
- term, but this time as a lower bound for convex function.
+ term, but this time we subtract the estimated BS term and we treat them
+ as a 
+\series bold
+lower bound
+\series default
+ for 
+\series bold
+convex, monotonic decreasing
+\series default
+, model function.
 \end_layout
 
 \begin_layout Standard
