@@ -37,7 +37,7 @@ eqs-within-sections
 \spacing single
 \use_hyperref false
 \papersize default
-\use_geometry true
+\use_geometry false
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -62,10 +62,10 @@ eqs-within-sections
 \shortcut idx
 \color #008000
 \end_index
-\leftmargin 3.5cm
-\topmargin 2.5cm
-\rightmargin 3.5cm
-\bottommargin 2.5cm
+\leftmargin 2.5cm
+\topmargin 3cm
+\rightmargin 2.5cm
+\bottommargin 3cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -74,7 +74,7 @@ eqs-within-sections
 \math_numbering_side default
 \quotes_style english
 \dynamic_quotes 0
-\papercolumns 1
+\papercolumns 2
 \papersides 1
 \paperpagestyle default
 \tracking_changes false
@@ -194,8 +194,64 @@ Histogram Statistics
 
 \begin_layout Standard
 Each photo is analyzed using its given depth map.
- The methods for creating a depth map will not be discussed and we will
- assume we have a true depth map for each photo taken.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/01_Orig.jpg
+	lyxscale 3
+	width 95col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/07_IcontrastStr.jpg
+	lyxscale 3
+	width 95col%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:An-example-for"
+
+\end_inset
+
+An example for underwater photo and its final correction.
+ The steps of the process explained in this paper will be shown on this
+ photo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The methods for creating a depth map will not be discussed and we will assume
+ we have a true depth map for each photo taken.
  We'd like to extract a set of statistics as a function of the distance
  from the camera (
 \begin_inset Formula $z$
@@ -240,95 +296,6 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-The main statistics we're going to use are per color channel (represented
- as 
-\begin_inset Formula $c$
-\end_inset
-
- subscript) and per depth (usually referred as a function of 
-\begin_inset Formula $z$
-\end_inset
-
-) and are:
-\end_layout
-
-\begin_layout Itemize
-The mean pixel color intensity, will be represented as 
-\begin_inset Formula $I_{c}^{mean}(z)$
-\end_inset
-
-, and the lower and upper percentiles (
-\begin_inset Formula $lp,hp$
-\end_inset
-
-) of the intensities - 
-\begin_inset Formula $I_{c}^{1\%}(z),I_{c}^{99\%}(z)$
-\end_inset
-
-.
- These three vectors will be treated in a similar manner and usually be
- referred with a superscript 
-\begin_inset Formula $(i)$
-\end_inset
-
-, such as 
-\begin_inset Formula $I_{c}^{(i)}(z)$
-\end_inset
-
- or 
-\begin_inset Formula $J_{cD}^{(i)}$
-\end_inset
-
- when talking about related coefficients.
-\end_layout
-
-\begin_layout Itemize
-The intensity variance in each depth, 
-\begin_inset Formula $Var(I_{c}|z)$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/fixProcessSteps/01_Orig.jpg
-	lyxscale 3
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:An-example-for"
-
-\end_inset
-
-An example for underwater photo.
- The steps of the process explained in this paper will be shown on this
- photo.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
 
 \end_layout
 
@@ -344,8 +311,8 @@ status open
 \align center
 \begin_inset Graphics
 	filename figs/fixProcessSteps/02_Depth.eps
-	lyxscale 3
-	width 50col%
+	lyxscale 10
+	width 100col%
 
 \end_inset
 
@@ -372,50 +339,78 @@ The example photo's depth map.
 
 \end_layout
 
-\begin_layout Itemize
-We applied our methods on RAW images, in a stage of the pipeline where the
- data is in a form of the camera's sensors color space.
- After we apply our changes the image returns to the pipeline, coming out
- in its end in a viewable form and in a format of choosing.
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section
-Model Estimation
-\end_layout
-
-\begin_layout Subsection
-Chosen Method: Series color fit with external WB
-\end_layout
-
 \begin_layout Standard
-For each color channel (
-\begin_inset Formula $c=r,g,b$
+The main statistics we're going to use are per color channel (represented
+ as 
+\begin_inset Formula $c$
 \end_inset
 
-) we solve an independent optimization problem (eq.
- 
+ subscript) and per depth (usually referred as a function of 
+\begin_inset Formula $z$
+\end_inset
+
+) and are:
+\end_layout
+
+\begin_layout Itemize
+The mean pixel color intensity, will be represented as 
+\begin_inset Formula $I_{c}^{mean}(z)$
+\end_inset
+
+, and the lower and upper percentiles (
+\begin_inset Formula $lp,hp$
+\end_inset
+
+) of the intensities - 
+\begin_inset Formula $I_{c}^{lp/1\%}(z),I_{c}^{hp/99\%}(z)$
+\end_inset
+
+ (see figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:"
+reference "fig:Attenuating-direct-light"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
-) to find the set of coefficients of 
-\begin_inset Formula $\nu_{c}$
+).
+ These three vectors will be treated in a similar manner and usually be
+ referred as a sum with a superscript 
+\begin_inset Formula $(i)$
 \end_inset
 
- (eq.
- 
+, such as 
+\begin_inset Formula $I_{c}^{(i)}(z)$
+\end_inset
+
+ or 
+\begin_inset Formula $J_{cD}^{(i)}$
+\end_inset
+
+ when talking about related coefficients (see eq.
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:vc"
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Itemize
+The intensity variance in each depth, 
+\begin_inset Formula $Var(I_{c}|z)$
+\end_inset
+
+ (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Squared-sum-of"
 plural "false"
 caps "false"
 noprefix "false"
@@ -426,131 +421,33 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
-_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\nonumber \\
-_{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\nonumber \\
- & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\nonumber 
-\end{align}
-
-\end_inset
-
-
+We applied our methods on RAW images, in a stage of the pipeline where the
+ data is in a form of the camera's sensors color space.
+ After we apply our changes the image returns to the pipeline, coming out
+ in its end in a viewable form and in a format of choosing.
 \end_layout
 
-\begin_layout Standard
-where our coefficients vector 
-\begin_inset Formula $\nu_{c}$
-\end_inset
-
- and the physical model
-\begin_inset CommandInset citation
-LatexCommand cite
-key "key-1"
-literal "false"
-
-\end_inset
-
- (eq 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:formation"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-) are represented as:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
-BS_{c}(z,B_{c}^{\infty},\beta_{c}^{B}) & =B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\label{eq:al}\\
-D(i) & =[1\%,mean,99\%]
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The chosen model for 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
- in eq.
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:al"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- will be discussed in subsection 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "subsec:Decay-of"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
+\begin_layout Section
+Model Estimation
 \end_layout
 
 \begin_layout Subsection
-Rejected Method: Parallel color fit with internal WB
-\end_layout
-
-\begin_layout Standard
-We decided to try find the best fit for the three colors in parallel, but
- this time, also aiming for best fit in between the fixed color vectors.
- (Notice 
-\begin_inset Formula $\epsilon_{lmn}$
-\end_inset
-
- to represent all colors' permutations with Einstein notation)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\min_{\nu_{c}}\sum_{c=1}^{3}\alpha\{ & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
- & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\nonumber \\
- & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\nonumber \\
- & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\}\nonumber \\
- & +\sum_{i=1}^{3}\epsilon_{lmn}\left(a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]-a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\right)^{2}\nonumber 
-\end{align}
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Single-photo-Model-Estimation"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-This method had to many degrees of freedom, was not stable and did not produce
- better results.
- We choose to include it here because we consider it a good approach and
- it might work better under some circumstances and/or different bounding
- and balancing.
- It is beyond the scope of this paper.
-\end_layout
-
-\begin_layout Subsection
-Single photo fit
+Single-photo Model Estimation
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Intensity-as-upper"
+
+\end_inset
+
 Intensity as upper and lower bound
 \end_layout
 
@@ -613,10 +510,31 @@ In a similar manner, we can look at the lightest parts of each intensity
 We cannot use the variance vector the same way, since the local variance
  in a photo's depth section might be both above or below the general attenuation
  trend, depending on the scene.
+ That's why we're going to use a simple 
+\begin_inset Formula $L_{2}$
+\end_inset
+
+ norm with a Lagrange multiplier (see the optimization problem in eq 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Subsubsection
-Backscatter Extraction
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Optional-Backscatter-Extraction"
+
+\end_inset
+
+Optional Backscatter Extraction
 \end_layout
 
 \begin_layout Standard
@@ -667,6 +585,237 @@ If there's no area, or it is small (smaller than a set threshold -
 \end_layout
 
 \begin_layout Subsubsection
+Optimization Problem
+\end_layout
+
+\begin_layout Paragraph
+Chosen Method: Series color fit
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For each color channel (
+\begin_inset Formula $c=r,g,b$
+\end_inset
+
+) we solve an independent optimization problem (using MATLAB's 
+\begin_inset Formula $nonlinlsq$
+\end_inset
+
+, since 
+\begin_inset Formula $z$
+\end_inset
+
+ is now deterministic depth and not continuous) for the Lagrangian 
+\begin_inset Formula $\mathcal{L}_{c}(v_{c},z)$
+\end_inset
+
+ (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) to find the set of coefficients of 
+\begin_inset Formula $\nu_{c}$
+\end_inset
+
+ (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:vc"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\min_{\nu_{c}} & \mathcal{L}_{c}(v_{c},z)
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+ & \mathcal{L}_{c}(v_{c},z)=\sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
+ & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\nonumber \\
+ & +\underbrace{\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{(Lower barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
+ & +\underbrace{\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}}_{\text{(Upper barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where our coefficients vector 
+\begin_inset Formula $\nu_{c}$
+\end_inset
+
+ and the physical model
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ (eq 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) are represented as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
+BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
+AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\label{eq:al}\\
+D(i) & =[1\%,mean,99\%]
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The chosen model for 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:al"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ will be discussed in subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Decay-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Rejected Method: Parallel color fit with internal WB
+\end_layout
+
+\begin_layout Standard
+We decided to try find the best fit for the three colors in parallel, but
+ this time, also aiming for best fit in between the fixed color vectors.
+ (Notice 
+\begin_inset Formula $\epsilon_{lmn}$
+\end_inset
+
+ to represent all colors' permutations with Einstein notation)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\min_{\nu_{c}} & \sum_{c=1}^{3}\alpha_{c}\mathcal{L}_{c}(v_{c},z)\\
+ & +\sum_{i=1}^{3}\epsilon_{lmn}\{a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]\nonumber \\
+ & -a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\}^{2}\nonumber 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This method had to many degrees of freedom, was not stable and did not produce
+ better results.
+ We choose to include it here because we consider it a good approach and
+ it might work better under some circumstances and/or different bounding
+ and balancing.
+ It is beyond the scope of this paper.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/LFT_3374_BS_fit.eps
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Backscatter-model-is"
+
+\end_inset
+
+Backscatter model is fitted to the lower percentile intensity of each color
+ channel.
+ The intensities are acting as an upper bound for the monotonic-increasing
+ BS model.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 Backscatter
 \end_layout
 
@@ -705,52 +854,37 @@ upper bound
 monotonic increasing concave function
 \series default
  in the optimization process.
+ The results of such process can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Backscatter-model-is"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
  Using our depth map and the backscatter coefficients, we create an estimated
- backscatter photo which we subtract from the original raw photo.
+ backscatter photo which we subtract from the original raw photo (Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:An-estimated-BS"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
 \align center
 \begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/LFT_3374_BS_fit.eps
-	lyxscale 10
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Backscatter model is fitted to the lower percentile intensity of each color
- channel.
- The intensities are acting as an upper bound for the monotonic-increasing
- BS model.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-placement H
-wide false
+placement t
+wide true
 sideways false
 status open
 
@@ -759,7 +893,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/01_Orig.jpg
 	lyxscale 3
-	width 28col%
+	width 23page%
 
 \end_inset
 
@@ -778,7 +912,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/04_BSonly.jpg
 	lyxscale 3
-	width 28col%
+	width 23page%
 
 \end_inset
 
@@ -797,7 +931,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/03_BSrem.jpg
 	lyxscale 3
-	width 28col%
+	width 23page%
 
 \end_inset
 
@@ -805,8 +939,14 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-An estimated BS image is subtracted from the example photo, resulting a
- uniform tone and clarity over distance.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:An-estimated-BS"
+
+\end_inset
+
+An estimated BS image is subtracted from the example photo, resulting in
+ a uniform tone and better clarity over distance.
 \end_layout
 
 \end_inset
@@ -814,13 +954,6 @@ An estimated BS image is subtracted from the example photo, resulting a
 
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -861,7 +994,17 @@ lower bound
 \series bold
 convex, monotonic decreasing
 \series default
-, model function.
+, model function (A fit that can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Attenuating-direct-light"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -877,7 +1020,7 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_ALfit_fix.eps
 	lyxscale 10
-	width 50col%
+	width 100col%
 
 \end_inset
 
@@ -885,6 +1028,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Attenuating-direct-light"
+
+\end_inset
+
 Attenuating direct light model is fitted to the intensity vectors of each
  color channel.
  The intensities are acting as a lower bound for the monotonic-decreasing
@@ -902,6 +1051,13 @@ Attenuating direct light model is fitted to the intensity vectors of each
 \end_layout
 
 \begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 In addition, we measure the variance of each color over the photo's depth
  range, creating three 
 \begin_inset Formula $Var(I_{c}|z)$
@@ -912,10 +1068,10 @@ In addition, we measure the variance of each color over the photo's depth
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align}
-Var(I_{c}|z)= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)\nonumber \\
-= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)
-\end{align}
+\begin{align*}
+Var(I_{c}|z) & =Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B_{c}^{\infty}(1-e^{-\beta_{c}^{B}z})|z)\\
+= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}|z)+Var(B_{c}^{\infty}(1-e^{-\beta_{c}^{B}z})|z)
+\end{align*}
 
 \end_inset
 
@@ -924,13 +1080,26 @@ Var(I_{c}|z)= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B^{\infty}(1-e^{-\beta_{c}^{B}z
 
 \begin_layout Standard
 Since each photo is not ideal, we have a sensor noise variance term that
- is added and we conclude:
+ is added and we conclude a model that should obey eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:var"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}Var(J_{c}^{D})+(1-e^{-\beta_{c}^{B}z})^{2}Var(B^{\infty})+\sigma_{c}^{2}
+Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}\cdot Var(J_{c}^{D})\label{eq:var}\\
+ & +\,(1-e^{-\beta_{c}^{B}z})^{2}\cdot Var(B^{\infty})\nonumber \\
+ & +\,\sigma_{c}^{2}\nonumber 
 \end{align}
 
 \end_inset
@@ -947,8 +1116,28 @@ Both
 \begin_inset Formula $\sigma_{c}^{2}$
 \end_inset
 
- can be extracted from the photo or be estimated during the optimization
- process.
+ can be extracted from the photo (as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Optional-Backscatter-Extraction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) or be estimated during the optimization process.
+ Such fit and its following correction can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Squared-sum-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -964,7 +1153,7 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_Var.eps
 	lyxscale 10
-	width 50col%
+	width 100col%
 
 \end_inset
 
@@ -972,76 +1161,14 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Squared-sum-of"
+
+\end_inset
+
 Squared sum of AL and BS model is fitted to the variance vectors of each
  color channel alongside the intensities and applied to the color correction.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/LFT_3374_Ifixed_fit.eps
-	lyxscale 10
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-The intensity vectors after the applied color correction
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/fixProcessSteps/05_If_preWB.jpg
-	lyxscale 3
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-The example photo post color attenuation correction and before white balancing.
 \end_layout
 
 \end_inset
@@ -1069,11 +1196,20 @@ Decay of
 \end_layout
 
 \begin_layout Standard
-The original paper stated that 
+The original paper
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ stated that 
 \begin_inset Formula $\beta_{C}^{D}$
 \end_inset
 
- is a sum of two exponential terms such as 
+ is not constant but decays and is a sum of two exponential terms such as
+ 
 \begin_inset Formula $(a\cdot e^{bz}+d\cdot e^{cz})$
 \end_inset
 
@@ -1085,7 +1221,7 @@ The original paper stated that
 \begin_inset Formula $b,d<0$
 \end_inset
 
-, which indeed, 
+ which indeed causes the term to decay since 
 \begin_inset Formula $\lim_{z\rightarrow\infty}(a\cdot e^{bz}+d\cdot e^{cz})=0$
 \end_inset
 
@@ -1094,22 +1230,29 @@ The original paper stated that
 
 \begin_layout Standard
 Having said that, this term is approaching 0 faster than 
-\begin_inset Formula $\frac{1}{z^{t}}$
+\begin_inset Formula $\frac{1}{z}$
 \end_inset
 
-, where 
-\begin_inset Formula $t>1$
-\end_inset
-
-, which causes a non-monotonic attenuated light term that reaches 
+, which causes a non-monotonic light term that reaches 
 \begin_inset Formula $J_{c}^{D}$
 \end_inset
 
-, since: 
+ in infinity instead of 0, as can be seen in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:notatten"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \begin_inset Formula 
 \begin{align}
-\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & 0\\
-\implies\lim_{z\rightarrow\infty}J_{c}^{D}e^{-\beta_{c}^{D}z}= & J_{c}^{D}>0
+\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & \lim_{z\rightarrow\infty}aze^{bz}+dze^{cz}=0\\
+\implies & \lim_{z\rightarrow\infty}J_{c}^{D}e^{-\beta_{c}^{D}z}=J_{c}^{D}\label{eq:notatten}
 \end{align}
 
 \end_inset
@@ -1118,27 +1261,42 @@ Having said that, this term is approaching 0 faster than
 \end_layout
 
 \begin_layout Standard
-Realizing that, we can set a constraint such as 
-\begin_inset Formula $\beta_{C}^{D}>(a\cdot e^{bz}+d\cdot e^{cz})>\frac{1}{z};\forall z>0$
+Although it is a fair approximation for short ranges, we cannot bound the
+ coefficients in simple way which causes unrealistic results of the optimization
+ problem.
+ Realizing that, we choose another decay model (Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:betad"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
- or choose another decay model to another form such as 
-\begin_inset Formula $a\frac{1}{z^{b}+c}$
-\end_inset
-
-, where 
-\begin_inset Formula $a,c>0$
-\end_inset
-
- and 
+) which has less degrees of freedom and is easier to bound since 
 \begin_inset Formula $0<b<1$
 \end_inset
 
-.
+ and decays slow enough so the whole attenuated light term will also decay.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\beta_{c}^{D}= & a\frac{1}{z^{b}+c}\label{eq:betad}\\
+s.t. & a,c>0\nonumber \\
+ & 0<b<1\nonumber 
+\end{align}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Multiple photo fit
+Multiple-photo Model Estimation
 \end_layout
 
 \begin_layout Standard
@@ -1156,22 +1314,32 @@ The process is very similar, yet this time the
 
  vectors are derived from several photos and include the full range of distances
  that are in the set of the photos.
- It is important to cite that all the photos must have the same shutter
- speed, ISO and aperture, or they must be normalized.
+ It is important to note that all the photos must have the same shutter
+ speed, ISO and aperture, or they must be normalized by those.
 \end_layout
 
 \begin_layout Standard
 The advantage of such method lies in its stability.
- All the photos will be treated in the same way, with the same coefficients,
+ All of the photos will be treated in the same manner, with same coefficients,
  and therefore they will have the same tones.
  This is why this method is a good option for videos, where you can use
- a certain number of last frames.
+ a certain amount of last frames and have continuous tone between frames.
 \end_layout
 
 \begin_layout Standard
 In this method we will not treat the measured intensities as upper and lower
- bounds, as we did in the single photo process.
- This time we can solve an easier optimization problem for each color channel
+ bounds, as we did in the single-photo process (section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Single-photo-Model-Estimation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ This time we solve an easier optimization problem for each color channel
  (
 \begin_inset Formula $c=r,g,b$
 \end_inset
@@ -1202,8 +1370,8 @@ where our coefficients vector
 \begin_inset Formula 
 \begin{align}
 \nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
-BS_{c}(z,B_{c}^{\infty},\beta_{c}^{B}) & =B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\\
+BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
+AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
 D(i) & =[5\%,mean,95\%]
 \end{align}
 
@@ -1212,21 +1380,44 @@ D(i) & =[5\%,mean,95\%]
 
 \end_layout
 
-\begin_layout Itemize
-It is important to note that this time the 
-\begin_inset Quotes eld
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/05_If_preWB.jpg
+	lyxscale 3
+	width 100col%
+
 \end_inset
 
-Whitest balance
-\begin_inset Quotes erd
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-example-photo"
+
 \end_inset
 
- is now acting on the three 
-\begin_inset Formula $I_{c}^{hp}$
+The example photo post color attenuation correction and before white balancing.
+\end_layout
+
 \end_inset
 
- vectors that include the whole set of images.
- The results when WB using a single photo vectors are nearly the same.
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1238,6 +1429,96 @@ Whitest balance
 
 \begin_layout Section
 Post Color Correction Processing
+\end_layout
+
+\begin_layout Standard
+Wether we use the single or multiple shots method, the photos in this stage
+ (which can be seen in Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-example-photo"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) requires a further treatment.
+ This will be a 
+\series bold
+global 
+\series default
+action which will act on the photo as a whole (and not per depth), such
+ as white balance and contrast stretch.
+ One of the reasons for these steps is the fact that the sunlight spectrum
+ changes and parts of it attenuates on its way to the objects.
+ After we apply all of the above, the attenuated vectors of figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Attenuating-direct-light"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ will turn into the ones in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-intensity-vectors"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/LFT_3374_Ifixed_fit.eps
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-intensity-vectors"
+
+\end_inset
+
+The intensity vectors after the applied color correction and the chosen
+ white balance, with the highest common peak of the 
+\begin_inset Formula $I^{hp}$
+\end_inset
+
+ vector is equal to all three colors.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1280,53 +1561,13 @@ This method was chosen, aside from better results, it is more likely to
  metals.
 \end_layout
 
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/fixProcessSteps/06_If_WBed.jpg
-	lyxscale 3
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-The example photo post WB, pre Blacks Deepening
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsubsection
 Rejected method: Statistical White/Gray Balance
 \end_layout
 
 \begin_layout Standard
-One of the core problems we face is the uneven lightning of the scene.
- This is a problem of both magnitude and spectral problem.
- The light coming from the sun is attenuated and diffracted on its way to
- the objects.
-\end_layout
-
-\begin_layout Standard
-To overcome this problem we developed simulate even lighting in each depth
+To overcome the scene's uneven lightning (both in magnitude and spectrum)
+ we developed a statistical white/gray balance process.
 \end_layout
 
 \begin_layout Standard
@@ -1334,20 +1575,28 @@ We think of the
 \begin_inset Formula $I_{c}$
 \end_inset
 
- as sum of 
+ as a sum of 
 \begin_inset Formula $\tilde{I}_{c}(z)+h_{affine}(z)$
 \end_inset
 
- where 
+ - an AC signal 
+\begin_inset Quotes eld
+\end_inset
+
+riding
+\begin_inset Quotes erd
+\end_inset
+
+ on the line 
 \begin_inset Formula $h_{affine}(z)=m\cdot z+n$
 \end_inset
 
- and equal to the three color channels.
+ equal to the three color channels.
 \end_layout
 
 \begin_layout Standard
-Also, we assuming the lighting spectral difference is in a form of multiplicity,
- meaning:
+Also, we assume that the lighting spectral difference is in a form of multiplici
+ty, meaning:
 \end_layout
 
 \begin_layout Standard
@@ -1367,25 +1616,60 @@ To avoid redundancy, we set
 \end_inset
 
 .
- Also, to regulate the multiplication, we are taking the color variance
- into consideration with 
-\begin_inset Formula $\lambda$
-\end_inset
-
- coefficient.
 \end_layout
 
 \begin_layout Standard
-We then solve the following optimization problem:
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/04_fixwb_op2_pic1.png
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:A-photo's-mean"
+
+\end_inset
+
+A photo's mean color intensities post statistical white balancing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We then solve the optimization problem (shown in Einstein notation to sum
+ all color permutations):
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-\min_{m,n,a_{r},a_{g}} & \epsilon_{ijk}(a_{i}(I_{i}-(m\cdot z+n))-a_{j}(I_{j}-(m\cdot z+n)))^{2}\\
+\min_{m,n,a_{r},a_{g}}\epsilon_{ijk} & [a_{i}(I_{i}-(m\cdot z+n))\\
+ & -a_{j}(I_{j}-(m\cdot z+n))]^{2}\nonumber \\
  & +\epsilon_{ijk}\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\nonumber \\
 s.t. & \frac{E(I)}{2}<n<2E(I)\\
- & -2<m<2\nonumber \\
+ & -1<m<1\nonumber \\
  & 0.9<a_{r}<10\nonumber \\
  & 0.5<a_{g}<2\nonumber 
 \end{align}
@@ -1396,27 +1680,46 @@ s.t. & \frac{E(I)}{2}<n<2E(I)\\
 \end_layout
 
 \begin_layout Standard
-\align center
-\begin_inset Graphics
-	filename figs/04_fixwb_op2_pic1.png
-	lyxscale 10
-	width 4cm
+The idea follows the 
+\begin_inset Quotes eld
+\end_inset
+
+gray-world
+\begin_inset Quotes erd
+\end_inset
+
+ assumption: We assume that every depth section is gray on average.
+ Because of the bounds on the line's slope, it is also a very 
+\begin_inset Quotes eld
+\end_inset
+
+gentle
+\begin_inset Quotes erd
+\end_inset
+
+ process which will slightly detain a trend in color change over distance
+ (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:A-photo's-mean"
+plural "false"
+caps "false"
+noprefix "false"
 
 \end_inset
 
+).
+\end_layout
 
-\begin_inset Graphics
-	filename figs/05_varwb_op2_pic1.png
-	lyxscale 10
-	width 4cm
-
-\end_inset
-
-
+\begin_layout Standard
+This method did not yield good enough results, probably due to the fact
+ that the scene is not gray on average.
+ After finding the chosen method, we decided to leave this one behind but
+ to mention it in this paper.
 \end_layout
 
 \begin_layout Subsection
-Blacks Deepening
+Lower-end Contrast Stretch
 \end_layout
 
 \begin_layout Standard
@@ -1438,7 +1741,8 @@ After the white balance, we'd like to set the lower baseline of the photo
 \end_inset
 
 .
- Then we set all the negative values to 0 (blackening 
+ Then we set all the negative values to 0 (Intentionally shadow clipping
+ 
 \begin_inset Formula $1\%$
 \end_inset
 
@@ -1458,27 +1762,19 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/06_If_WBed.jpg
 	lyxscale 3
-	width 30col%
+	width 100col%
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename figs/fixProcessSteps/07_IcontrastStr.jpg
 	lyxscale 3
-	width 30col%
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/BlacksDeepening.eps
-	lyxscale 3
-	width 30col%
+	width 100col%
 
 \end_inset
 
@@ -1486,7 +1782,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The example photo pre post blacks deepening and the intensity histograms.
+The white balanced example photo: pre and post the contrast stretch.
 \end_layout
 
 \end_inset
@@ -1500,7 +1796,35 @@ The example photo pre post blacks deepening and the intensity histograms.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage newpage
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/BlacksDeepening.eps
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The example photo's grayscale intensity histograms pre and post lower end
+ contrast stretching.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \end_inset
 
 
@@ -1532,8 +1856,7 @@ noprefix "false"
 
 \begin_layout Standard
 \begin_inset Float table
-placement H
-wide false
+wide true
 sideways false
 status open
 
@@ -1873,7 +2196,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $2.02/1.64$
+\begin_inset Formula $\nicefrac{2.02}{1.64}$
 \end_inset
 
 
@@ -1894,7 +2217,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $0.88/0.99$
+\begin_inset Formula $\nicefrac{0.88}{0.99}$
 \end_inset
 
 
@@ -1906,7 +2229,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $1.78/2.63$
+\begin_inset Formula $\nicefrac{1.78}{2.63}$
 \end_inset
 
 
@@ -1918,7 +2241,7 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $2.6/2.16$
+\begin_inset Formula $\nicefrac{2.60}{2.16}$
 \end_inset
 
 
@@ -1944,7 +2267,7 @@ name "tab:Multi/Single-shots-statistics"
 
 \end_inset
 
-Multi/Single shots statistics gray error angles
+Multi/Single shots statistics grayscale error angles
 \end_layout
 
 \end_inset
@@ -1972,10 +2295,6 @@ Although the single photo method is much more applicable as a fast solution,
  actual corrected photo and are helping with a better model fitting.
  It seems that in a shorter range it produces better results, but tends
  to saturate in faraway areas (such as the red saturation in D5).
-\end_layout
-
-\begin_layout Subsubsection
-M̄-method red saturation
 \end_layout
 
 \begin_layout Standard
