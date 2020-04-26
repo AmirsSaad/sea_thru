@@ -5,5 +5,5 @@ if ~exist(params_dir, 'dir'), mkdir(params_dir); end
 for img_idx = 1:length(listing)
     img = imread(['images', filesep, listing(img_idx).name]);
     param_filename = [params_dir, filesep, listing(img_idx).name(1:end-4), '_params.mat'];
-    %generate_params_from_jpg(img, param_filename);
+    generate_params_from_jpg(img, param_filename);
 end

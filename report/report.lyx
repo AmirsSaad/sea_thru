@@ -37,7 +37,7 @@ eqs-within-sections
 \spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -62,10 +62,10 @@ eqs-within-sections
 \shortcut idx
 \color #008000
 \end_index
-\leftmargin 3cm
-\topmargin 3cm
-\rightmargin 3cm
-\bottommargin 3cm
+\leftmargin 3.5cm
+\topmargin 2.5cm
+\rightmargin 3.5cm
+\bottommargin 2.5cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -111,9 +111,81 @@ literal "false"
 
 \end_inset
 
-.
- We'll new approach for the physical model estimation and its practical
+, including new approach for the physical model estimation and its practical
  implementation.
+\end_layout
+
+\begin_layout Section
+Image Formation Model
+\end_layout
+
+\begin_layout Standard
+The formation model discussed in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ is treats each pixel as a sum of two physical phenomena.
+ The first being the light intensity reflected from it directly to the camera,
+ and attenuates in its way to the camera (will be referred as AL, Attenuated
+ Light), being absorbed or diffracted by the water.
+ The second is light intensity arriving from other objects in the area and
+ are diffracted to the camera's direction.
+ The second is called backscatter (will be referred as BS).
+ The formation model is shown in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ with a subscript 
+\begin_inset Formula $c$
+\end_inset
+
+ which represents the color channel.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+I_{c}(z)= & \underbrace{J_{c}^{D}\cdot e^{-\beta_{c}^{D}\cdot z}}_{AL_{c}}+\underbrace{B_{c}^{\infty}\left(1-e^{-\beta_{c}^{B}\cdot z}\right)}_{BS_{c}}\label{eq:formation}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The coefficients in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are broadly discussed in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ and in the following sections we will explain exactly how we estimate them
+ for each pixel.
 \end_layout
 
 \begin_layout Section
@@ -121,17 +193,7 @@ Histogram Statistics
 \end_layout
 
 \begin_layout Standard
-Each photo is analyzed using its given depth map, as in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:An-example-for-1"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
+Each photo is analyzed using its given depth map.
  The methods for creating a depth map will not be discussed and we will
  assume we have a true depth map for each photo taken.
  We'd like to extract a set of statistics as a function of the distance
@@ -153,7 +215,28 @@ Since we have finite number of pixels per image, we have to set a distance/depth
 \begin_inset Formula $10[cm]$
 \end_inset
 
- each and take into account all the pixels in range.
+ and take into account all the pixels in range.
+ An example photo can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:An-example-for"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and its depth map as in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:An-example-for-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -170,7 +253,7 @@ The main statistics we're going to use are per color channel (represented
 \end_layout
 
 \begin_layout Itemize
-The mean intensity, will be represented as 
+The mean pixel color intensity, will be represented as 
 \begin_inset Formula $I_{c}^{mean}(z)$
 \end_inset
 
@@ -193,14 +276,14 @@ The mean intensity, will be represented as
 \end_inset
 
  or 
-\begin_inset Formula $J_{cD}^{99\%}$
+\begin_inset Formula $J_{cD}^{(i)}$
 \end_inset
 
  when talking about related coefficients.
 \end_layout
 
 \begin_layout Itemize
-The Intensity variance of each depth, 
+The intensity variance in each depth, 
 \begin_inset Formula $Var(I_{c}|z)$
 \end_inset
 
@@ -220,7 +303,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/01_Orig.jpg
 	lyxscale 3
-	width 5cm
+	width 50col%
 
 \end_inset
 
@@ -262,7 +345,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/02_Depth.eps
 	lyxscale 3
-	width 5cm
+	width 50col%
 
 \end_inset
 
@@ -289,8 +372,19 @@ The example photo's depth map.
 
 \end_layout
 
+\begin_layout Itemize
+We applied our methods on RAW images, in a stage of the pipeline where the
+ data is in a form of the camera's sensors color space.
+ After we apply our changes the image returns to the pipeline, coming out
+ in its end in a viewable form and in a format of choosing.
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
-Model Fit
+Model Estimation
 \end_layout
 
 \begin_layout Subsection
@@ -302,7 +396,7 @@ For each color channel (
 \begin_inset Formula $c=r,g,b$
 \end_inset
 
-) we solve an independent optimization problem: as in eq.
+) we solve an independent optimization problem (eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -313,16 +407,31 @@ noprefix "false"
 
 \end_inset
 
+) to find the set of coefficients of 
+\begin_inset Formula $\nu_{c}$
+\end_inset
 
+ (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:vc"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
 \min_{\nu_{c}} & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
-_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
-_{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
- & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\label{eq:gamma}
+_{(lower\,barrier\,function)} & +\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\nonumber \\
+_{(upper\,barrier\,function)} & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\nonumber \\
+ & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\nonumber 
 \end{align}
 
 \end_inset
@@ -343,21 +452,60 @@ literal "false"
 
 \end_inset
 
- are represented as:
+ (eq 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) are represented as:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
+\begin{align}
+\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
 BS_{c}(z,B_{c}^{\infty},\beta_{c}^{B}) & =B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\\
+AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\label{eq:al}\\
 D(i) & =[1\%,mean,99\%]
-\end{align*}
+\end{align}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The chosen model for 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:al"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ will be discussed in subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Decay-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -376,17 +524,26 @@ We decided to try find the best fit for the three colors in parallel, but
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 \min_{\nu_{c}}\sum_{c=1}^{3}\alpha\{ & \sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
- & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\\
- & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\\
- & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\}\\
- & +\sum_{i=1}^{3}\epsilon_{lmn}\left(a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]-a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\right)^{2}
-\end{align*}
+ & +\sum_{i=1}^{3}\lambda_{i}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}\nonumber \\
+ & +\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}\nonumber \\
+ & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}\cdot e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}\cdot e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\}\nonumber \\
+ & +\sum_{i=1}^{3}\epsilon_{lmn}\left(a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]-a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\right)^{2}\nonumber 
+\end{align}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+This method had to many degrees of freedom, was not stable and did not produce
+ better results.
+ We choose to include it here because we consider it a good approach and
+ it might work better under some circumstances and/or different bounding
+ and balancing.
+ It is beyond the scope of this paper.
 \end_layout
 
 \begin_layout Subsection
@@ -400,15 +557,15 @@ Intensity as upper and lower bound
 \begin_layout Standard
 Looking at the intensities and the physical model, we understand that the
  backscatter (BS) term is will be added to each pixel, regardless and independen
-t of the attenuated light (AL) term, so we assume that in the lower percentile
+t of the attenuated light term (AL), so we assume that in the lower percentile
  vector 
 \begin_inset Formula $AL\ll BS$
 \end_inset
 
  and we'll use it to extract the backscatter characteristics.
  Taking into consideration the uneven lighting of the scene, we'd like to
- emphasize the darkest intensities, assuming they represent real shade (There
- is no 
+ emphasize the darkest intensities (more in section ), assuming they represent
+ real shade (There is no 
 \begin_inset Quotes eld
 \end_inset
 
@@ -454,8 +611,8 @@ In a similar manner, we can look at the lightest parts of each intensity
 
 \begin_layout Standard
 We cannot use the variance vector the same way, since the local variance
- in the photo might be both above or below the general attenuation trend,
- depending on the scene.
+ in a photo's depth section might be both above or below the general attenuation
+ trend, depending on the scene.
 \end_layout
 
 \begin_layout Subsubsection
@@ -565,7 +722,7 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_BS_fit.eps
 	lyxscale 10
-	width 6cm
+	width 50col%
 
 \end_inset
 
@@ -602,7 +759,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/01_Orig.jpg
 	lyxscale 3
-	width 3.5cm
+	width 28col%
 
 \end_inset
 
@@ -621,7 +778,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/04_BSonly.jpg
 	lyxscale 3
-	width 3.5cm
+	width 28col%
 
 \end_inset
 
@@ -640,7 +797,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/03_BSrem.jpg
 	lyxscale 3
-	width 3.5cm
+	width 28col%
 
 \end_inset
 
@@ -657,6 +814,13 @@ An estimated BS image is subtracted from the example photo, resulting a
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -713,11 +877,11 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_ALfit_fix.eps
 	lyxscale 10
-	width 10cm
+	width 50col%
 
 \end_inset
 
-.
+
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -748,10 +912,10 @@ In addition, we measure the variance of each color over the photo's depth
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-Var(I_{c}|z)= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)\\
+\begin{align}
+Var(I_{c}|z)= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)\nonumber \\
 = & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}|z)+Var(B^{\infty}(1-e^{-\beta_{c}^{B}z})|z)
-\end{align*}
+\end{align}
 
 \end_inset
 
@@ -765,9 +929,9 @@ Since each photo is not ideal, we have a sensor noise variance term that
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}Var(J_{c}^{D})+(1-e^{-\beta_{c}^{B}z})^{2}Var(B^{\infty})+\sigma_{c}^{2}
-\end{align*}
+\end{align}
 
 \end_inset
 
@@ -800,7 +964,7 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_Var.eps
 	lyxscale 10
-	width 10cm
+	width 50col%
 
 \end_inset
 
@@ -835,7 +999,7 @@ status open
 \begin_inset Graphics
 	filename figs/LFT_3374_Ifixed_fit.eps
 	lyxscale 10
-	width 10cm
+	width 50col%
 
 \end_inset
 
@@ -869,7 +1033,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/05_If_preWB.jpg
 	lyxscale 3
-	width 7cm
+	width 50col%
 
 \end_inset
 
@@ -891,6 +1055,12 @@ The example photo post color attenuation correction and before white balancing.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Decay-of"
+
+\end_inset
+
 Decay of 
 \begin_inset Formula $\beta_{C}^{D}$
 \end_inset
@@ -937,10 +1107,10 @@ Having said that, this term is approaching 0 faster than
 
 , since: 
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 \lim_{z\rightarrow\infty}\beta_{c}^{D}z= & 0\\
 \implies\lim_{z\rightarrow\infty}J_{c}^{D}e^{-\beta_{c}^{D}z}= & J_{c}^{D}>0
-\end{align*}
+\end{align}
 
 \end_inset
 
@@ -1011,9 +1181,9 @@ In this method we will not treat the measured intensities as upper and lower
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 \min_{\nu_{c}} & \sum_{i=1}^{3}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
-\end{align*}
+\end{align}
 
 \end_inset
 
@@ -1030,12 +1200,12 @@ where our coefficients vector
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 \nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
 BS_{c}(z,B_{c}^{\infty},\beta_{c}^{B}) & =B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
 AL_{c}^{(i)}(z,J_{c}^{D(i)},a,b) & =J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\\
 D(i) & =[5\%,mean,95\%]
-\end{align*}
+\end{align}
 
 \end_inset
 
@@ -1057,6 +1227,13 @@ Whitest balance
 
  vectors that include the whole set of images.
  The results when WB using a single photo vectors are nearly the same.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1116,7 +1293,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/06_If_WBed.jpg
 	lyxscale 3
-	width 7cm
+	width 50col%
 
 \end_inset
 
@@ -1175,9 +1352,9 @@ Also, we assuming the lighting spectral difference is in a form of multiplicity,
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 a_{r}\tilde{I}_{r}= & a_{g}\tilde{I}_{g}=a_{b}\tilde{I}_{b}
-\end{align*}
+\end{align}
 
 \end_inset
 
@@ -1204,14 +1381,14 @@ We then solve the following optimization problem:
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
+\begin{align}
 \min_{m,n,a_{r},a_{g}} & \epsilon_{ijk}(a_{i}(I_{i}-(m\cdot z+n))-a_{j}(I_{j}-(m\cdot z+n)))^{2}\\
- & \epsilon_{ijk}\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\\
+ & +\epsilon_{ijk}\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\nonumber \\
 s.t. & \frac{E(I)}{2}<n<2E(I)\\
- & -2<m<2\\
- & 0.9<a_{r}<10\\
- & 0.5<a_{g}<2
-\end{align*}
+ & -2<m<2\nonumber \\
+ & 0.9<a_{r}<10\nonumber \\
+ & 0.5<a_{g}<2\nonumber 
+\end{align}
 
 \end_inset
 
@@ -1281,7 +1458,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/06_If_WBed.jpg
 	lyxscale 3
-	width 5cm
+	width 30col%
 
 \end_inset
 
@@ -1289,7 +1466,7 @@ status open
 \begin_inset Graphics
 	filename figs/fixProcessSteps/07_IcontrastStr.jpg
 	lyxscale 3
-	width 5cm
+	width 30col%
 
 \end_inset
 
@@ -1301,7 +1478,7 @@ status open
 \begin_inset Graphics
 	filename figs/BlacksDeepening.eps
 	lyxscale 3
-	width 5cm
+	width 30col%
 
 \end_inset
 
@@ -1317,6 +1494,13 @@ The example photo pre post blacks deepening and the intensity histograms.
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -1794,11 +1978,24 @@ Although the single photo method is much more applicable as a fast solution,
 M̄-method red saturation
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Auxiliary Functions
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Vector-to-quasi-convex"
+
+\end_inset
+
 Vector to quasi-convex vector
 \end_layout
 
@@ -1904,6 +2101,11 @@ Set
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Sending the negative vector and flipping the sign on the output will give
+ us a quasi concave vector, which we are using for backscatter estimation.
 \end_layout
 
 \begin_layout Bibliography
