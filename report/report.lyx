@@ -1428,7 +1428,7 @@ The example photo post color attenuation correction and before white balancing.
 \end_layout
 
 \begin_layout Section
-Post Color Correction Processing
+Global Operations
 \end_layout
 
 \begin_layout Standard
@@ -1807,8 +1807,9 @@ status open
 \align center
 \begin_inset Graphics
 	filename figs/BlacksDeepening.eps
-	lyxscale 10
 	width 100col%
+	BoundingBox 40bp 20bp 525bp 263bp
+	clip
 
 \end_inset
 
@@ -1834,14 +1835,20 @@ The example photo's grayscale intensity histograms pre and post lower end
 Results Analysis
 \end_layout
 
+\begin_layout Subsection
+Quantitive evaluation
+\end_layout
+
 \begin_layout Standard
-Each scene have a photo with a calibration palette.
+Each scene have a photo (or more) with a calibration palette (or several).
  Using this palette and a picture of the palette in open air we can estimate
- the underwater image color's correction.
- The result is in a form of an angle that represent the error between the
- corrected 6 grayscale parts and the grayscale 6-piece of the open-air palette.
- We compare the results of representing photos from each scene of out two
- correction methods (O-Original, S-Single, M-Multiple) in table 
+ the underwater photo color's correction.
+ The result is in a form of an angle between the vector in the RGB space
+ that goes through the 6 corrected grayscale tones and a vector that goes
+ through the 6 grayscale tones of the open-air palette.
+ Of course, the smaller it is, the better.
+ We compare the results of representing photos from each scene of our two
+ correction methods in table 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tab:Multi/Single-shots-statistics"
@@ -1854,81 +1861,72 @@ noprefix "false"
 .
 \end_layout
 
+\begin_layout Section
+Conclusions
+\end_layout
+
+\begin_layout Standard
+Although the single photo method is much more applicable as a fast solution,
+ the multiple method is more stable and produces a constant tone images.
+ It provides more data about depth ranges that are not present in the actual
+ corrected photo and are helping with a better model fitting.
+ It seems that in a shorter range it produces better results, but tends
+ to saturate in faraway areas (such as the red saturation in D5).
+ Since in these areas the attenuated colors are amplified and errors are
+ more visible, it might that a single photo evaluation is more appropriate.
+\end_layout
+
+\begin_layout Standard
+The single-photo method works well thanks to the upper-lower bound approach
+ and to the many data handles on the 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ coefficients - the 
+\begin_inset Formula $I^{(i)}$
+\end_inset
+
+ vectors and mainly the 
+\begin_inset Formula $Var(I_{c}|z)$
+\end_inset
+
+ vectors.
+ It also alludes that the chosen model for 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:betad"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) is a decent approximation for its real physical behavior.
+\end_layout
+
 \begin_layout Standard
 \begin_inset Float table
-wide true
+placement H
+wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="6">
+<lyxtabular version="3" rows="6" columns="4">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-D1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-D2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-D3
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-D4
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-D5
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1937,6 +1935,38 @@ O
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+S
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+M
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{S^{\circ}}{M^{\circ}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -1949,74 +1979,6 @@ O
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename figs/Compare/oD3.jpg
-	lyxscale 2
-	width 2.5cm
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename figs/Compare/oD4.jpg
-	lyxscale 2
-	width 2.5cm
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename figs/Compare/oD5.jpg
-	lyxscale 2
-	width 2.5cm
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-S
 \end_layout
 
 \end_inset
@@ -2041,6 +2003,43 @@ S
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/mD1.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{2.02}{1.64}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/oD3.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
 
 \end_layout
 
@@ -2067,7 +2066,7 @@ S
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename figs/Compare/sD4.jpg
+	filename figs/Compare/mD3.jpg
 	lyxscale 2
 	width 2.5cm
 
@@ -2082,11 +2081,7 @@ S
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename figs/Compare/sD5.jpg
-	lyxscale 2
-	width 2.5cm
-
+\begin_inset Formula $\frac{0.88}{0.99}$
 \end_inset
 
 
@@ -2100,17 +2095,8 @@ S
 \begin_inset Text
 
 \begin_layout Plain Layout
-M
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
-	filename figs/Compare/mD1.jpg
+	filename figs/Compare/oD4.jpg
 	lyxscale 2
 	width 2.5cm
 
@@ -2125,17 +2111,8 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
-	filename figs/Compare/mD3.jpg
+	filename figs/Compare/sD4.jpg
 	lyxscale 2
 	width 2.5cm
 
@@ -2166,11 +2143,69 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Formula $\frac{1.78}{2.63}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/oD5.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/sD5.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/mD5.jpg
 	lyxscale 2
 	width 2.5cm
 
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{2.60}{2.16}$
 \end_inset
 
 
@@ -2184,21 +2219,6 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\nicefrac{S^{\circ}}{M^{\circ}}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\nicefrac{2.02}{1.64}$
-\end_inset
-
 
 \end_layout
 
@@ -2217,21 +2237,6 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\nicefrac{0.88}{0.99}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\nicefrac{1.78}{2.63}$
-\end_inset
-
 
 \end_layout
 
@@ -2241,9 +2246,6 @@ M
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $\nicefrac{2.60}{2.16}$
-\end_inset
-
 
 \end_layout
 
@@ -2267,7 +2269,8 @@ name "tab:Multi/Single-shots-statistics"
 
 \end_inset
 
-Multi/Single shots statistics grayscale error angles
+Pre-processed images (O), their correction with Multi/Single shot methods
+ (M/S) and their grayscale error/deviation angles.
 \end_layout
 
 \end_inset
@@ -2278,23 +2281,6 @@ Multi/Single shots statistics grayscale error angles
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-Discussion and conclusions
-\end_layout
-
-\begin_layout Subsection
-Stability vs Speed
-\end_layout
-
-\begin_layout Standard
-Although the single photo method is much more applicable as a fast solution,
- the multiple method is more stable and produces a constant tone images.
- I also provides more data about depth ranges that are not present in the
- actual corrected photo and are helping with a better model fitting.
- It seems that in a shorter range it produces better results, but tends
- to saturate in faraway areas (such as the red saturation in D5).
 \end_layout
 
 \begin_layout Standard
@@ -2415,7 +2401,7 @@ Set
 \begin_inset Graphics
 	filename figs/quazi.eps
 	lyxscale 10
-	width 7cm
+	width 110col%
 
 \end_inset
 
