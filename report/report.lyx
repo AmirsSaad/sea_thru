@@ -111,8 +111,8 @@ literal "false"
 
 \end_inset
 
-, including new approach for the physical model estimation and its practical
- implementation.
+, including new approach for the physical model's coefficients estimation
+ and its practical implementation.
 \end_layout
 
 \begin_layout Section
@@ -698,7 +698,7 @@ noprefix "false"
 \begin{align}
 \nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
 BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{\sqrt{b+z}}\cdot z}\label{eq:al}\\
+AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\label{eq:al}\\
 D(i) & =[1\%,mean,99\%]
 \end{align}
 
@@ -734,6 +734,201 @@ noprefix "false"
 \end_inset
 
 .
+ The bounds for the coefficients estimations are presented in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-optimization-coefficients"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{align*}
+\left[\begin{array}{ccccccccccc}
+\backslash & B_{c}^{\infty} & \beta_{c}^{B} & J_{cD}^{lp} & J_{cD}^{mean} & J_{cD}^{hp} & a & b & c & \sigma_{cD}^{2} & \sigma_{cB}^{2}\\
+\text{LB} & \nicefrac{\frac{1}{2}\max(I_{c}^{lp})}{ELB} & 0 & \frac{1}{2}\max(I_{c}^{lp}) & \max(I_{c}^{lp}) & \max(I_{c}^{hp}) & 0 & 0 & 0 & 0.85\cdot\max(var(I_{c}|z)) & \nicefrac{0}{ELB}\\
+\text{UB} & \nicefrac{\max(I_{c}^{lp})}{EUB} & 2 & 2\cdot\max(I_{c}^{lp}) & \max(I_{c}^{hp}) & 2\cdot\max(I_{c}^{hp}) & \infty & 1 & \infty & 2\cdot\max(var(I_{c}|z)) & \nicefrac{Var(I_{c}|z)^{5\%}}{EUB}\\
+X_{0} & \nicefrac{\frac{3}{4}\max(I_{c}^{lp})}{\frac{ELB+EUB}{2}} & 0.25 & \max(I_{c}^{lp}) & \max(I_{c}^{hp}) & 1.5\cdot\max(I_{c}^{hp}) & 0 & 0 & 0 & \max(var(I|z)) & \nicefrac{0}{\frac{ELB+EUB}{2}}
+\end{array}\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\size scriptsize
+
+\begin_inset Formula 
+\begin{align*}
+\begin{array}{cccc}
+{\normalcolor \mathbf{\text{Coef}}} & {\normalcolor \mathbf{LB}} & {\normalcolor \mathbf{UB}} & {\normalcolor \mathbf{X_{0}}}\\
+{\normalcolor \mathbf{B_{c}^{\infty}}} & {\normalcolor \nicefrac{\frac{1}{2}\max(I_{c}^{lp})}{ELB}} & {\normalcolor \nicefrac{\max(I_{c}^{lp})}{EUB}} & {\normalcolor \nicefrac{\frac{\max(I_{c}^{lp})}{1.33}}{\frac{ELB+EUB}{2}}}\\
+{\normalcolor \mathbf{\beta_{c}^{B}}} & {\normalcolor 0} & {\normalcolor 2} & {\normalcolor 0.25}\\
+{\normalcolor \mathbf{J_{cD}^{lp}}} & {\normalcolor \frac{1}{2}\max(I_{c}^{lp})} & {\normalcolor 2\cdot\max(I_{c}^{lp})} & {\normalcolor \max(I_{c}^{lp})}\\
+{\normalcolor \mathbf{J_{cD}^{mean}}} & {\normalcolor \max(I_{c}^{lp})} & {\normalcolor \max(I_{c}^{hp})} & {\normalcolor \max(I_{c}^{hp})}\\
+{\normalcolor \mathbf{J_{cD}^{hp}}} & {\normalcolor \max(I_{c}^{hp})} & {\normalcolor 2\max(I_{c}^{hp})} & {\normalcolor 1.5\max(I_{c}^{hp})}\\
+{\normalcolor \mathbf{a}} & {\normalcolor 0} & {\normalcolor \infty} & {\normalcolor 0}\\
+{\normalcolor \mathbf{b}} & {\normalcolor 0} & {\normalcolor 1} & {\normalcolor 0}\\
+{\normalcolor \mathbf{c}} & {\normalcolor 0} & {\normalcolor \infty} & {\normalcolor 0}\\
+{\normalcolor \mathbf{\sigma_{cD}^{2}}} & {\normalcolor \frac{\max(var(I_{c}|z))}{1.2}} & {\normalcolor 2\max(var(I_{c}|z))} & {\normalcolor \max(var(I_{c}|z))}\\
+{\normalcolor \mathbf{\sigma_{cB}^{2}}} & {\normalcolor \nicefrac{0}{ELB}} & {\normalcolor \nicefrac{Var(I_{c}|z)^{5\%}}{EUB}} & {\normalcolor \nicefrac{0}{\frac{ELB+EUB}{2}}}
+\end{array}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:The-optimization-coefficients"
+
+\end_inset
+
+The optimization coefficients upper and lower bounds (UB/LB) and their starting
+ point (
+\begin_inset Formula $X_{0}$
+\end_inset
+
+).
+ For 
+\begin_inset Formula $B_{c}^{\infty}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma_{cB}^{2}$
+\end_inset
+
+ There's an option to use the extracted upper and lower bounds (ELB/EUB)
+ which is described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Optional-Backscatter-Extraction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/01_Orig.jpg
+	lyxscale 3
+	width 23page%
+
+\end_inset
+
+
+\begin_inset Formula $\begin{array}{c}
+-\\
+\\
+\\
+\\
+\\
+\\
+\end{array}$
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/04_BSonly.jpg
+	lyxscale 3
+	width 23page%
+
+\end_inset
+
+
+\begin_inset Formula $\begin{array}{c}
+=\\
+\\
+\\
+\\
+\\
+\\
+\end{array}$
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/03_BSrem.jpg
+	lyxscale 3
+	width 23page%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:An-estimated-BS"
+
+\end_inset
+
+An estimated BS image is subtracted from the example photo, resulting in
+ a uniform tone and better clarity over distance.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -770,49 +965,6 @@ This method had to many degrees of freedom, was not stable and did not produce
  it might work better under some circumstances and/or different bounding
  and balancing.
  It is beyond the scope of this paper.
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/LFT_3374_BS_fit.eps
-	lyxscale 10
-	width 100col%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Backscatter-model-is"
-
-\end_inset
-
-Backscatter model is fitted to the lower percentile intensity of each color
- channel.
- The intensities are acting as an upper bound for the monotonic-increasing
- BS model.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection
@@ -883,55 +1035,17 @@ noprefix "false"
 \begin_layout Standard
 \align center
 \begin_inset Float figure
-placement t
-wide true
+placement H
+wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename figs/fixProcessSteps/01_Orig.jpg
-	lyxscale 3
-	width 23page%
-
-\end_inset
-
-
-\begin_inset Formula $\begin{array}{c}
--\\
-\\
-\\
-\\
-\\
-\\
-\end{array}$
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/fixProcessSteps/04_BSonly.jpg
-	lyxscale 3
-	width 23page%
-
-\end_inset
-
-
-\begin_inset Formula $\begin{array}{c}
-=\\
-\\
-\\
-\\
-\\
-\\
-\end{array}$
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/fixProcessSteps/03_BSrem.jpg
-	lyxscale 3
-	width 23page%
+	filename figs/LFT_3374_BS_fit.eps
+	lyxscale 10
+	width 100col%
 
 \end_inset
 
@@ -941,12 +1055,14 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:An-estimated-BS"
+name "fig:Backscatter-model-is"
 
 \end_inset
 
-An estimated BS image is subtracted from the example photo, resulting in
- a uniform tone and better clarity over distance.
+Backscatter model is fitted to the lower percentile intensity of each color
+ channel.
+ The intensities are acting as an upper bound for the monotonic-increasing
+ BS model.
 \end_layout
 
 \end_inset
@@ -1415,13 +1531,6 @@ The example photo post color attenuation correction and before white balancing.
 
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
 \end_inset
 
 
@@ -1926,29 +2035,32 @@ status open
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-O
+\begin_inset Formula $O\quad\quad\quad\quad|\quad\quad\quad S\quad\quad\quad|\quad\quad\quad\quad M$
+\end_inset
+
+
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-S
+
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-M
+
 \end_layout
 
 \end_inset
@@ -1967,7 +2079,7 @@ M
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1979,14 +2091,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/sD1.jpg
 	lyxscale 2
@@ -1995,14 +2099,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/mD1.jpg
 	lyxscale 2
@@ -2010,6 +2106,24 @@ M
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -2029,7 +2143,7 @@ M
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2041,14 +2155,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/sD3.jpg
 	lyxscale 2
@@ -2057,14 +2163,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/mD3.jpg
 	lyxscale 2
@@ -2072,6 +2170,24 @@ M
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -2091,7 +2207,7 @@ M
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2103,14 +2219,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/sD4.jpg
 	lyxscale 2
@@ -2119,14 +2227,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/mD4.jpg
 	lyxscale 2
@@ -2134,6 +2234,24 @@ M
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -2153,7 +2271,7 @@ M
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2165,14 +2283,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/sD5.jpg
 	lyxscale 2
@@ -2181,14 +2291,6 @@ M
 \end_inset
 
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename figs/Compare/mD5.jpg
 	lyxscale 2
@@ -2196,6 +2298,24 @@ M
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 
 \end_layout
 
