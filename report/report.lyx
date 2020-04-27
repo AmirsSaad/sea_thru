@@ -175,7 +175,15 @@ noprefix "false"
 
 \end_inset
 
-) from its initial intensity 
+) from its initial (
+\begin_inset Quotes eld
+\end_inset
+
+real
+\begin_inset Quotes erd
+\end_inset
+
+/open-air) intensity 
 \begin_inset Formula $J_{c}^{D}$
 \end_inset
 
@@ -383,12 +391,12 @@ The example photo's depth map.
 \end_layout
 
 \begin_layout Standard
-The main statistics we are going to use are per color channel (represented
- as 
+The main statistics we are going to use are per color channel (denoted by
+ 
 \begin_inset Formula $c$
 \end_inset
 
- subscript) and per depth (usually referred as a function of 
+ subscript) and per depth (denoted as a function of 
 \begin_inset Formula $z$
 \end_inset
 
@@ -420,7 +428,7 @@ noprefix "false"
 
 ).
  These three vectors will be treated in a similar manner and usually be
- referred as a sum with a superscript 
+ denoted as a sum with a superscript 
 \begin_inset Formula $(i)$
 \end_inset
 
@@ -596,8 +604,7 @@ Optional Backscatter Extraction
 
 \begin_layout Standard
 It is possible (yet not mandatory) to look for the properties of the backscatter
- in photos where you have areas of sky-like plain water (will be referred
- as 
+ in photos where you have areas of sky-like plain water (denoted as 
 \begin_inset Quotes eld
 \end_inset
 
@@ -721,9 +728,9 @@ noprefix "false"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
- & \mathcal{L}_{c}(v_{c},z)=\sum_{i=1}^{3}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
+ & \mathcal{L}_{c}(v_{c},z)=\sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
  & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\nonumber \\
- & +\underbrace{\sum_{i=1}^{3}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{(Lower barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
+ & +\underbrace{\sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{(Lower barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
  & +\underbrace{\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}}_{\text{(Upper barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber 
 \end{align}
 
@@ -1014,7 +1021,7 @@ We decided to try find the best fit for the three colors in parallel, but
 \begin_inset Formula 
 \begin{align}
 \min_{\nu_{c}} & \sum_{c=1}^{3}\alpha_{c}\mathcal{L}_{c}(v_{c},z)\\
- & +\sum_{i=1}^{3}\epsilon_{lmn}\{a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]\nonumber \\
+ & +\sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\epsilon_{lmn}\{a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]\nonumber \\
  & -a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\}^{2}\nonumber 
 \end{align}
 
@@ -1394,26 +1401,23 @@ literal "false"
 
  is not constant but decays and is a sum of two exponential terms such as
  
-\begin_inset Formula $(a\cdot e^{bz}+d\cdot e^{cz})$
+\begin_inset Formula $(a\cdot e^{-bz}+d\cdot e^{-cz})$
 \end_inset
 
 , where 
-\begin_inset Formula $a,c>0$
+\begin_inset Formula $a,b,c,d>0$
 \end_inset
 
- and 
-\begin_inset Formula $b,d<0$
-\end_inset
-
- which indeed causes the term to decay since 
-\begin_inset Formula $\lim_{z\rightarrow\infty}(a\cdot e^{bz}+d\cdot e^{cz})=0$
+.
+ Indeed, the term to decays since 
+\begin_inset Formula $\lim_{z\rightarrow\infty}(a\cdot e^{-bz}+c\cdot e^{-dz})=0$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-Having said that, this term is approaching 0 faster than 
+Having said that, this term decays to 0 faster than 
 \begin_inset Formula $\frac{1}{z}$
 \end_inset
 
@@ -1435,7 +1439,7 @@ noprefix "false"
 .
 \begin_inset Formula 
 \begin{align}
-\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & \lim_{z\rightarrow\infty}aze^{bz}+dze^{cz}=0\\
+\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & \lim_{z\rightarrow\infty}a\cdot ze^{bz}+c\cdot ze^{dz}=0\\
 \implies & \lim_{z\rightarrow\infty}J_{c}^{D}e^{-\beta_{c}^{D}z}=J_{c}^{D}\label{eq:notatten}
 \end{align}
 
@@ -1446,8 +1450,8 @@ noprefix "false"
 
 \begin_layout Standard
 Although it is a fair approximation for short ranges, we cannot bound the
- coefficients in simple way which causes unrealistic results of the optimization
- problem.
+ coefficients in simple way.
+ This yields unrealistic results of the optimization problem.
  Realizing that, we choose another decay model (Eq.
  
 \begin_inset CommandInset ref
@@ -1459,18 +1463,20 @@ noprefix "false"
 
 \end_inset
 
-) which has less degrees of freedom and is easier to bound since 
+) which has less degrees of freedom and is easier to bound, because for
+ 
 \begin_inset Formula $0<b<1$
 \end_inset
 
- and decays slow enough so the whole attenuated light term will also decay.
+ the term decays slow enough so the whole attenuated light term will decay
+ monotonically.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
 \beta_{c}^{D}= & a\frac{1}{z^{b}+c}\label{eq:betad}\\
-s.t. & a,c>0\nonumber \\
+s.t.\: & a,c>0\nonumber \\
  & 0<b<1\nonumber 
 \end{align}
 
@@ -1534,7 +1540,7 @@ noprefix "false"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-\min_{\nu_{c}} & \sum_{i=1}^{3}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
+\min_{\nu_{c}} & \sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
 \end{align}
 
 \end_inset
