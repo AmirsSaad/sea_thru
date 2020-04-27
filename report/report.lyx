@@ -99,9 +99,9 @@ Supervisor: Tali Treibitz, Ph.D.
 \end_layout
 
 \begin_layout Abstract
-In the following paper we will present our take on 
+We present our take on 
 \series bold
-Sea-thru: A Method For Removing Water From Underwater Images
+Sea-thru
 \series default
 
 \begin_inset CommandInset citation
@@ -111,8 +111,15 @@ literal "false"
 
 \end_inset
 
-, including new approach for the physical model's coefficients estimation
- and its practical implementation.
+
+\series bold
+,
+\series default
+ a method for color correction of underwater images, including new approach
+ for the physical model's coefficients estimation and its practical implementati
+on.
+ Using a single or multiple underwater images and their depth maps we output
+ a corrected image and evaluate it using color calibration palettes.
 \end_layout
 
 \begin_layout Section
@@ -128,13 +135,12 @@ literal "false"
 
 \end_inset
 
- is treats each pixel as a sum of two physical phenomena.
- The first being the light intensity reflected from it directly to the camera,
- and attenuates in its way to the camera (will be referred as AL, Attenuated
- Light), being absorbed or diffracted by the water.
- The second is light intensity arriving from other objects in the area and
- are diffracted to the camera's direction.
- The second is called backscatter (will be referred as BS).
+ treats each pixel as a sum of two physical phenomena.
+ The first is the light reflected from an object directly to the camera,
+ that is absorbed or scattered away from the camera (denoted as Attenuated
+ Light or AL).
+ The second is light arriving from other objects in the area that is scattered
+ by the medium towards the camera (denoted as Backscatter or BS).
  The formation model is shown in eq.
  
 \begin_inset CommandInset ref
@@ -150,7 +156,58 @@ noprefix "false"
 \begin_inset Formula $c$
 \end_inset
 
- which represents the color channel.
+ which represents one of the RGB color channels.
+ The AL term decays exponentially over distance 
+\begin_inset Formula $z$
+\end_inset
+
+, at a rate defined by 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Decay-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) from its initial intensity 
+\begin_inset Formula $J_{c}^{D}$
+\end_inset
+
+ and the BS is a growing term at a rate defined by 
+\begin_inset Formula $\beta_{c}^{B}$
+\end_inset
+
+ until it saturates at 
+\begin_inset Formula $B_{c}^{\infty}$
+\end_inset
+
+.
+ The coefficients in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and their physical justification are broadly discussed in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -165,35 +222,12 @@ I_{c}(z)= & \underbrace{J_{c}^{D}\cdot e^{-\beta_{c}^{D}\cdot z}}_{AL_{c}}+\unde
 \end_layout
 
 \begin_layout Standard
-The coefficients in eq.
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:formation"
-plural "false"
-caps "false"
-noprefix "false"
-
+Our goal is to estimate these coefficients, given the underwater image (the
+ pixel intensities) and the depth map (the 
+\begin_inset Formula $z$
 \end_inset
 
- are broadly discussed in 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "key-1"
-literal "false"
-
-\end_inset
-
- and in the following sections we will explain exactly how we estimate them
- for each pixel.
-\end_layout
-
-\begin_layout Section
-Histogram Statistics
-\end_layout
-
-\begin_layout Standard
-Each photo is analyzed using its given depth map.
+ distance).
 \end_layout
 
 \begin_layout Standard
@@ -234,7 +268,11 @@ name "fig:An-example-for"
 
 \end_inset
 
-An example for underwater photo and its final correction.
+Top: An example for underwater photo.
+\begin_inset Newline newline
+\end_inset
+
+Bottom: The photo's correction using our method.
  The steps of the process explained in this paper will be shown on this
  photo.
 \end_layout
@@ -249,10 +287,15 @@ An example for underwater photo and its final correction.
 
 \end_layout
 
+\begin_layout Section
+Histogram Statistics
+\end_layout
+
 \begin_layout Standard
-The methods for creating a depth map will not be discussed and we will assume
- we have a true depth map for each photo taken.
- We'd like to extract a set of statistics as a function of the distance
+Each photo is analyzed using its given depth map.
+ The methods for creating a depth map will not be discussed and we will
+ assume we have a true depth map for each photo taken.
+ We would like to extract a set of statistics as a function of the distance
  from the camera (
 \begin_inset Formula $z$
 \end_inset
@@ -340,7 +383,7 @@ The example photo's depth map.
 \end_layout
 
 \begin_layout Standard
-The main statistics we're going to use are per color channel (represented
+The main statistics we are going to use are per color channel (represented
  as 
 \begin_inset Formula $c$
 \end_inset
@@ -459,10 +502,10 @@ t of the attenuated light term (AL), so we assume that in the lower percentile
 \begin_inset Formula $AL\ll BS$
 \end_inset
 
- and we'll use it to extract the backscatter characteristics.
- Taking into consideration the uneven lighting of the scene, we'd like to
- emphasize the darkest intensities (more in section ), assuming they represent
- real shade (There is no 
+ and we will use it to extract the backscatter characteristics.
+ Taking into consideration the uneven lighting of the scene, we would like
+ to emphasize the darkest intensities (more in section ), assuming they
+ represent real shade (There is no 
 \begin_inset Quotes eld
 \end_inset
 
@@ -475,11 +518,18 @@ negative
  haze is monotonically increasing with distance), we conclude that the estimated
  BS term must not be higher than the darkest areas measured.
  Therefore, we will bound it using a barrier function in the optimization
- process, such as: 
-\begin_inset Formula $h(z)=max\left(0,BS_{c}-I_{c}^{1\%}\right)$
+ process (see eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
-.
+).
 \end_layout
 
 \begin_layout Standard
@@ -499,18 +549,25 @@ In a similar manner, we can look at the lightest parts of each intensity
 
  , but still obey the attenuation, so we will use these three vectors as
  a lower bound for the attenuated light model.
- Again, we will use a barrier function, such as 
-\begin_inset Formula $g^{(i)}(z)=\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}$
+ Again, we will use a barrier function (see eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
-.
+).
 \end_layout
 
 \begin_layout Standard
 We cannot use the variance vector the same way, since the local variance
  in a photo's depth section might be both above or below the general attenuation
  trend, depending on the scene.
- That's why we're going to use a simple 
+ That is why we are going to use a simple 
 \begin_inset Formula $L_{2}$
 \end_inset
 
@@ -552,7 +609,7 @@ sky
  The main reason we are looking at these areas is because the sky is where
  the direct light from faraway objects is completely attenuated (and therefore
  we cannot see them) and we only have the saturated backscatter light.
- If There's an area like this in the picture, the depth map will fail in
+ If there is an area like this in the picture, the depth map will fail in
  calculating the distance and we will use this fact to our advantage and
  look for the lowest variance areas (the most smooth/uniform areas) and
  extract the bounds of the color of the saturated BS light color and will
@@ -568,7 +625,15 @@ sky
 \end_layout
 
 \begin_layout Standard
-If there's no area, or it is small (smaller than a set threshold - 
+If there is no 
+\begin_inset Quotes eld
+\end_inset
+
+sky
+\begin_inset Quotes erd
+\end_inset
+
+ area in the image, or it is small (smaller than a set threshold - 
 \begin_inset Formula $5\%$
 \end_inset
 
@@ -825,7 +890,7 @@ The optimization coefficients upper and lower bounds (UB/LB) and their starting
 \begin_inset Formula $\sigma_{cB}^{2}$
 \end_inset
 
- There's an option to use the extracted upper and lower bounds (ELB/EUB)
+ There is an option to use the extracted upper and lower bounds (ELB/EUB)
  which is described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -974,8 +1039,8 @@ Backscatter
 \begin_layout Standard
 Estimating the model's backscatter term from a single photo and its depth
  map, calls for different measures.
- We'd like to find the darkest pixels in each depth, but we have no guarantee
- for real shade along the photo's depth range.
+ We would like to find the darkest pixels in each depth, but we have no
+ guarantee for real shade along the photo's depth range.
  Moreover, the natural light source causes uneven scene lighting.
  To overcome this, we take the minimal intensity value 
 \begin_inset Formula $I_{min}$
@@ -1150,10 +1215,13 @@ name "fig:Attenuating-direct-light"
 
 \end_inset
 
-Attenuating direct light model is fitted to the intensity vectors of each
- color channel.
+Attenuating direct light model is fitted to the 
+\begin_inset Formula $I_{c}^{(i)}(z)$
+\end_inset
+
+ intensity vectors of each color channel.
  The intensities are acting as a lower bound for the monotonic-decreasing
- AL model.
+ attenuated light (AL) model.
 \end_layout
 
 \end_inset
@@ -1655,7 +1723,7 @@ common peaks
 \end_inset
 
 .
- In case there's no common peak, we will choose the triplet with the largest
+ In case there is no common peak, we will choose the triplet with the largest
  norm in the 
 \begin_inset Formula $hp$
 \end_inset
@@ -1798,7 +1866,7 @@ gray-world
 \end_inset
 
  assumption: We assume that every depth section is gray on average.
- Because of the bounds on the line's slope, it is also a very 
+ Because of the bounds on the slope of the line, it is also a very 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1832,8 +1900,8 @@ Lower-end Contrast Stretch
 \end_layout
 
 \begin_layout Standard
-After the white balance, we'd like to set the lower baseline of the photo
- as low as possible.
+After the white balance, we set the lower baseline of the photo as low as
+ possible.
  This baseline might be a result of error in the backscatter estimation
  and later its removal.
  This is a simple process where we look for the darkest percentile value
