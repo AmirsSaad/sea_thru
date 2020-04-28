@@ -87,7 +87,7 @@ eqs-within-sections
 \begin_body
 
 \begin_layout Title
-Under Water Image Color Correction
+Underwater Image Color Correction
 \end_layout
 
 \begin_layout Author
@@ -96,6 +96,28 @@ Ofer Hazut, Amir Saad
 \end_inset
 
 Supervisor: Tali Treibitz, Ph.D.
+\begin_inset Newline newline
+\end_inset
+
+
+\size normal
+Technion – Israel Institute of Technology
+\size default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The Vision and Image Sciences Laboratory (VISL)
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Abstract
@@ -115,11 +137,11 @@ literal "false"
 \series bold
 ,
 \series default
- a method for color correction of underwater images, including new approach
+ a method for color correction of underwater images, including a new approach
  for the physical model's coefficients estimation and its practical implementati
 on.
  Using a single or multiple underwater images and their depth maps we output
- a corrected image and evaluate it using color calibration palettes.
+ a physically corrected image and evaluate it using color calibration palettes.
 \end_layout
 
 \begin_layout Section
@@ -136,11 +158,11 @@ literal "false"
 \end_inset
 
  treats each pixel as a sum of two physical phenomena.
- The first is the light reflected from an object directly to the camera,
- that is absorbed or scattered away from the camera (denoted as Attenuated
- Light or AL).
+ The first is the attenuated light reflected from an object, and is absorbed
+ or scattered away by the medium (water) on its way to the camera (denoted
+ by AL, Attenuated Light).
  The second is light arriving from other objects in the area that is scattered
- by the medium towards the camera (denoted as Backscatter or BS).
+ by the medium towards the camera (denoted by BS, Backscatter).
  The formation model is shown in eq.
  
 \begin_inset CommandInset ref
@@ -230,15 +252,6 @@ I_{c}(z)= & \underbrace{J_{c}^{D}\cdot e^{-\beta_{c}^{D}\cdot z}}_{AL_{c}}+\unde
 \end_layout
 
 \begin_layout Standard
-Our goal is to estimate these coefficients, given the underwater image (the
- pixel intensities) and the depth map (the 
-\begin_inset Formula $z$
-\end_inset
-
- distance).
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -276,13 +289,12 @@ name "fig:An-example-for"
 
 \end_inset
 
-Top: An example for underwater photo.
+Top: An example of underwater image.
 \begin_inset Newline newline
 \end_inset
 
-Bottom: The photo's correction using our method.
- The steps of the process explained in this paper will be shown on this
- photo.
+Bottom: The image's correction using our method.
+ The steps of the process explained in this paper is shown on this image.
 \end_layout
 
 \end_inset
@@ -293,50 +305,22 @@ Bottom: The photo's correction using our method.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-Histogram Statistics
 \end_layout
 
 \begin_layout Standard
-Each photo is analyzed using its given depth map.
- The methods for creating a depth map will not be discussed and we will
- assume we have a true depth map for each photo taken.
- We would like to extract a set of statistics as a function of the distance
- from the camera (
+Given the underwater image (the pixel intensities 
+\begin_inset Formula $I_{c}$
+\end_inset
+
+) and the depth map (the 
 \begin_inset Formula $z$
 \end_inset
 
-).
-\end_layout
-
-\begin_layout Standard
-In this paper we will explore the options of extracting these from a single
- image or multiple images taken around the same time and area.
-\end_layout
-
-\begin_layout Standard
-Since we have finite number of pixels per image, we have to set a distance/depth
- resolution and divide our depth map into sections of 
-\begin_inset Formula $10[cm]$
-\end_inset
-
- and take into account all the pixels in range.
- An example photo can be seen in figure 
+ distance), our goal is to estimate the rest of the parameters in eq.
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:An-example-for"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- and its depth map as in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:An-example-for-1"
+reference "eq:formation"
 plural "false"
 caps "false"
 noprefix "false"
@@ -344,10 +328,6 @@ noprefix "false"
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \begin_layout Standard
@@ -377,7 +357,7 @@ name "fig:An-example-for-1"
 
 \end_inset
 
-The example photo's depth map.
+The example image's depth map.
 \end_layout
 
 \end_inset
@@ -387,6 +367,61 @@ The example photo's depth map.
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Section
+Histogram Statistics
+\end_layout
+
+\begin_layout Standard
+Each image is analyzed using its given depth map.
+ The methods for creating a depth map is not discussed in this paper and
+ we assume that we have a true depth map for each image.
+ We would like to extract a set of statistics as a function of the distance
+ from the camera (
+\begin_inset Formula $z$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+In this paper we explore the options of extracting these from a single image
+ or multiple images acquired around the same time and area.
+\end_layout
+
+\begin_layout Standard
+Since we have finite number of pixels per image, we have to set a distance/depth
+ resolution and divide our depth map into sections of 
+\begin_inset Formula $10[cm]$
+\end_inset
+
+ and take into account all the pixels in range.
+ An example image can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:An-example-for"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and its depth map as in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:An-example-for-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
@@ -396,7 +431,7 @@ The main statistics we are going to use are per color channel (denoted by
 \begin_inset Formula $c$
 \end_inset
 
- subscript) and per depth (denoted as a function of 
+ subscript) and per depth (denoted by 
 \begin_inset Formula $z$
 \end_inset
 
@@ -404,7 +439,7 @@ The main statistics we are going to use are per color channel (denoted by
 \end_layout
 
 \begin_layout Itemize
-The mean pixel color intensity, will be represented as 
+The mean pixel color intensity, denoted by 
 \begin_inset Formula $I_{c}^{mean}(z)$
 \end_inset
 
@@ -412,7 +447,7 @@ The mean pixel color intensity, will be represented as
 \begin_inset Formula $lp,hp$
 \end_inset
 
-) of the intensities - 
+) of the intensities, denoted by 
 \begin_inset Formula $I_{c}^{lp/1\%}(z),I_{c}^{hp/99\%}(z)$
 \end_inset
 
@@ -427,8 +462,8 @@ noprefix "false"
 \end_inset
 
 ).
- These three vectors will be treated in a similar manner and usually be
- denoted as a sum with a superscript 
+ These three vectors are treated in a similar manner and usually be denoted
+ as a sum with a superscript 
 \begin_inset Formula $(i)$
 \end_inset
 
@@ -441,6 +476,7 @@ noprefix "false"
 \end_inset
 
  when talking about related coefficients (see eq.
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:formation"
@@ -489,7 +525,7 @@ name "subsec:Single-photo-Model-Estimation"
 
 \end_inset
 
-Single-photo Model Estimation
+Single-image Model Estimation
 \end_layout
 
 \begin_layout Subsubsection
@@ -499,34 +535,50 @@ name "subsec:Intensity-as-upper"
 
 \end_inset
 
-Intensity as upper and lower bound
+Intensity as Upper and Lower Bound
 \end_layout
 
 \begin_layout Standard
 Looking at the intensities and the physical model, we understand that the
- backscatter (BS) term is will be added to each pixel, regardless and independen
-t of the attenuated light term (AL), so we assume that in the lower percentile
- vector 
+ backscatter term is added to each pixel, regardless and independent of
+ the attenuated light term (AL).
+ We assume that in the lower percentile vector, 
 \begin_inset Formula $AL\ll BS$
 \end_inset
 
- and we will use it to extract the backscatter characteristics.
- Taking into consideration the uneven lighting of the scene, we would like
- to emphasize the darkest intensities (more in section ), assuming they
- represent real shade (There is no 
-\begin_inset Quotes eld
+ and we use this fact to extract the backscatter characteristics.
+ Taking into consideration the uneven illumination of the scene, we would
+ like to emphasize the darkest intensities (elaborated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Vector-to-quasi-convex"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
-negative
-\begin_inset Quotes erd
-\end_inset
-
- light that causes illuminated areas be darker than non-illuminated) and
- in addition we know that the backscatter is a positive term (since the
- haze is monotonically increasing with distance), we conclude that the estimated
- BS term must not be higher than the darkest areas measured.
- Therefore, we will bound it using a barrier function in the optimization
- process (see eq.
+) assuming they represent real shade.
+ We know that the backscatter is a positive term (since the haze is monotonicall
+y increasing with distance), 
+\series bold
+we conclude that the
+\series default
+ 
+\series bold
+estimated
+\series default
+ 
+\series bold
+BS term cannot be higher than the darkest pixels
+\series default
+ 
+\series bold
+measured
+\series default
+.
+ Therefore, we bound it using a barrier function in the optimization process
+ (see eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -541,23 +593,24 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-In a similar manner, we can look at the lightest parts of each intensity
+In a similar manner, we can look at the brightest parts of each intensity
  vector.
- In each color channel, we assume that the light will attenuate in a similar
+ In each color channel, we assume that the light attenuates in a similar
  trend, but with different starting points.
- Therefore, we will attribute the same decay coefficients to the three intensity
+ Therefore, we attribute the same decay coefficients to the three intensity
  vectors 
 \begin_inset Formula $(1\%,mean,99\%)$
 \end_inset
 
-, but with different amplitude.
- In the brighter areas of the picture, we can assume that 
+, but with different initial amplitude.
+ In the brighter areas of the image, we can assume that 
 \begin_inset Formula $AL\gg BS$
 \end_inset
 
- , but still obey the attenuation, so we will use these three vectors as
- a lower bound for the attenuated light model.
- Again, we will use a barrier function (see eq.
+ , but still obey the attenuation, so we use these three vectors as a lower
+ bound for the attenuated light model.
+ Therefore, we use another barrier function in the optimization problem
+ to achieve that (see eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -572,14 +625,15 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-We cannot use the variance vector the same way, since the local variance
- in a photo's depth section might be both above or below the general attenuation
- trend, depending on the scene.
- That is why we are going to use a simple 
+We cannot use the variance vector the same way we used the intensity vectors,
+ since the local variance in an image's depth section might be both above
+ or below the general attenuation trend, depending on the scene.
+ That is why we are using a simple 
 \begin_inset Formula $L_{2}$
 \end_inset
 
- norm with a Lagrange multiplier (see the optimization problem in eq 
+ norm with a Lagrange multiplier (see the optimization problem in eq.
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:"
@@ -604,7 +658,7 @@ Optional Backscatter Extraction
 
 \begin_layout Standard
 It is possible (yet not mandatory) to look for the properties of the backscatter
- in photos where you have areas of sky-like plain water (denoted as 
+ in images where you have areas of sky-like plain water (denoted as 
 \begin_inset Quotes eld
 \end_inset
 
@@ -612,15 +666,32 @@ sky
 \begin_inset Quotes erd
 \end_inset
 
- from now on).
- The main reason we are looking at these areas is because the sky is where
- the direct light from faraway objects is completely attenuated (and therefore
- we cannot see them) and we only have the saturated backscatter light.
- If there is an area like this in the picture, the depth map will fail in
- calculating the distance and we will use this fact to our advantage and
- look for the lowest variance areas (the most smooth/uniform areas) and
- extract the bounds of the color of the saturated BS light color and will
- use it to estimate 
+).
+ The main reason we are looking at these areas is because the 
+\begin_inset Quotes eld
+\end_inset
+
+sky
+\begin_inset Quotes erd
+\end_inset
+
+ is where the direct light from faraway objects is completely attenuated
+ (and therefore we cannot see them) and we only see the saturated backscatter
+ light.
+ If there is an area as such in the image, the depth map fails in calculating
+ the distance and denote it by zeros/
+\begin_inset Quotes eld
+\end_inset
+
+NaN
+\begin_inset Quotes erd
+\end_inset
+
+s.
+ We use this fact to our advantage and look for the lowest variance areas
+ in this section (the most smooth/uniform areas) and extract the bounds
+ of the colors range of the saturated BS light, which are used it to estimate
+ 
 \begin_inset Formula $B_{c}^{\infty}$
 \end_inset
 
@@ -644,8 +715,7 @@ sky
 \begin_inset Formula $5\%$
 \end_inset
 
-) this step will be skipped.
- 
+) this step is skipped, and 
 \begin_inset Formula $B_{c}^{\infty}$
 \end_inset
 
@@ -653,7 +723,7 @@ sky
 \begin_inset Formula $\sigma_{cB}^{2}$
 \end_inset
 
- will be estimated spontaneously.
+ are estimated in the optimization process with wider, more general bounds.
 \end_layout
 
 \begin_layout Subsubsection
@@ -661,7 +731,7 @@ Optimization Problem
 \end_layout
 
 \begin_layout Paragraph
-Chosen Method: Series color fit
+Chosen Method: Series Color Fit
 \begin_inset Newline newline
 \end_inset
 
@@ -726,11 +796,13 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
+
+\size small
 \begin_inset Formula 
 \begin{align}
- & \mathcal{L}_{c}(v_{c},z)=\sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\label{eq:}\\
- & +\gamma\left[var(I_{c})-\sigma_{cD}^{2}e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}e^{-2\beta_{c}^{B}\cdot z}\right]^{2}\nonumber \\
- & +\underbrace{\sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{(Lower barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
+ & \mathcal{L}_{c}(v_{c},z)=\underbrace{\sum_{_{i\in\{lp,hp,mean\}}}\left[(I_{c}^{(i)}-BS_{c})-AL_{c}^{(i)}\right]^{2}}_{\text{Intensity vectors reconstruction loss}}\label{eq:}\\
+ & +\underbrace{\gamma\left[var(I_{c})-\sigma_{cD}^{2}e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}e^{-2\beta_{c}^{B}\cdot z}\right]^{2}}_{\text{Intensity color variance loss}}\nonumber \\
+ & +\underbrace{\sum_{_{i\in\{lp,hp,mean\}}}\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{(Lower barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
  & +\underbrace{\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}}_{\text{(Upper barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber 
 \end{align}
 
@@ -766,9 +838,11 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
+
+\size small
 \begin_inset Formula 
 \begin{align}
-\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
+\nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D(i)},\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
 BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
 AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\label{eq:al}\\
 D(i) & =[1\%,mean,99\%]
@@ -795,7 +869,7 @@ noprefix "false"
 
 \end_inset
 
- will be discussed in subsection 
+ is discussed in subsection 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Decay-of"
@@ -828,7 +902,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Formula 
@@ -851,6 +925,12 @@ X_{0} & \nicefrac{\frac{3}{4}\max(I_{c}^{lp})}{\frac{ELB+EUB}{2}} & 0.25 & \max(
 
 \size scriptsize
 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula 
 \begin{align*}
 \begin{array}{cccc}
@@ -867,6 +947,669 @@ X_{0} & \nicefrac{\frac{3}{4}\max(I_{c}^{lp})}{\frac{ELB+EUB}{2}} & 0.25 & \max(
 {\normalcolor \mathbf{\sigma_{cB}^{2}}} & {\normalcolor \nicefrac{0}{ELB}} & {\normalcolor \nicefrac{Var(I_{c}|z)^{5\%}}{EUB}} & {\normalcolor \nicefrac{0}{\frac{ELB+EUB}{2}}}
 \end{array}
 \end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Coef
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size scriptsize
+\begin_inset Formula $\mathbf{LB}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size scriptsize
+\begin_inset Formula $\mathbf{UB}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\mathbf{X_{0}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\mathbf{B_{c}^{\infty}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \nicefrac{\frac{1}{2}\max(I_{c}^{lp})}{ELB}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size scriptsize
+\begin_inset Formula ${\normalcolor \nicefrac{\max(I_{c}^{lp})}{EUB}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \nicefrac{\frac{\max(I_{c}^{lp})}{1.33}}{\frac{ELB+EUB}{2}}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\mathbf{\beta_{c}^{B}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor 0}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor 2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor 0.25}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\mathbf{J_{cD}^{lp}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \frac{1}{2}\max(I_{c}^{lp})}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $2\cdot\max(I_{c}^{lp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\max(I_{c}^{lp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\mathbf{J_{cD}^{mean}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\max(I_{c}^{lp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\max(I_{c}^{hp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\max(I_{c}^{hp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\mathbf{J_{cD}^{hp}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\max(I_{c}^{hp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $2\cdot\max(I_{c}^{hp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $1.5\cdot\max(I_{c}^{hp})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size scriptsize
+\begin_inset Formula ${\normalcolor \mathbf{a}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\infty$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \mathbf{b}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \mathbf{c}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\infty$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \mathbf{\sigma_{cD}^{2}}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\frac{\max(var(I_{c}|z))}{1.2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $2\max(var(I_{c}|z))$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\max(var(I_{c}|z))$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula ${\normalcolor \mathbf{\sigma_{cB}^{2}}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size scriptsize
+\begin_inset Formula $\nicefrac{0}{ELB}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\nicefrac{Var(I_{c}|z)^{5\%}}{EUB}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+\begin_inset Formula $\nicefrac{0}{\frac{ELB+EUB}{2}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
@@ -897,7 +1640,7 @@ The optimization coefficients upper and lower bounds (UB/LB) and their starting
 \begin_inset Formula $\sigma_{cB}^{2}$
 \end_inset
 
- There is an option to use the extracted upper and lower bounds (ELB/EUB)
+ there is an option to use the extracted upper and lower bounds (ELB/EUB)
  which is described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -942,14 +1685,12 @@ status open
 \end_inset
 
 
-\begin_inset Formula $\begin{array}{c}
--\\
-\\
-\\
-\\
-\\
-\\
-\end{array}$
+\begin_inset Graphics
+	filename figs/minus.png
+	lyxscale 1
+	width 0.5cm
+	height 3.5cm
+
 \end_inset
 
 
@@ -961,14 +1702,12 @@ status open
 \end_inset
 
 
-\begin_inset Formula $\begin{array}{c}
-=\\
-\\
-\\
-\\
-\\
-\\
-\end{array}$
+\begin_inset Graphics
+	filename figs/equal.png
+	lyxscale 1
+	width 0.5cm
+	height 3.5cm
+
 \end_inset
 
 
@@ -989,8 +1728,9 @@ name "fig:An-estimated-BS"
 
 \end_inset
 
-An estimated BS image is subtracted from the example photo, resulting in
- a uniform tone and better clarity over distance.
+An estimated BS image (middle) is subtracted from the original image (left),
+ resulting in am image (right) with uniform tone and better clarity over
+ distance.
 \end_layout
 
 \end_inset
@@ -1004,12 +1744,12 @@ An estimated BS image is subtracted from the example photo, resulting in
 \end_layout
 
 \begin_layout Paragraph
-Rejected Method: Parallel color fit with internal WB
+Reserved Method: Parallel Fit With Internal WB
 \end_layout
 
 \begin_layout Standard
-We decided to try find the best fit for the three colors in parallel, but
- this time, also aiming for best fit in between the fixed color vectors.
+We tried to find the best fit for the three colors in parallel, but this
+ time, also aiming for best fit in-between the fixed color vectors.
  (Notice 
 \begin_inset Formula $\epsilon_{lmn}$
 \end_inset
@@ -1021,7 +1761,7 @@ We decided to try find the best fit for the three colors in parallel, but
 \begin_inset Formula 
 \begin{align}
 \min_{\nu_{c}} & \sum_{c=1}^{3}\alpha_{c}\mathcal{L}_{c}(v_{c},z)\\
- & +\sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\epsilon_{lmn}\{a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]\nonumber \\
+ & +\sum_{_{i\in\{lp,hp,mean\}}}\epsilon_{lmn}\{a_{l}\left[\left(I_{l}^{(i)}-BS_{l}\right)-AL_{l}^{(i)}\right]\nonumber \\
  & -a_{m}\left[\left(I_{m}^{(i)}-BS_{m}\right)-AL_{m}^{(i)}\right]\}^{2}\nonumber 
 \end{align}
 
@@ -1031,11 +1771,11 @@ We decided to try find the best fit for the three colors in parallel, but
 \end_layout
 
 \begin_layout Standard
-This method had to many degrees of freedom, was not stable and did not produce
- better results.
- We choose to include it here because we consider it a good approach and
- it might work better under some circumstances and/or different bounding
- and balancing.
+This method had too many degrees of freedom, was not stable and did not
+ produce better results.
+ We choose to include it here because it seemed like a trivial approach
+ and it might work better under some circumstances and/or with different
+ bounding and balancing.
  It is beyond the scope of this paper.
 \end_layout
 
@@ -1044,40 +1784,38 @@ Backscatter
 \end_layout
 
 \begin_layout Standard
-Estimating the model's backscatter term from a single photo and its depth
- map, calls for different measures.
- We would like to find the darkest pixels in each depth, but we have no
- guarantee for real shade along the photo's depth range.
- Moreover, the natural light source causes uneven scene lighting.
- To overcome this, we take the minimal intensity value 
-\begin_inset Formula $I_{min}$
+Estimating the backscatter term from a single image and its depth map calls
+ for special measures discussed in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Intensity-as-upper"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
- in each distance range 
-\begin_inset Formula $z$
-\end_inset
-
- (per color channel) and considering we have no 
-\begin_inset Quotes eld
-\end_inset
-
-negative
-\begin_inset Quotes erd
-\end_inset
-
- light, we use the 
+.
+ We use the 
 \begin_inset Formula $I_{c}^{lp}(z)$
 \end_inset
 
- vectors as a 
+ vectors as an 
 \series bold
 upper bound
 \series default
- (constraint) for a 
-\series bold
-monotonic increasing concave function
-\series default
- in the optimization process.
+ (constraint) for the BS term (Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) in the optimization process.
  The results of such process can be seen in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1089,19 +1827,6 @@ noprefix "false"
 \end_inset
 
 .
- Using our depth map and the backscatter coefficients, we create an estimated
- backscatter photo which we subtract from the original raw photo (Fig.
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:An-estimated-BS"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-).
 \end_layout
 
 \begin_layout Standard
@@ -1147,58 +1872,26 @@ Backscatter model is fitted to the lower percentile intensity of each color
 
 \end_layout
 
-\begin_layout Subsubsection
-Attenuated light
-\end_layout
-
 \begin_layout Standard
-For the attenuated light term estimation, we use four vectors:
-\end_layout
-
-\begin_layout Standard
-The 
-\begin_inset Formula $I_{c}^{hp}(z)$
-\end_inset
-
- and 
-\begin_inset Formula $I_{c}^{lp}(z)$
-\end_inset
-
- which are the highest and lowest percentiles of brightness per depth, and
- the 
-\begin_inset Formula $I_{c}^{mean}(z)$
-\end_inset
-
- vector, which we use in a similar way we used the 
-\begin_inset Formula $I_{c}^{lp}(z)$
-\end_inset
-
- term, but this time we subtract the estimated BS term and we treat them
- as a 
-\series bold
-lower bound
-\series default
- for 
-\series bold
-convex, monotonic decreasing
-\series default
-, model function (A fit that can be seen in figure 
+Using our depth map and the backscatter coefficients, we create an estimated
+ backscatter image which we subtract from the original raw image (Fig.
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:Attenuating-direct-light"
+reference "fig:An-estimated-BS"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
-.
+).
 \end_layout
 
 \begin_layout Standard
 \align center
 \begin_inset Float figure
-placement H
+placement t
 wide false
 sideways false
 status open
@@ -1206,7 +1899,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename figs/LFT_3374_ALfit_fix.eps
+	filename figs/LFT_3374_ALfit.eps
 	lyxscale 10
 	width 100col%
 
@@ -1248,20 +1941,84 @@ Attenuating direct light model is fitted to the
 
 \end_layout
 
+\begin_layout Subsubsection
+Attenuated light
+\end_layout
+
 \begin_layout Standard
-In addition, we measure the variance of each color over the photo's depth
+For the attenuated light term estimation, we use four vectors:
+\end_layout
+
+\begin_layout Standard
+Three are the 
+\begin_inset Formula $I_{c}^{hp}(z)$
+\end_inset
+
+, 
+\begin_inset Formula $I_{c}^{lp}(z)$
+\end_inset
+
+ and the 
+\begin_inset Formula $I_{c}^{mean}(z)$
+\end_inset
+
+ vectors.
+ We subtract the estimated BS term from them and we treat each one as a
+ 
+\series bold
+lower bound
+\series default
+ for a fitted AL term (Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) that has the same decay parameter 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ as the other 
+\begin_inset Formula $I_{c}^{(i)}$
+\end_inset
+
+ vectors have, but differs in its initial amplitude 
+\begin_inset Formula $J_{c}^{D(i)}$
+\end_inset
+
+.
+ Such fit can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Attenuating-direct-light"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In addition, we measure the variance of each color over the image's depth
  range, creating three 
 \begin_inset Formula $Var(I_{c}|z)$
 \end_inset
 
- vectors which should correspond to:
+ vectors which theoretically follow the rules of random variables:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
 Var(I_{c}|z) & =Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B_{c}^{\infty}(1-e^{-\beta_{c}^{B}z})|z)\\
-= & Var(J_{c}^{D}e^{-\beta_{c}^{D}z}|z)+Var(B_{c}^{\infty}(1-e^{-\beta_{c}^{B}z})|z)
+= & e^{-2\beta_{c}^{D}z}Var(J_{c}^{D})+(1-e^{-\beta_{c}^{B}z})^{2}Var(B_{c}^{\infty})
 \end{align*}
 
 \end_inset
@@ -1270,8 +2027,8 @@ Var(I_{c}|z) & =Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B_{c}^{\infty}(1-e^{-\beta_{c}^
 \end_layout
 
 \begin_layout Standard
-Since each photo is not ideal, we have a sensor noise variance term that
- is added and we conclude a model that should obey eq.
+Since each image is not ideal, we also have the sensor noise variance that
+ is added globally and we conclude a model that is shown in eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1307,7 +2064,7 @@ Both
 \begin_inset Formula $\sigma_{c}^{2}$
 \end_inset
 
- can be extracted from the photo (as described in section 
+ can be extracted from the image (as described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Optional-Backscatter-Extraction"
@@ -1317,7 +2074,7 @@ noprefix "false"
 
 \end_inset
 
-) or be estimated during the optimization process.
+) or estimated in the optimization process with wider, more general bounds.
  Such fit and its following correction can be seen in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1334,7 +2091,7 @@ noprefix "false"
 \begin_layout Standard
 \align center
 \begin_inset Float figure
-placement H
+placement t
 wide false
 sideways false
 status open
@@ -1358,8 +2115,19 @@ name "fig:Squared-sum-of"
 
 \end_inset
 
-Squared sum of AL and BS model is fitted to the variance vectors of each
- color channel alongside the intensities and applied to the color correction.
+The model in eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:var"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is fitted to the variance vectors of each color channel, which are shown
+ pre and post color correction.
 \end_layout
 
 \end_inset
@@ -1370,6 +2138,23 @@ Squared sum of AL and BS model is fitted to the variance vectors of each
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+In order to fix the color attenuation, we multiply each pixel's RGB components
+ by 
+\begin_inset Formula $e^{\beta_{c}^{D}z}$
+\end_inset
+
+, where 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ is estimated by the optimization process and 
+\begin_inset Formula $z$
+\end_inset
+
+ is given by the depth map.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1399,8 +2184,8 @@ literal "false"
 \begin_inset Formula $\beta_{C}^{D}$
 \end_inset
 
- is not constant but decays and is a sum of two exponential terms such as
- 
+ is not constant but decays as a sum of two exponential terms.
+ such as 
 \begin_inset Formula $(a\cdot e^{-bz}+d\cdot e^{-cz})$
 \end_inset
 
@@ -1409,7 +2194,7 @@ literal "false"
 \end_inset
 
 .
- Indeed, the term to decays since 
+ This term decays to zero since 
 \begin_inset Formula $\lim_{z\rightarrow\infty}(a\cdot e^{-bz}+c\cdot e^{-dz})=0$
 \end_inset
 
@@ -1417,15 +2202,15 @@ literal "false"
 \end_layout
 
 \begin_layout Standard
-Having said that, this term decays to 0 faster than 
+Having said that, this term decays to zero faster than 
 \begin_inset Formula $\frac{1}{z}$
 \end_inset
 
-, which causes a non-monotonic light term that reaches 
+, which causes a non-monotonic direct light term that reaches 
 \begin_inset Formula $J_{c}^{D}$
 \end_inset
 
- in infinity instead of 0, as can be seen in eq.
+ in infinity instead of zero, as can be seen in eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1439,7 +2224,7 @@ noprefix "false"
 .
 \begin_inset Formula 
 \begin{align}
-\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & \lim_{z\rightarrow\infty}a\cdot ze^{bz}+c\cdot ze^{dz}=0\\
+\lim_{z\rightarrow\infty}\beta_{c}^{D}z= & \lim_{z\rightarrow\infty}a\cdot ze^{-bz}+c\cdot ze^{-dz}=0\\
 \implies & \lim_{z\rightarrow\infty}J_{c}^{D}e^{-\beta_{c}^{D}z}=J_{c}^{D}\label{eq:notatten}
 \end{align}
 
@@ -1452,7 +2237,7 @@ noprefix "false"
 Although it is a fair approximation for short ranges, we cannot bound the
  coefficients in simple way.
  This yields unrealistic results of the optimization problem.
- Realizing that, we choose another decay model (Eq.
+ Realizing that, we choose a different decay model (Eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1468,8 +2253,8 @@ noprefix "false"
 \begin_inset Formula $0<b<1$
 \end_inset
 
- the term decays slow enough so the whole attenuated light term will decay
- monotonically.
+ the term decays slow enough, and the whole attenuated light term is indeed
+ decays monotonically.
 \end_layout
 
 \begin_layout Standard
@@ -1483,97 +2268,8 @@ s.t.\: & a,c>0\nonumber \\
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Multiple-photo Model Estimation
-\end_layout
-
-\begin_layout Standard
-Another way to extract the properties that degrade the color in a photo,
- is by looking at a set of photos taken in the same area and time.
- Although this option is not available for a fast single/dual shot immediate
- processing, it might be useful for videos or an offline processing for
- a set of photos.
-\end_layout
-
-\begin_layout Standard
-The process is very similar, yet this time the 
-\begin_inset Formula $I_{c}^{(i)}(z)$
-\end_inset
-
- vectors are derived from several photos and include the full range of distances
- that are in the set of the photos.
- It is important to note that all the photos must have the same shutter
- speed, ISO and aperture, or they must be normalized by those.
-\end_layout
-
-\begin_layout Standard
-The advantage of such method lies in its stability.
- All of the photos will be treated in the same manner, with same coefficients,
- and therefore they will have the same tones.
- This is why this method is a good option for videos, where you can use
- a certain amount of last frames and have continuous tone between frames.
-\end_layout
-
-\begin_layout Standard
-In this method we will not treat the measured intensities as upper and lower
- bounds, as we did in the single-photo process (section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "subsec:Single-photo-Model-Estimation"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-).
- This time we solve an easier optimization problem for each color channel
- (
-\begin_inset Formula $c=r,g,b$
-\end_inset
-
-):
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\min_{\nu_{c}} & \sum_{(i)}^{\nicefrac{\nicefrac{lp}{hp}}{mean}}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-where our coefficients vector 
-\begin_inset Formula $\nu_{c}$
-\end_inset
-
- and the physical model are represented as:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\nu_{c} & =\left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
-BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
-D(i) & =[5\%,mean,95\%]
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
 \begin_inset Float figure
-placement H
+placement t
 wide false
 sideways false
 status open
@@ -1597,7 +2293,20 @@ name "fig:The-example-photo"
 
 \end_inset
 
-The example photo post color attenuation correction and before white balancing.
+After the backscatter removal, we multiply each pixel's RGB components by
+ 
+\begin_inset Formula $e^{\beta_{c}^{D}z}$
+\end_inset
+
+, where 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ is estimated by the optimization process and 
+\begin_inset Formula $z$
+\end_inset
+
+ is given by the depth map.
 \end_layout
 
 \end_inset
@@ -1605,6 +2314,100 @@ The example photo post color attenuation correction and before white balancing.
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Multiple-image Model Estimation
+\end_layout
+
+\begin_layout Standard
+Another way to extract the coefficients of the formation model, is by looking
+ at a set of images taken around the same area and time frame.
+ Although this option is not available for a fast single shot immediate
+ processing, it might be useful for videos or an offline processing for
+ a set of images.
+\end_layout
+
+\begin_layout Standard
+The process is very similar, yet this time the 
+\begin_inset Formula $I_{c}^{(i)}(z)$
+\end_inset
+
+ vectors are derived from several images and include the full range of distances
+ that are in the set of the images.
+ It is important to note that all the images must have the same shutter
+ speed, ISO and aperture, or they must be normalized by those factors.
+\end_layout
+
+\begin_layout Standard
+The advantage of such method lies in its stability.
+ All of the images are treated in the same manner, with same coefficients,
+ and therefore they have the same tones.
+ This is why this method is a good option for videos, where you can use
+ a certain amount of last frames and have continuous tone between frames.
+\end_layout
+
+\begin_layout Standard
+In this method we don't treat the measured intensities as upper and lower
+ bounds as we did in the single-image process (section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Single-photo-Model-Estimation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ This time we solve an easier optimization problem for each color channel
+ (
+\begin_inset Formula $c=r,g,b$
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Standard
+
+\size small
+\begin_inset Formula 
+\begin{align}
+\min_{\nu_{c}} & \sum_{_{i\in\{lp,hp,mean\}}}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where our coefficients vector 
+\begin_inset Formula $\nu_{c}$
+\end_inset
+
+ and the physical model are represented as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
+BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
+AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
+D(i) & =[5\%,mean,95\%]
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -1615,8 +2418,8 @@ Global Operations
 \end_layout
 
 \begin_layout Standard
-Wether we use the single or multiple shots method, the photos in this stage
- (which can be seen in Fig.
+Whether we used the single shot method or the multiple shots method, the
+ image in this stage (which can be seen in Fig.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1627,16 +2430,17 @@ noprefix "false"
 
 \end_inset
 
-) requires a further treatment.
- This will be a 
+) requires further treatment.
+ This is a 
 \series bold
 global 
 \series default
-action which will act on the photo as a whole (and not per depth), such
- as white balance and contrast stretch.
- One of the reasons for these steps is the fact that the sunlight spectrum
- changes and parts of it attenuates on its way to the objects.
- After we apply all of the above, the attenuated vectors of figure 
+action which acts on the image as a whole (and not per depth), such as white
+ balance and contrast stretch.
+ One of the reasons for these steps is the fact that parts of the sunlight
+ spectrum changes as it is attenuated on its way to the objects on the ocean's
+ floor.
+ After we apply all of the above, the attenuated vectors (figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Attenuating-direct-light"
@@ -1646,7 +2450,7 @@ noprefix "false"
 
 \end_inset
 
- will turn into the ones in figure 
+) end up as the ones in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:The-intensity-vectors"
@@ -1662,7 +2466,7 @@ noprefix "false"
 \begin_layout Standard
 \align center
 \begin_inset Float figure
-placement H
+placement t
 wide false
 sideways false
 status open
@@ -1670,7 +2474,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename figs/LFT_3374_Ifixed_fit.eps
+	filename figs/LFT_3374_Ifixed.png
 	lyxscale 10
 	width 100col%
 
@@ -1686,12 +2490,14 @@ name "fig:The-intensity-vectors"
 
 \end_inset
 
-The intensity vectors after the applied color correction and the chosen
- white balance, with the highest common peak of the 
+Left: The intensity vectors after the applied color correction and before
+ white balance.
+ Right: The intensity vectors after the applied color correction and the
+ chosen white balance, with the circled highest common peak of the 
 \begin_inset Formula $I^{hp}$
 \end_inset
 
- vector is equal to all three colors.
+ vectors, that is now equal to all three colors.
 \end_layout
 
 \end_inset
@@ -1709,7 +2515,7 @@ White Balance
 \end_layout
 
 \begin_layout Subsubsection
-Chosen method: Whitest Balance
+Chosen Method: Whitest Balance
 \end_layout
 
 \begin_layout Standard
@@ -1719,33 +2525,41 @@ While extracting the statistics of an image, we get a vector that states
 \end_inset
 
 ) in each depth.
- Since it is an RGB image (three vectors), we look for highest of the 
+ Since it is an RGB image (three vectors), we look for biggest of the 
 \series bold
 common peaks
 \series default
- and we multiply each color channel by a factor that equalize this peak
- to a value of 
+ (by 
+\begin_inset Formula $L_{2}$
+\end_inset
+
+ norm on RGB) and we multiply each color channel by a factor that equalize
+ this peak to a value of 
 \begin_inset Formula $hp\cdot255$
 \end_inset
 
 .
- In case there is no common peak, we will choose the triplet with the largest
- norm in the 
-\begin_inset Formula $hp$
+ In case there is no common peak, we choose the triplet with the largest
+ 
+\begin_inset Formula $L_{2}$
 \end_inset
 
- vector.
+ norm in the RGB 
+\begin_inset Formula $I^{hp}$
+\end_inset
+
+ vectors.
 \end_layout
 
 \begin_layout Standard
-This method was chosen, aside from better results, it is more likely to
- find a white pixel then the scene to be gray on average, especially with
- underwater rocky scenes, that might have a tint of certain minerals or
- metals.
+This method was chosen, aside from it yielding better results, because it
+ is more likely to find a white pixel then the scene to be gray on average,
+ especially with underwater rocky scenes, that might have a tint of certain
+ minerals or metals.
 \end_layout
 
 \begin_layout Subsubsection
-Rejected method: Statistical White/Gray Balance
+Reserved method: Statistical White/Gray Balance
 \end_layout
 
 \begin_layout Standard
@@ -1802,8 +2616,30 @@ To avoid redundancy, we set
 \end_layout
 
 \begin_layout Standard
+We then solve the optimization problem (shown in Einstein notation to sum
+ on all color permutations):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\min_{m,n,a_{r},a_{g}}\epsilon_{ijk} & [a_{i}(I_{i}-(m\cdot z+n))\\
+ & -a_{j}(I_{j}-(m\cdot z+n))]^{2}\nonumber \\
+ & +\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\nonumber \\
+s.t. & \frac{E(I)}{2}<n<2E(I)\\
+ & -1<m<1\nonumber \\
+ & 0.9<a_{r}<10\nonumber \\
+ & 0.5<a_{g}<2\nonumber 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
-placement H
+placement t
 wide false
 sideways false
 status open
@@ -1814,6 +2650,7 @@ status open
 	filename figs/04_fixwb_op2_pic1.png
 	lyxscale 10
 	width 100col%
+	BoundingBox 10bp 0bp 981bp 805bp
 
 \end_inset
 
@@ -1827,35 +2664,15 @@ name "fig:A-photo's-mean"
 
 \end_inset
 
-A photo's mean color intensities post statistical white balancing.
+An image's mean color intensities post the reserved statistical white balance.
+ The best fitted affine line is an axis upon which we stretch the color
+ channels until we reach minimal differences.
 \end_layout
 
 \end_inset
 
 
 \end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We then solve the optimization problem (shown in Einstein notation to sum
- all color permutations):
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\min_{m,n,a_{r},a_{g}}\epsilon_{ijk} & [a_{i}(I_{i}-(m\cdot z+n))\\
- & -a_{j}(I_{j}-(m\cdot z+n))]^{2}\nonumber \\
- & +\epsilon_{ijk}\lambda\sqrt{\left|a_{i}^{2}var(I_{i})-a_{j}^{2}var(I_{j})\right|}\nonumber \\
-s.t. & \frac{E(I)}{2}<n<2E(I)\\
- & -1<m<1\nonumber \\
- & 0.9<a_{r}<10\nonumber \\
- & 0.5<a_{g}<2\nonumber 
-\end{align}
 
 \end_inset
 
@@ -1880,8 +2697,8 @@ gentle
 \begin_inset Quotes erd
 \end_inset
 
- process which will slightly detain a trend in color change over distance
- (see figure 
+ process which slightly detains a trend in color change over distance (see
+ figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:A-photo's-mean"
@@ -1892,6 +2709,16 @@ noprefix "false"
 \end_inset
 
 ).
+ This optimization yields the 
+\begin_inset Formula $h_{affine}(z)$
+\end_inset
+
+ line that serves as an axis upon which we stretch the red and green color
+ channels using the 
+\begin_inset Formula $a_{r},a_{g}$
+\end_inset
+
+ coefficients until the intensity differences across depth are minimal.
 \end_layout
 
 \begin_layout Standard
@@ -1902,11 +2729,11 @@ This method did not yield good enough results, probably due to the fact
 \end_layout
 
 \begin_layout Subsection
-Lower-end Contrast Stretch
+Shadow Clipping Contrast Stretch
 \end_layout
 
 \begin_layout Standard
-After the white balance, we set the lower baseline of the photo as low as
+After the white balance, we set the lower baseline of the image as low as
  possible.
  This baseline might be a result of error in the backscatter estimation
  and later its removal.
@@ -1924,12 +2751,12 @@ After the white balance, we set the lower baseline of the photo as low as
 \end_inset
 
 .
- Then we set all the negative values to 0 (Intentionally shadow clipping
+ Then we set all the negative values to zero, intentionally shadow clipping
  
 \begin_inset Formula $1\%$
 \end_inset
 
- of the photo's darkest pixels).
+ of the image's darkest pixels, assuming they represent amplified noise.
 \end_layout
 
 \begin_layout Standard
@@ -1965,7 +2792,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The white balanced example photo: pre and post the contrast stretch.
+The white balanced example image: pre and post the contrast stretch.
 \end_layout
 
 \end_inset
@@ -2000,7 +2827,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The example photo's grayscale intensity histograms pre and post lower end
+The example image's grayscale intensity histograms pre and post lower end
  contrast stretching.
 \end_layout
 
@@ -2018,20 +2845,27 @@ The example photo's grayscale intensity histograms pre and post lower end
 Results Analysis
 \end_layout
 
-\begin_layout Subsection
-Quantitive evaluation
-\end_layout
-
 \begin_layout Standard
-Each scene have a photo (or more) with a calibration palette (or several).
- Using this palette and a picture of the palette in open air we can estimate
- the underwater photo color's correction.
- The result is in a form of an angle between the vector in the RGB space
- that goes through the 6 corrected grayscale tones and a vector that goes
- through the 6 grayscale tones of the open-air palette.
+Each scene have an image (or more) with a calibration target (or several
+ of them).
+ Using these targets, alongside an image of the target in open air (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-calibration-color"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), we can quantitatively estimate the underwater image color's correction.
+ The result is in a form of an angle between a vector in the RGB space that
+ goes through the 6 corrected grayscale tones and a vector that goes through
+ the 6 grayscale tones of the open-air target.
  Of course, the smaller it is, the better.
- We compare the results of representing photos from each scene of our two
- correction methods in table 
+ We compare the results of representative images from each scene of our
+ two correction methods in table 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tab:Multi/Single-shots-statistics"
@@ -2044,29 +2878,76 @@ noprefix "false"
 .
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/calibpal.png
+	lyxscale 15
+	width 70col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-calibration-color"
+
+\end_inset
+
+The color calibration palette in open air.
+ The quantitive evaluation is done using the upper 6 grayscale tones.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Conclusions
 \end_layout
 
 \begin_layout Standard
-Although the single photo method is much more applicable as a fast solution,
+Although the single image method is much more applicable as a fast solution,
  the multiple method is more stable and produces a constant tone images.
- It provides more data about depth ranges that are not present in the actual
- corrected photo and are helping with a better model fitting.
- It seems that in a shorter range it produces better results, but tends
- to saturate in faraway areas (such as the red saturation in D5).
- Since in these areas the attenuated colors are amplified and errors are
- more visible, it might that a single photo evaluation is more appropriate.
+ It includes more data about depth ranges that are not present in the actual
+ corrected image which are helping with better model fitting.
+ It seems that in4 shorter ranges it produces better results, but tends
+ to saturate in far away areas where the attenuated colors are much amplified
+ and errors are more visible.
+ In those cases the single image evaluation yields better results.
 \end_layout
 
 \begin_layout Standard
-The single-photo method works well thanks to the upper-lower bound approach
+The single-image method works well thanks to the upper-lower bound approach
  and to the many data handles on the 
 \begin_inset Formula $\beta_{c}^{D}$
 \end_inset
 
  coefficients - the 
-\begin_inset Formula $I^{(i)}$
+\begin_inset Formula $I_{c}^{(i)}$
 \end_inset
 
  vectors and mainly the 
@@ -2094,7 +2975,7 @@ noprefix "false"
 
 \begin_layout Standard
 \begin_inset Float table
-placement H
+placement t
 wide false
 sideways false
 status open
@@ -2503,7 +3384,7 @@ In order to fit the best model for our lower bound theorem and we wanted
  to reduce the penalty of the L2 loss function.
  We created a function that is looking for the peaks that define the upper
  limit and the decline of the vector.
- We use this function only when estimating with a single photo.
+ We use this function only when estimating with a single image.
 \end_layout
 
 \begin_layout Standard
@@ -2603,8 +3484,15 @@ Set
 \end_layout
 
 \begin_layout Standard
-Sending the negative vector and flipping the sign on the output will give
- us a quasi concave vector, which we are using for backscatter estimation.
+Sending the negative vector and flipping the sign on the output gives us
+ a quasi concave vector, which we are using for backscatter estimation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Bibliography
