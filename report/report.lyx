@@ -875,8 +875,7 @@ noprefix "false"
 \begin_inset Formula 
 \begin{align}
 \nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D(i)},\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
-BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\label{eq:al}\\
+AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b,c)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\label{eq:al}\\
 D(i) & =[1\%,mean,99\%]
 \end{align}
 
@@ -2411,7 +2410,8 @@ noprefix "false"
 \size small
 \begin_inset Formula 
 \begin{align}
-\min_{\nu_{c}} & \sum_{_{i\in\{lp,hp,mean\}}}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}
+\min_{\nu_{c}} & \sum_{_{i\in\{lp,hp,mean\}}}\lambda_{(i)}\left[\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right]^{2}\\
+ & +\eta(I_{c}^{lp}-BS_{c})^{2}\nonumber 
 \end{align}
 
 \end_inset
@@ -2431,8 +2431,7 @@ where our coefficients vector
 \begin_inset Formula 
 \begin{align}
 \nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
-BS_{c} & (z,B_{c}^{\infty},\beta_{c}^{B})=B_{c}^{\infty}\cdot e^{-\beta_{c}^{B}\cdot z}\\
-AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
+AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b,c)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
 D(i) & =[5\%,mean,95\%]
 \end{align}
 
