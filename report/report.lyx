@@ -95,7 +95,8 @@ Ofer Hazut, Amir Saad
 \begin_inset Newline newline
 \end_inset
 
-Supervisor: Tali Treibitz, Ph.D.
+Supervisor: Dr.
+ Tali Treibitz
 \begin_inset Newline newline
 \end_inset
 
@@ -542,13 +543,39 @@ Intensity as Upper and Lower Bound
 Looking at the intensities and the physical model, we understand that the
  backscatter term is added to each pixel, regardless and independent of
  the attenuated light term (AL).
- We assume that in the lower percentile vector, 
+ We assume that in the 
+\begin_inset Formula $I_{c}^{lp}(z)$
+\end_inset
+
+ vectors 
 \begin_inset Formula $AL\ll BS$
 \end_inset
 
- and we use this fact to extract the backscatter characteristics.
- Taking into consideration the uneven illumination of the scene, we would
- like to emphasize the darkest intensities (elaborated in section 
+.
+ We use this fact to extract the backscatter characteristics.
+ Since the objects across the scene are uneven in their color, reflectance
+ and illumination, the 
+\begin_inset Formula $I_{c}^{lp}(z)$
+\end_inset
+
+ is not concave and monotonically increasing like the BS term in the formation
+ model (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:formation"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ Therefore, we use the darkest intensities of the 
+\begin_inset Formula $I_{c}^{lp}(z)$
+\end_inset
+
+ vectors that define a concave bound (elaborated in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Vector-to-quasi-convex"
@@ -558,7 +585,7 @@ noprefix "false"
 
 \end_inset
 
-) assuming they represent real shade.
+).
  We know that the backscatter is a positive term (since the haze is monotonicall
 y increasing with distance), 
 \series bold
@@ -576,6 +603,10 @@ BS term cannot be higher than the darkest pixels
 \series bold
 measured
 \series default
+ in 
+\begin_inset Formula $I_{c}^{lp}(z)$
+\end_inset
+
 .
  Therefore, we bound it using a barrier function in the optimization process
  (see eq.
@@ -891,6 +922,77 @@ noprefix "false"
 \end_inset
 
 .
+\begin_inset Float figure
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/fixProcessSteps/01_Orig.jpg
+	lyxscale 3
+	width 23page%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/minus.png
+	lyxscale 1
+	width 0.5cm
+	height 3.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/04_BSonly.jpg
+	lyxscale 3
+	width 23page%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/equal.png
+	lyxscale 1
+	width 0.5cm
+	height 3.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/fixProcessSteps/03_BSrem.jpg
+	lyxscale 3
+	width 23page%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:An-estimated-BS"
+
+\end_inset
+
+An estimated BS image (middle) is subtracted from the original image (left),
+ resulting in am image (right) with uniform tone and better clarity over
+ distance.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1641,7 +1743,7 @@ The optimization coefficients upper and lower bounds (UB/LB) and their starting
 \end_inset
 
  there is an option to use the extracted upper and lower bounds (ELB/EUB)
- which is described in section 
+ which are described in section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Optional-Backscatter-Extraction"
@@ -1669,75 +1771,7 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-\align center
-\begin_inset Float figure
-wide true
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/fixProcessSteps/01_Orig.jpg
-	lyxscale 3
-	width 23page%
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/minus.png
-	lyxscale 1
-	width 0.5cm
-	height 3.5cm
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/fixProcessSteps/04_BSonly.jpg
-	lyxscale 3
-	width 23page%
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/equal.png
-	lyxscale 1
-	width 0.5cm
-	height 3.5cm
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/fixProcessSteps/03_BSrem.jpg
-	lyxscale 3
-	width 23page%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:An-estimated-BS"
-
-\end_inset
-
-An estimated BS image (middle) is subtracted from the original image (left),
- resulting in am image (right) with uniform tone and better clarity over
- distance.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
+\begin_inset Newpage newpage
 \end_inset
 
 
@@ -2647,10 +2681,9 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename figs/04_fixwb_op2_pic1.png
-	lyxscale 10
-	width 100col%
-	BoundingBox 10bp 0bp 981bp 805bp
+	filename figs/statisticalWB.eps
+	lyxscale 20
+	width 95col%
 
 \end_inset
 
@@ -2666,7 +2699,7 @@ name "fig:A-photo's-mean"
 
 An image's mean color intensities post the reserved statistical white balance.
  The best fitted affine line is an axis upon which we stretch the color
- channels until we reach minimal differences.
+ channels until we reach minimal difference between them.
 \end_layout
 
 \end_inset
@@ -2927,186 +2960,25 @@ Conclusions
 
 \begin_layout Standard
 Although the single image method is much more applicable as a fast solution,
- the multiple method is more stable and produces a constant tone images.
+ the multiple method is more stable and produces a constant tone images
+ (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Single-image-statistics"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
  It includes more data about depth ranges that are not present in the actual
  corrected image which are helping with better model fitting.
  It seems that for shorter ranges it produces better quantitative results,
  but tends to saturate in very far areas of the image, where the attenuated
  colors are very amplified and errors are much more visible.
  In those cases the single image evaluation yields better results.
-\end_layout
-
-\begin_layout Standard
-The single-image method works well thanks to the upper-lower bound approach
- and to the many data handles on the 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
- coefficients - the 
-\begin_inset Formula $I_{c}^{(i)}$
-\end_inset
-
- vectors and mainly the 
-\begin_inset Formula $Var(I_{c}|z)$
-\end_inset
-
- vectors.
- It also alludes that the chosen model for 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
- (eq.
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:betad"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-) is a decent approximation for its real physical behavior.
- A visual demonstration for these differences can be seen in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Comparing-a-three"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement t
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/betaComp/LFT_3374_sc.jpg
-	lyxscale 15
-	width 26col%
-	BoundingBox 3300bp 1600bp 4100bp 2900bp
-	clip
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/betaComp/LFT_3374_sd.jpg
-	lyxscale 15
-	width 26col%
-	BoundingBox 3300bp 1600bp 4100bp 2900bp
-	clip
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/betaComp/LFT_3374_md.jpg
-	lyxscale 15
-	width 26col%
-	BoundingBox 3300bp 1600bp 4100bp 2900bp
-	clip
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figs/betaComp/LFT_3411_sc.jpg
-	lyxscale 15
-	width 26col%
-	BoundingBox 5350bp 1600bp 6150bp 3000bp
-	clip
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/betaComp/LFT_3411_sd.jpg
-	lyxscale 15
-	width 26col%
-	BoundingBox 5350bp 1600bp 6150bp 3000bp
-	clip
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figs/betaComp/LFT_3411_md.jpg
-	lyxscale 15
-	width 26col%
-	BoundingBox 5350bp 1600bp 6150bp 3000bp
-	clip
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Comparing-a-three"
-
-\end_inset
-
-Comparing three methods for color correction, using single-image statistics
- with a constant 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
- (right), single-image statistics with a decaying 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
- (center) and multiple-image statistics with a decaying 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
- (right).
- The images clearly show a better correction in far areas when using decaying
- 
-\begin_inset Formula $\beta_{c}^{D}$
-\end_inset
-
-.
- Also, the single-image statistics performed better than the multiple image
- statistics in those areas.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float table
 placement H
 wide false
@@ -3645,13 +3517,59 @@ Pre-processed images (O), their correction with Multi/Single shot methods
 
 \end_layout
 
-\begin_layout Section
-Auxiliary Functions
+\begin_layout Standard
+The single-image method works well thanks to the upper-lower bound approach
+ and to the many data handles on the 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ coefficients - the 
+\begin_inset Formula $I_{c}^{(i)}$
+\end_inset
+
+ vectors and mainly the 
+\begin_inset Formula $Var(I_{c}|z)$
+\end_inset
+
+ vectors.
+ It also alludes that the chosen model for 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:betad"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) is a decent approximation for its real physical behavior.
+ A visual demonstration for these differences can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Comparing-a-three"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
-placement t
 wide false
 sideways false
 status open
@@ -3659,10 +3577,28 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename figs/quazi.eps
-	lyxscale 50
-	width 100col%
-	BoundingBox 50bp 10bp 385bp 223bp
+	filename figs/Compare/singletone.png
+	lyxscale 20
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+
+\size tiny
+-
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/Compare/multitone.png
+	lyxscale 20
+	width 90col%
 
 \end_inset
 
@@ -3675,16 +3611,136 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:Using-the-vec2qconv"
+name "fig:Single-image-statistics"
 
 \end_inset
 
-Using the 
-\series bold
-vec2qconv 
-\series default
-function, we create a quasi-convex bound we use for the formation model
- estimation.
+Single image statistics method on images with short range of depths (top)
+ yields corrections with varying tones, where the mingle image statistics
+ method yields a much stable and uniform tone for the same set of images.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3374_sc.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 3300bp 1600bp 4100bp 2900bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3374_sd.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 3300bp 1600bp 4100bp 2900bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3374_md.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 3300bp 1600bp 4100bp 2900bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3411_sc.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 5350bp 1600bp 6150bp 3000bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3411_sd.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 5350bp 1600bp 6150bp 3000bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3411_md.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 5350bp 1600bp 6150bp 3000bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Comparing-a-three"
+
+\end_inset
+
+Comparing three methods for color correction, using single-image statistics
+ with a constant 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (right), single-image statistics with a decaying 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (center) and multiple-image statistics with a decaying 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (right).
+ The images clearly show a better correction in far areas when using decaying
+ 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+.
+ Also, the single-image statistics performed better than the multiple image
+ statistics in those areas.
 \end_layout
 
 \end_inset
@@ -3695,6 +3751,62 @@ function, we create a quasi-convex bound we use for the formation model
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The immediate thought for further work is to create a hybrid of the two
+ methods.
+ A procedure where we correct the image using multiple-image statistics,
+ but in the far areas of the image we treat it with its singular statistics.
+\end_layout
+
+\begin_layout Standard
+We also think that there must be another form of smarter white balance that
+ uses more data handles and not only the 
+\begin_inset Formula $I_{c}^{hp}$
+\end_inset
+
+ vectors.
+\end_layout
+
+\begin_layout Standard
+Additionally, it might be that the behavior of 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ in far areas of the image is related to the behavior of 
+\begin_inset Formula $\beta_{c}^{B}$
+\end_inset
+
+, since they are both a result of the same medium.
+ The decay of 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ over distance might imply that 
+\begin_inset Formula $\beta_{c}^{B}$
+\end_inset
+
+ is in fact growing.
+ We shall explore the possibilities for such connection in future works.
+\end_layout
+
+\begin_layout Standard
+Aside from these, we can expand our work to areas that were not discussed
+ in this paper, such as improving the depth maps.
+ Using our new data of the color degradation over distance, we might be
+ able to complete depth map, in the far areas it had failed.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Auxiliary Functions
 \end_layout
 
 \begin_layout Subsection
@@ -3813,6 +3925,66 @@ Set
 \begin_layout Standard
 Sending the negative vector and flipping the sign on the output gives us
  a quasi concave vector, which we are using for backscatter estimation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/quazi.eps
+	lyxscale 50
+	width 100col%
+	BoundingBox 50bp 10bp 385bp 223bp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Using-the-vec2qconv"
+
+\end_inset
+
+Using the 
+\series bold
+vec2qconv 
+\series default
+function, we create a quasi-convex bound we use for the formation model
+ estimation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Acknowledgments
+\end_layout
+
+\begin_layout Standard
+We'd like to thank our supervisor Dr.
+ Tali Treibitz for her continuous support, help and guidance.
+ We'd also like to thank our friends in the Marine Imaging Lab, Derya, Naama,
+ Matan, Yuval and Deborah, who helped us with our many questions throughout
+ the last year.
 \end_layout
 
 \begin_layout Bibliography
