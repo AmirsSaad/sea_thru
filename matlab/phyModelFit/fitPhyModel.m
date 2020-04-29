@@ -1,9 +1,10 @@
 function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Isingle,lambda,betaBtype,DC,isplot,ver,BS,BSvar,boolBS,lp)
     
-    if isempty(Isingle)
+    if isempty(Isingle) %%isingle=[] means single
         singleWBonmultip=0;
+        Isingle=Istruct;
     else
-        singleWBonmultip=1;
+        singleWBonmultip=1; % we can choose if 0 or 1.
     end
 
     %z is distances vector
@@ -35,7 +36,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
    
     for i=1:3 %each color independetly
         
-        if singleWBonmultip
+        if singleWBonmultip==0
             clear Imean Jb Ihp Ilp Ivar z
             z=double(Istruct(:,end));
             Imean(:,i)=vec2qconv(double(Istruct(:,i))); %I is mean value vector
@@ -44,14 +45,17 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
             Ivar(:,i)=medfilt1(Ivar(:,i),3);
             Ihp(:,i)=vec2qconv(double(Istruct(:,i+6)));
             Ilp(:,i)=vec2qconv(double(Istruct(:,i+3)));
+            deleteconvex=1;
+        else
+            clear Imean Jb Ihp Ilp Ivar z
+            Imean(:,i)=double(Istruct(:,i)); %I is mean value vector
+            Jb(:,i)=double(Istruct(:,i+3)); %Jb is lower percentile vector
+            Ivar(:,i)=double(Istruct(:,i+9));
+            Ivar(:,i)=medfilt1(Ivar(:,i),3);
+            Ihp(:,i)=double(Istruct(:,i+6));
+            Ilp(:,i)=double(Istruct(:,i+3));
+            deleteconvex=0;
         end
-        
-        Imean(:,i)=double(Istruct(:,i)); %I is mean value vector
-        Jb(:,i)=double(Istruct(:,i+3)); %Jb is lower percentile vector
-        Ivar(:,i)=double(Istruct(:,i+9));
-        Ivar(:,i)=medfilt1(Ivar(:,i),3);
-        Ihp(:,i)=double(Istruct(:,i+6));
-        Ilp(:,i)=double(Istruct(:,i+3));
         %bounderies
         if boolBS
            Binf_lb=BS(i).low;
@@ -109,7 +113,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         %x = lsqnonlin(fun,[1 1 1 1 1 0.25 0.25 0.25],lb,ub);
         
         % for graphing
-        if singleWBonmultip
+        if singleWBonmultip || deleteconvex
             clear Imean Jb Ihp Ilp Ivar z
             Imean(:,i)=double(Isingle(:,i)); %I is mean value vector
             Jb(:,i)=double(Isingle(:,i+3)); %Jb is lower percentile vector
@@ -142,7 +146,8 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
 %         end
          %x0=[x0 x];
     end
-    if singleWBonmultip
+    
+    if singleWBonmultip || deleteconvex
         clear Imean Jb Ihp Ilp Ivar z
         Imean=double(Isingle(:,1:3)); %I is mean value vector
         Jb=double(Isingle(:,4:6)); %Jb is lower percentile vector

@@ -832,9 +832,9 @@ noprefix "false"
 \begin_inset Formula 
 \begin{align}
  & \mathcal{L}_{c}(v_{c},z)=\underbrace{\eta(I_{c}^{lp}-BS_{c})^{2}}_{\text{Backscatter reconstruction loss}}\label{eq:}\\
- & +\underbrace{\mu\left[max\left(0,BS_{c}-I_{c}^{1\%}\right)\right]^{2}}_{\text{(Upper barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
- & \underbrace{+\sum_{_{i\in\{lp,hp,mean\}}}\left[(I_{c}^{(i)}-BS_{c})-AL_{c}^{(i)}\right]^{2}}_{\text{Intensity vectors reconstruction loss}}\nonumber \\
- & +\underbrace{\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{(Lower barrier function; see \ref{subsec:Intensity-as-upper})}}\nonumber \\
+ & +\underbrace{\mu\left[max\left(0,BS_{c}-I_{c}^{lp}\right)\right]^{2}}_{\text{BS Upper barrier function; see \ref{subsec:Intensity-as-upper}}}\nonumber \\
+ & \underbrace{+\sum_{_{i\in\{lp,hp,mean\}}}\left[(I_{c}^{(i)}-BS_{c})-AL_{c}^{(i)}\right]^{2}}_{\text{AL Intensity vectors reconstruction loss}}\nonumber \\
+ & +\underbrace{\lambda^{(i)}\left[max\left(0,\left(I_{c}^{(i)}-BS_{c}\right)-AL_{c}^{(i)}\right)\right]^{2}}_{\text{AL Lower barrier function; see \ref{subsec:Intensity-as-upper}}}\nonumber \\
  & +\underbrace{\gamma\left[var(I_{c})-\sigma_{cD}^{2}e^{-2\frac{a}{\sqrt{b+z}}\cdot z}-\sigma_{cB}^{2}e^{-2\beta_{c}^{B}\cdot z}\right]^{2}}_{\text{Intensity color variance loss}}\nonumber 
 \end{align}
 
