@@ -157,7 +157,7 @@ end
 %%apply contrast strech
 if config.contStr
     disp('Stretching contrast...');
-    Ifixed=cntStretch(Ifixed,'biside');
+    Ifixed=cntStretch(Ifixed,'blacks');
     % Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
 %     rHist = imhist(Ifixed(:,:,1), 256);
 %     [lims,~]=histsmartedges(rHist);

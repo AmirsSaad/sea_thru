@@ -73,7 +73,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         lb=[Binf_lb   0     log(max(Ihp(:,i)))         0  0                  0    0   -10     log(max(Ivar(:,i))*0.85) BSvar_lb  log(max(Ilp(:,i)))       log(max(Ilp(:,i))*0.5)];
         ub=[Binf_ub   2     log(max(Ihp(:,i))*2)     inf  min(Jb(:,i))       1    10    0     log(max(Ivar(:,i))*2)    BSvar_ub  log(max(Ihp(:,i)))       log(max(Ilp(:,i))*2) ];
         x0=[Binf_x0   0.25  log(max(Ihp(:,i))*1.5)     0  0                  0    0     0     log(max(Ivar(:,i)))      BSvar_x0  log(max(Ihp(:,i)))       log(max(Ilp(:,i)))];
-        %   Binf               betaB  log(hpJD           betaD(a)  DC  betaD(b    c    d)     varJD                     minVar    meanJD                   lpJD )      
+        %   Binf      betaB  log(hpJD           betaD(a)  DC  betaD(b    c    d)     varJD                     minVar    meanJD                   lpJD )      
         
         if singleWBonmultip
         fun = @(a) [  1 * (Ihp(:,i)  -exp(a(3) -(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
@@ -81,7 +81,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
                       1 * (Imean(:,i)-exp(a(11)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       ...%5 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./(z.^a(6)+a(7))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
                       5 *  lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
-                     mu * ones(size(Imean(:,i)))*(a(6)^2+a(7)^2+a(8)^2), ...
+                     mu * ones(size(Imean(:,i)))*(a(6)^2+(a(7)-1)^2+a(8)^2), ...
                      factorDC * ones(size(Imean(:,i)))*a(5) ...
                     ...%100 * max(0,-Jb(:,i) + a(1)*(1-exp(-a(2)*z))), ...
                     ...%1000/mean(Ilp(:,i)) * max(0,(Ilp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(12)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)), ...
@@ -94,7 +94,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
                       1 * (Imean(:,i)-exp(a(11)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       5 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./(z.^a(6)+a(7))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
                       5 *  lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
-                     mu * ones(size(Imean(:,i)))*(a(6)^2+a(7)^2+a(8)^2), ...
+                     mu * ones(size(Imean(:,i)))*(a(6)^2+(a(7)-1)^2+a(8)^2), ...
                      factorDC * ones(size(Imean(:,i)))*a(5) ...
                     100 * max(0,-Jb(:,i) + a(1)*(1-exp(-a(2)*z))), ...
                     1000/mean(Ilp(:,i)) * max(0,(Ilp(:,i)   - a(1)*(1-exp(-a(2)*z)))-exp(a(12)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)), ...
@@ -187,6 +187,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         Ivf(:,i)=Ivf(:,i);%*photonEQ(i).^2;  
     end
     %photonEQ=max(intH)./intH; %normalize photonEQ RGB coefs
+    %%
     if isplot
         for i=1:3
         rgb=['#D95319';'#77AC30';'#0072BD'];
@@ -201,14 +202,16 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         grid minor;
         %title('Back-Scatter');
         if i==3
-            legend('Fitted BS_r Model','I^{lp}_r(z)',...
+          ylabel('Intensity'); xlabel('z distance [m]');
+          set(findall(gcf,'-property','FontSize'),'FontSize',16)
+          legend('Fitted BS_r Model','I^{lp}_r(z)',...
                 'Fitted BS_g Model','I^{lp}_g(z)',...
                 'Fitted BS_b Model','I^{lp}_b(z)',...
-                'Location','south','NumColumns',3);
+                'Location','northoutside','NumColumns',3,'FontSize',12);
+            xlim([min(z) max(z)]);
         end
         %legend(,);
-        ylabel('Intensity'); xlabel('z distance [m]');
-        
+
         if i==1
             figure('Name','AL');
         else
@@ -240,20 +243,21 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         %hold on;
         %plot(z,Iebsr);
         grid minor;
-        ylim([0 100]);
-        
-        if i==3
+        ylim([0 max(Ihpbsr,[],'all')+35]);
+        xlim([min(z) max(z)]);
+        if i==1 
+                 ylabel('Intensity','FontSize',16); %title('Red Channel'); 
+               
+        elseif i==2 
+
+            xlabel('z distance [m]','FontSize',16); %title('Green Channel');
+        elseif i==3
             %sgtitle('I_c^{(i)}(z), Post BS removal');
             %title('Blue Channel');
-        end
-        if i==1 ylabel('Intensity'); %title('Red Channel'); 
-                   legend('Fitted AL term','I^{hp} - BS',...
-                'Fitted AL term','I^{lp} - BS',...
-                'Fitted AL term','I^{mean} - BS',...
-                'Location','north');
-        end
-        if i==2 
-            xlabel('z distance [m]'); %title('Green Channel');
+            legend('Fitted AL term','I^{hp}_c(z) - BS(z)',...
+                'Fitted AL term','I^{lp}_c(z)- BS(z)',...
+                'Fitted AL term','I^{mean}_c(z) - BS(z)',...
+                'Location','north','FontSize',13,'NumColumns',3);
         end
 
         %subplot(2,2,3);
@@ -275,10 +279,16 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         if ver==3
             plot(z,fixedRatio(:,i)*photonEQ(i),'Color',rgb(i,:));
         else
-            plot(z,Ihpf(:,i),'Marker','+','Color',rgb(i,:));
+            subplot 121
+            plot(z,Ihpf(:,i)./photonEQ(i),'Color',rgb(i,:));
             hold on;
-            plot(z,Ilpf(:,i),'Marker','.','Color',rgb(i,:));
-            plot(z,Imef(:,i),'Marker','o','Color',rgb(i,:));
+            plot(z,Ilpf(:,i)./photonEQ(i),'.','MarkerSize',1,'Color',rgb(i,:));
+            plot(z,Imef(:,i)./photonEQ(i),'--','Color',rgb(i,:));
+            subplot 122
+            plot(z,Ihpf(:,i),'Color',rgb(i,:));
+            hold on;
+            plot(z,Ilpf(:,i),'.','MarkerSize',1,'Color',rgb(i,:));
+            plot(z,Imef(:,i),'--','Color',rgb(i,:));
         end
         
         %plot(z,(I-(Jb+x(1)*(1-exp(-x(2)*z)))/2).*exp(x(4)*z));
@@ -290,14 +300,29 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         
         %title('I^{i}_c(z) post color correction');
         if i==3
-        grid minor;
-        %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
-        ylim([0 290]);    
-        legend('I^{hp}_c Corrected',...
-               'I^{lp}_c Corrected',...
-               'I^{mean}_c Corrected',...
-                'Location','north','NumColumns',3);
-            ylabel('Intensity'); xlabel('z distance [m]');
+            subplot 121
+            grid minor;
+            %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
+            ylim([0 max(Ihpf(:,:)./photonEQ(i),[],'all')+5]);    
+
+            ylabel('Intensity Pre WB'); xlabel('z distance [m]');
+            set(findall(gcf,'-property','FontSize'),'FontSize',15)
+%             legend('I^{hp}_c Corrected',...
+%                    'I^{lp}_c Corrected',...
+%                    'I^{mean}_c Corrected',...
+%                    'Location','north','NumColumns',3 ,'FontSize',12);
+            xlim([z(hplocs(maxloc))-1 z(hplocs(maxloc))+1]);
+            subplot 122
+            plot(z(hplocs(maxloc)),Ihpf(hplocs(maxloc),1),'ok','MarkerSize',20)
+            grid minor;
+            %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
+            ylim([0 260]);    
+%             legend('I^{hp}_c Post WB',...
+%                    'I^{lp}_c Post WB',...
+%                    'I^{mean}_c Post WB',...
+%                    'Location','north','NumColumns',3);
+            ylabel('Intensity Post WB','FontSize',15); xlabel('z distance [m]','FontSize',15);
+            xlim([z(hplocs(maxloc))-1 z(hplocs(maxloc))+1]);
         end
         
         if i==1
@@ -313,7 +338,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         plot(z,varJD(i)*ones(size(Ivf(:,i))),'Color',rgb(i,:));
         grid minor;
         if i==3
-            xlabel('z distance [m]');
+            xlabel('z distance [m]','FontSize',16);
         %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
 %             legend('Var[I_r|z]','Fitted Attenuated term',...
 %                    'Var[I_g|z]','Fitted Attenuated term',...
@@ -334,9 +359,9 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
 %         end
         %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
         %legend('fixed','original'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
-        if i==2 ylabel('Variance'); end
+        if i==2 ylabel('Variance','FontSize',16); end
         
         end
     end
-    
+%%
 end
