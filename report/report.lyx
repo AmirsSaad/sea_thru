@@ -2916,10 +2916,6 @@ The color calibration palette in open air.
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -2934,9 +2930,9 @@ Although the single image method is much more applicable as a fast solution,
  the multiple method is more stable and produces a constant tone images.
  It includes more data about depth ranges that are not present in the actual
  corrected image which are helping with better model fitting.
- It seems that in4 shorter ranges it produces better results, but tends
- to saturate in far away areas where the attenuated colors are much amplified
- and errors are more visible.
+ It seems that for shorter ranges it produces better quantitative results,
+ but tends to saturate in very far areas of the image, where the attenuated
+ colors are very amplified and errors are much more visible.
  In those cases the single image evaluation yields better results.
 \end_layout
 
@@ -2971,10 +2967,21 @@ noprefix "false"
 \end_inset
 
 ) is a decent approximation for its real physical behavior.
+ A visual demonstration for these differences can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Comparing-a-three"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float table
+\begin_inset Float figure
 placement t
 wide false
 sideways false
@@ -2982,8 +2989,134 @@ status open
 
 \begin_layout Plain Layout
 \align center
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3374_sc.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 3300bp 1600bp 4100bp 2900bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3374_sd.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 3300bp 1600bp 4100bp 2900bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3374_md.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 3300bp 1600bp 4100bp 2900bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3411_sc.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 5350bp 1600bp 6150bp 3000bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3411_sd.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 5350bp 1600bp 6150bp 3000bp
+	clip
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/betaComp/LFT_3411_md.jpg
+	lyxscale 15
+	width 26col%
+	BoundingBox 5350bp 1600bp 6150bp 3000bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Comparing-a-three"
+
+\end_inset
+
+Comparing three methods for color correction, using single-image statistics
+ with a constant 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (right), single-image statistics with a decaying 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (center) and multiple-image statistics with a decaying 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+ (right).
+ The images clearly show a better correction in far areas when using decaying
+ 
+\begin_inset Formula $\beta_{c}^{D}$
+\end_inset
+
+.
+ Also, the single-image statistics performed better than the multiple image
+ statistics in those areas.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="6" columns="4">
+<lyxtabular version="3" rows="8" columns="4">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -3167,6 +3300,70 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
+	filename figs/Compare/o/Orig_T_S04920.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/Compare/s/T_S04920.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/Compare/m/T_S04920.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{1.47}{1.39}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
 	filename figs/Compare/oD4.jpg
 	lyxscale 2
 	width 2.5cm
@@ -3290,7 +3487,39 @@ status open
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/o/Orig_LFT_3411.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/Compare/s/LFT_3411.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/Compare/m/LFT_3411.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3299,7 +3528,7 @@ status open
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3308,7 +3537,62 @@ status open
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{2.57}{1.73}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figs/Compare/o/Orig_LFT_3399.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/Compare/s/LFT_3399.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figs/Compare/m/LFT_3399.jpg
+	lyxscale 2
+	width 2.5cm
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3321,6 +3605,9 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
+\begin_inset Formula $\frac{1.84}{1.90}$
+\end_inset
+
 
 \end_layout
 
@@ -3358,15 +3645,56 @@ Pre-processed images (O), their correction with Multi/Single shot methods
 
 \end_layout
 
+\begin_layout Section
+Auxiliary Functions
+\end_layout
+
 \begin_layout Standard
-\begin_inset Newpage newpage
+\begin_inset Float figure
+placement t
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figs/quazi.eps
+	lyxscale 50
+	width 100col%
+	BoundingBox 50bp 10bp 385bp 223bp
+
 \end_inset
 
 
 \end_layout
 
-\begin_layout Section
-Auxiliary Functions
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Using-the-vec2qconv"
+
+\end_inset
+
+Using the 
+\series bold
+vec2qconv 
+\series default
+function, we create a quasi-convex bound we use for the formation model
+ estimation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -3384,7 +3712,18 @@ In order to fit the best model for our lower bound theorem and we wanted
  to reduce the penalty of the L2 loss function.
  We created a function that is looking for the peaks that define the upper
  limit and the decline of the vector.
- We use this function only when estimating with a single image.
+ We use this function only when estimating with a single image (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Using-the-vec2qconv"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -3472,27 +3811,8 @@ Set
 \end_layout
 
 \begin_layout Standard
-\align center
-\begin_inset Graphics
-	filename figs/quazi.eps
-	lyxscale 10
-	width 110col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 Sending the negative vector and flipping the sign on the output gives us
  a quasi concave vector, which we are using for backscatter estimation.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
-\end_inset
-
-
 \end_layout
 
 \begin_layout Bibliography
