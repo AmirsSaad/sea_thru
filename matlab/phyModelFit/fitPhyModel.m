@@ -1,12 +1,18 @@
-function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Isingle,lambda,betaBtype,DC,isplot,ver,BS,BSvar,boolBS,lp)
+function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Isingle,lambda,betaBtype,DC,isplot,ver,BS,BSvar,boolBS,lp,WBvector,statModel)
     
-    if isempty(Isingle) %%isingle=[] means single
-        singleWBonmultip=0;
-        Isingle=Istruct;
+    if strcmp(statModel,'multip')
+        singleStats=0;
+        if strcmp(WBvector,'single')
+           singleWB_onMultip=1;
+        else
+           singleWB_onMultip=0;
+        end
     else
-        singleWBonmultip=1; % we can choose if 0 or 1.
+        singleStats=1;
+        Isingle=Istruct;
+        singleWB_onMultip=0;
     end
-
+        
     %z is distances vector
     z=double(Istruct(:,13));
     
@@ -17,7 +23,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
     Ihp=zeros(length(z),3); Ilp=zeros(length(z),3); Imean=zeros(length(z),3); Ivar=zeros(length(z),3);
     Jb=zeros(length(z),3);
     
-    if singleWBonmultip==0
+    if singleStats
         Ihpbsr=zeros(length(z),3); Ilpbsr=zeros(length(z),3); Imeanbsr=zeros(length(z),3); Ivarbsr=zeros(length(z),3);
     end
     
@@ -27,6 +33,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         case 'atten'
             mu=0;
     end
+    
     switch DC
         case 1
             factorDC=0;
@@ -36,26 +43,30 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
    
     for i=1:3 %each color independetly
         
-        if singleWBonmultip==0
-            clear Imean Jb Ihp Ilp Ivar z
-            z=double(Istruct(:,end));
+        if singleStats
+            %clear Imean Jb Ihp Ilp Ivar z
+            %z=double(Istruct(:,13));
             Imean(:,i)=vec2qconv(double(Istruct(:,i))); %I is mean value vector
             Jb(:,i)=-double(vec2qconv(-Istruct(:,i+3))); %Jb is lower percentile vector
             Ivar(:,i)=double(Istruct(:,i+9));
             Ivar(:,i)=medfilt1(Ivar(:,i),3);
             Ihp(:,i)=vec2qconv(double(Istruct(:,i+6)));
             Ilp(:,i)=vec2qconv(double(Istruct(:,i+3)));
-            deleteconvex=1;
+            %deleteconvex=1;
         else
-            clear Imean Jb Ihp Ilp Ivar z
+%             if singleWB_onMultip
+%                 clear Imean Jb Ihp Ilp Ivar z
+%             end
+            %z=double(Istruct(:,13));
             Imean(:,i)=double(Istruct(:,i)); %I is mean value vector
             Jb(:,i)=double(Istruct(:,i+3)); %Jb is lower percentile vector
             Ivar(:,i)=double(Istruct(:,i+9));
             Ivar(:,i)=medfilt1(Ivar(:,i),3);
             Ihp(:,i)=double(Istruct(:,i+6));
             Ilp(:,i)=double(Istruct(:,i+3));
-            deleteconvex=0;
+            %deleteconvex=0;   
         end
+        
         %bounderies
         if boolBS
            Binf_lb=BS(i).low;
@@ -79,7 +90,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         x0=[Binf_x0   0.25  log(max(Ihp(:,i))*1.5)     0  0                  0    0     0     log(max(Ivar(:,i)))      BSvar_x0  log(max(Ihp(:,i)))       log(max(Ilp(:,i)))];
         %   Binf      betaB  log(hpJD           betaD(a)  DC  betaD(b    c    d)     varJD                     minVar    meanJD                   lpJD )      
         
-        if singleWBonmultip
+        if singleStats
         fun = @(a) [  1 * (Ihp(:,i)  -exp(a(3) -(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       3 * (Ilp(:,i)  -exp(a(12)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       1 * (Imean(:,i)-exp(a(11)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
@@ -107,66 +118,66 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
                     ];
         end
                 
-                
-        
         x = lsqnonlin(fun,x0,lb,ub);
         %x = lsqnonlin(fun,[1 1 1 1 1 0.25 0.25 0.25],lb,ub);
         
-        % for graphing
-        if singleWBonmultip || deleteconvex
-            clear Imean Jb Ihp Ilp Ivar z
-            Imean(:,i)=double(Isingle(:,i)); %I is mean value vector
-            Jb(:,i)=double(Isingle(:,i+3)); %Jb is lower percentile vector
-            Ihp(:,i)=double(Isingle(:,i+6));
-            Ilp(:,i)=double(Isingle(:,i+3));
-            Ivar(:,i)=double(Isingle(:,i+9));
-            z=double(Isingle(:,end));
-        end
+%         % change from 
+%         if singleStats || single
+%             clear Imean Jb Ihp Ilp Ivar z
+%             Imean(:,i)=double(Isingle(:,i)); %I is mean value vector
+%             Jb(:,i)=double(Isingle(:,i+3)); %Jb is lower percentile vector
+%             Ihp(:,i)=double(Isingle(:,i+6));
+%             Ilp(:,i)=double(Isingle(:,i+3));
+%             Ivar(:,i)=double(Isingle(:,i+9));
+%             z=double(Isingle(:,13));
+%         end
         
-        Binf(i)=x(1); betaB(i)=x(2);  hpJD(i)=exp(x(3)); lpJD(i)=exp(x(12)); meanJD(i)=exp(x(11)); varJD(i)=exp(x(9)); betaD(:,i)=[x(4);x(6);x(7);x(8)]; C(i)=x(5);
+        Binf(i)=x(1); betaB(i)=x(2);  
+        varBinf(i)=x(10);
+        hpJD(i)=exp(x(3)); lpJD(i)=exp(x(12)); meanJD(i)=exp(x(11)); varJD(i)=exp(x(9));
+        betaD(:,i)=[x(4);x(6);x(7);x(8)]; C(i)=x(5);
         %zOS(i)=x(5);
         % I Emperical/Modeled Back Scatter Removed 
         %Iebsr=I-Jb;
-        Ihpbsr(:,i)=Ihp(:,i)-x(1)*(1-exp(-x(2)*z));
-        Ilpbsr(:,i)=Ilp(:,i)-x(1)*(1-exp(-x(2)*z));
-        Imeanbsr(:,i)=Imean(:,i)-x(1)*(1-exp(-x(2)*z));
-        Ivarbsr(:,i)=Ivar(:,i)-x(10)*(1-exp(-x(2)*z)).^2;
-        %ratio vector for attenuation fix
-        if ver==3
-            ratiovec(:,i)=getRatioVec(Ihpbsr(:,i),10);
-            fixedRatio(:,i)=(Ihpbsr(:,i)-C(i)).*ratiovec(:,i);
-        end
-        
-        
-        %integral on the IMBSR vector for later white balance/ photonEQ
-%         if ver<=2
-%         intH(i)=sum((Imeanbsr(:,i)-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
-%         else
-%         intH(i)=mean(fixedRatio(:,i));
-%         end
-         %x0=[x0 x];
+
     end
     
-    if singleWBonmultip || deleteconvex
+    if singleWB_onMultip || singleStats %switch to single || get rid of qconv
         clear Imean Jb Ihp Ilp Ivar z
         Imean=double(Isingle(:,1:3)); %I is mean value vector
         Jb=double(Isingle(:,4:6)); %Jb is lower percentile vector
         Ihp=double(Isingle(:,7:9));
         Ilp=double(Isingle(:,4:6));
         Ivar=double(Isingle(:,10:12));
-        z=double(Isingle(:,end));
+        z=double(Isingle(:,13));
     end
         
     Imef=zeros(length(z),3); Ihpf=zeros(length(z),3); Ilpf=zeros(length(z),3); Ivf=zeros(length(z),3);
     hp=struct;
     for i=1:3
+        Ihpbsr(:,i)=    Ihp(:,i)  -Binf(i)*(1-exp(-betaB(i)*z));
+        Ilpbsr(:,i)=    Ilp(:,i)  -Binf(i)*(1-exp(-betaB(i)*z));
+        Imeanbsr(:,i)=  Imean(:,i)-Binf(i)*(1-exp(-betaB(i)*z));
+        Ivarbsr(:,i)=Ivar(:,i) -varBinf(i)*(1-exp(-betaB(i)*z)).^2;
+        %ratio vector for attenuation fix
+        if ver==3
+            ratiovec(:,i)=getRatioVec(Ihpbsr(:,i),10);
+            fixedRatio(:,i)=(Ihpbsr(:,i)-C(i)).*ratiovec(:,i);
+        end
+                %integral on the IMBSR vector for later white balance/ photonEQ
+%         if ver<=2
+%         intH(i)=sum((Imeanbsr(:,i)-x(5)).*exp((x(4)*exp(x(6)*z)+x(7)*exp(x(8)*z)).*z));
+%         else
+%         intH(i)=mean(fixedRatio(:,i));
+%         end
+         %x0=[x0 x];
         Imef(:,i)=(Imeanbsr(:,i)-C(i)).*exp((betaD(1,i)./(z.^betaD(2,i)+betaD(3,i))).*z);%*photonEQ(i);
         Ihpf(:,i)=(Ihpbsr(:,i)-C(i)).*exp((betaD(1,i)./(z.^betaD(2,i)+betaD(3,i))).*z);%*photonEQ(i);
         Ilpf(:,i)=(Ilpbsr(:,i)-C(i)).*exp((betaD(1,i)./(z.^betaD(2,i)+betaD(3,i))).*z);%*photonEQ(i);
         Ivf(:,i)=Ivarbsr(:,i).*exp(2*(betaD(1,i)./(z.^betaD(2,i)+betaD(3,i))).*z);%*photonEQ(i);  
         [hp(i).pks,hp(i).locs]=findpeaks(Ihpf(:,i));
-        
     end
+    
     whitefactor=255*(1-lp)./max(Ihpf,[],'all');
     hplocs=intersect(intersect(hp(1).locs,hp(2).locs),hp(3).locs);
     if isempty(hplocs)
@@ -174,7 +185,8 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         mat=Ihpf(maxloc,:)./Ihpf(maxloc,2);
     else
         [~,maxloc]=max(vecnorm(Ihpf(hplocs,:),2,2));
-        mat=Ihpf(hplocs(maxloc),:)./Ihpf(hplocs(maxloc),2);
+        maxloc=hplocs(maxloc);
+        mat=Ihpf(maxloc,:)./Ihpf(maxloc,2);
     end
     
     
@@ -316,9 +328,9 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
 %                    'I^{lp}_c Corrected',...
 %                    'I^{mean}_c Corrected',...
 %                    'Location','north','NumColumns',3 ,'FontSize',12);
-            xlim([z(hplocs(maxloc))-1 z(hplocs(maxloc))+1]);
+            xlim([z(maxloc)-1 z(maxloc)+1]);
             subplot 122
-            plot(z(hplocs(maxloc)),Ihpf(hplocs(maxloc),1),'ok','MarkerSize',20)
+            plot(z(maxloc),Ihpf(maxloc,1),'ok','MarkerSize',20)
             grid minor;
             %legend('minus BSmodel, times exp','minus empBS, times exp','minus BSmodel, times ratio','pre-fix'); %,'I_{mbsr}.*(I_{ebsr}^{(1)}/I_{ebsr}'
             ylim([0 260]);    
@@ -327,7 +339,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
 %                    'I^{mean}_c Post WB',...
 %                    'Location','north','NumColumns',3);
             ylabel('Intensity Post WB','FontSize',15); xlabel('z distance [m]','FontSize',15);
-            xlim([z(hplocs(maxloc))-1 z(hplocs(maxloc))+1]);
+            xlim([z(maxloc)-1 z(maxloc)+1]);
         end
         
         if i==1

@@ -1,4 +1,4 @@
-א%clear all; close all; clc;
+%clear all; close all; clc;
 
 %%% estimate results:
 
@@ -147,6 +147,7 @@ for i_img = 1:length(listing)
 end
 
 %rho = rho';
-single_angles_ave=angles_ave';
+writematrix(angles_ave','images/results.csv') ;
+median(angles_ave',1,'omitnan')
 % color_angles_ave =color_angles_ave';
 %uciqe_score = uciqe_score';

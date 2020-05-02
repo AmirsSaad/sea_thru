@@ -126,7 +126,7 @@ We present our take on
 \series bold
 Sea-thru
 \series default
-
+ 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "key-1"
@@ -473,7 +473,7 @@ noprefix "false"
 \end_inset
 
  or 
-\begin_inset Formula $J_{cD}^{(i)}$
+\begin_inset Formula $I_{c}^{D(i)}(0),J_{cD}^{(i)}$
 \end_inset
 
  when talking about related coefficients (see eq.
@@ -874,8 +874,8 @@ noprefix "false"
 \size small
 \begin_inset Formula 
 \begin{align}
-\nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D(i)},\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
-AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b,c)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\label{eq:al}\\
+\nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},I_{c}^{D(i)}(0),\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\label{eq:vc}\\
+AL_{c}^{(i)} & (z,I_{c}^{D(i)}(0),a,b,c)=I_{c}^{D(i)}(0)\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\label{eq:al}\\
 D(i) & =[1\%,mean,99\%]
 \end{align}
 
@@ -1252,7 +1252,7 @@ Coef
 \begin_layout Plain Layout
 
 \size scriptsize
-\begin_inset Formula $\mathbf{J_{cD}^{lp}}$
+\begin_inset Formula $I_{c}^{D(i)}(0)$
 \end_inset
 
 
@@ -1310,7 +1310,7 @@ Coef
 \begin_layout Plain Layout
 
 \size scriptsize
-\begin_inset Formula $\mathbf{J_{cD}^{mean}}$
+\begin_inset Formula $I_{c}^{D(i)}(0)$
 \end_inset
 
 
@@ -1368,7 +1368,7 @@ Coef
 \begin_layout Plain Layout
 
 \size scriptsize
-\begin_inset Formula $\mathbf{J_{cD}^{hp}}$
+\begin_inset Formula $I_{c}^{D(i)}(0)$
 \end_inset
 
 
@@ -2021,8 +2021,8 @@ noprefix "false"
 \begin_inset Formula $I_{c}^{(i)}$
 \end_inset
 
- vectors have, but differs in its initial amplitude 
-\begin_inset Formula $J_{c}^{D(i)}$
+ vectors have, but differs in its initial direct AL amplitude 
+\begin_inset Formula $I_{c}^{D(i)}(0)$
 \end_inset
 
 .
@@ -2061,8 +2061,11 @@ Var(I_{c}|z) & =Var(J_{c}^{D}e^{-\beta_{c}^{D}z}+B_{c}^{\infty}(1-e^{-\beta_{c}^
 \end_layout
 
 \begin_layout Standard
-Since each image is not ideal, we also have the sensor noise variance that
- is added globally and we conclude a model that is shown in eq.
+Since each image is not ideal, we also have the sensor noise variance 
+\begin_inset Formula $\sigma_{cN}^{2}$
+\end_inset
+
+ that is added globally and we conclude a model that is shown in eq.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2079,9 +2082,9 @@ noprefix "false"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}\cdot Var(J_{c}^{D})\label{eq:var}\\
- & +\,(1-e^{-\beta_{c}^{B}z})^{2}\cdot Var(B^{\infty})\nonumber \\
- & +\,\sigma_{c}^{2}\nonumber 
+Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}\cdot\sigma_{cD}^{2}\label{eq:var}\\
+ & +\,(1-e^{-\beta_{c}^{B}z})^{2}\cdot\sigma_{cB}^{2}\nonumber \\
+ & +\,\sigma_{cN}^{2}\nonumber 
 \end{align}
 
 \end_inset
@@ -2091,11 +2094,11 @@ Var(I_{c}|z)= & e^{-2\beta_{c}^{D}z}\cdot Var(J_{c}^{D})\label{eq:var}\\
 
 \begin_layout Standard
 Both 
-\begin_inset Formula $Var(B^{\infty})$
+\begin_inset Formula $\sigma_{cB}^{2}$
 \end_inset
 
  and 
-\begin_inset Formula $\sigma_{c}^{2}$
+\begin_inset Formula $\sigma_{cN}^{2}$
 \end_inset
 
  can be extracted from the image (as described in section 
@@ -2428,10 +2431,12 @@ where our coefficients vector
 \end_layout
 
 \begin_layout Standard
+
+\size small
 \begin_inset Formula 
 \begin{align}
-\nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},J_{c}^{D},\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
-AL_{c}^{(i)} & (z,J_{c}^{D(i)},a,b,c)=J_{c}^{D(i)}\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
+\nu_{c}= & \left(B_{c}^{\infty},\beta_{c}^{B},I_{c}^{D(i)}(0),\beta_{c}^{D(i)},a,b,c,\sigma_{cD}^{2},\sigma_{cB}^{2}\right)\\
+AL_{c}^{(i)} & (z,I_{c}^{D(i)}(0),a,b,c)=I_{c}^{D(i)}(0)\cdot e^{-\frac{a}{z^{b}+c}\cdot z}\\
 D(i) & =[5\%,mean,95\%]
 \end{align}
 
@@ -2825,7 +2830,8 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The white balanced example image: pre and post the contrast stretch.
+The white balanced example image: before (top) and after (bottom) the contrast
+ stretch.
 \end_layout
 
 \end_inset
@@ -2860,8 +2866,8 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The example image's grayscale intensity histograms pre and post lower end
- contrast stretching.
+The example image's grayscale intensity histograms before and after lower
+ end contrast stretching.
 \end_layout
 
 \end_inset
