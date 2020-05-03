@@ -1,18 +1,19 @@
 function [] = generate_params_from_jpg(img, param_filename)
 color_chart = {};
-h1 = figure('Name','Select airlight area (top left and bottom right corners)');
-img = im2double(img);
-imshow(adjust(img,1,1),[]);
-[xA,yA] = ginput(2);
-x1 = round(yA(1)); x2 = round(yA(2));
-y1 = round(xA(1)); y2 = round(xA(2));
-save(param_filename, 'x1', 'x2', 'y1', 'y2');
-scsz = get(0,'ScreenSize');
+%h1 = figure('Name','Select airlight area (top left and bottom right corners)');
+%img = im2double(img);
+%imshow(adjust(img,1,1),[]);
+%[xA,yA] = ginput(2);
+%x1 = round(yA(1)); x2 = round(yA(2));
+%y1 = round(xA(1)); y2 = round(xA(2));
+%save(param_filename, 'x1', 'x2', 'y1', 'y2');
+
+%scsz = get(0,'ScreenSize');
 
 % An image with multiple color chart of type DKG-color-tools
 num_charts = 6;
 for iter = 1:num_charts, data(iter).init = 0; end
-close(h1)
+%close(h1)
 for iter = 1:num_charts  % upto six different charts
     % mark all color chart corners
     h1 = figure('Name',['Iter #',num2str(iter),': Select color charts (all corners, from top left, clockwise)']);
@@ -57,7 +58,7 @@ for iter = 1:num_charts  % upto six different charts
 end % iterate over color charts
 is_init = @(x) x.init;
 idx_to_keep = arrayfun(is_init,data);
-data = data(logical(idx_to_keep)); %#ok<NASGU>
+data = data(logical(idx_to_keep));
 save(param_filename,'data','-append')
 
 close all;

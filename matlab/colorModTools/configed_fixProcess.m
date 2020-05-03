@@ -34,7 +34,11 @@ end
 if config.statModel=="multip"
     Istruct=importdata(config.MeanHist,',');
     %Jbstruct=importdata(config.BSHist,',');
-    Isingle= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
+    if config.WBvector=="single"
+        Isingle= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
+    else
+        Isingle=[];
+    end
 elseif config.statModel=="single"
    Istruct= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
    Isingle=[];
@@ -42,12 +46,13 @@ elseif config.statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));
    Istruct= getSinglePhotoStats(sand,dsand,0.5,0); 
+   Isingle=[];
 end
 
 
 disp('Fitting Model...');
 %for k=1
-[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,~,~,~,~] = fitPhyModel(Istruct,Isingle,config.lambda,config.betaBtype,config.DC,config.isplot,config.attenFixVer,BS,BSvar,config.extractBS,config.lp);
+[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Isingle,config.lambda,config.betaBtype,config.DC,config.isplot,config.attenFixVer,BS,BSvar,config.extractBS,config.lp,config.WBvector,config.statModel);
 results = struct('betaD',betaD,'Binf',Binf,'betaB',betaB);
 
 %[JD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,x0,Ihpf,Ilpf,Imef,Ivf] = fitPhyModel(Istruct,Jbstruct,config.lambda,config.betaBtype,config.factorDC,config.isplot,ver,x0)
@@ -157,7 +162,7 @@ end
 %%apply contrast strech
 if config.contStr
     disp('Stretching contrast...');
-    Ifixed=cntStretch(Ifixed,'blacks');
+    Ifixed=cntStretch(Ifixed,'biside');
     % Ifixed=imadjust(Ifixed,stretchlim(Ifixed),[]);
 %     rHist = imhist(Ifixed(:,:,1), 256);
 %     [lims,~]=histsmartedges(rHist);
