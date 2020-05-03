@@ -4,6 +4,10 @@ depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
 
+% if config.delPalette
+%     
+% end
+
 if prod(size(I,[1 2]))~=prod(size(depth))
    I=imresize(I, size(depth),'method','nearest');
 end

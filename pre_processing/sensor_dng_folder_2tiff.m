@@ -1,6 +1,6 @@
 clear; clc; close all;
-folder = '/Users/oferhazut/Desktop/D5/DNG/';   % 'C:\Users\amirsaa\Documents\sea_thru_data\D5\dng_sensor\';
-savepath = '/Users/oferhazut/Desktop/D5/TIFF/'; % 'C:\Users\amirsaa\Documents\sea_thru_data\D5\tifs_v4\';
+folder = '../sandbox/PLTs/D5/dng_sensor/';   % 'C:\Users\amirsaa\Documents\sea_thru_data\D5\dng_sensor\';
+savepath = '../sandbox/PLTs/D5/TIFF/'; % 'C:\Users\amirsaa\Documents\sea_thru_data\D5\tifs_v4\';
 files = dir([folder,'*.dng']);
 for file = files'
     file_path = [folder,file.name];
