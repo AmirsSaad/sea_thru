@@ -1,15 +1,18 @@
-function [Ifixed,results] = configed_fixProcess(strDNG,strDepth,config)
+function [Ifixed,results] = configed_fixProcess(strDNG,strDepth,config,content)
 
 depth=imread(strDepth);
 disp('Convertiong DNG to Sensor space...');
 [I,info] = convert_dng2sensor(strDNG);
 
-% if config.delPalette
-%     
-% end
+if config.delPalette
+    [Idel,depthdel] = deletePalettes(I,depth,content);
+end
 
 if prod(size(I,[1 2]))~=prod(size(depth))
    I=imresize(I, size(depth),'method','nearest');
+   if config.delPalette 
+       Idel=imresize(Idel, size(depthdel),'method','nearest');
+   end
 end
 
 if config.plotAllStages
@@ -44,8 +47,12 @@ if config.statModel=="multip"
         Isingle=[];
     end
 elseif config.statModel=="single"
-   Istruct= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
-   Isingle=[];
+    if config.delPalette
+        Istruct= getSinglePhotoStats(Idel,depthdel,(1-config.lp)*100,config.lp*100,0.5);
+    else
+        Istruct= getSinglePhotoStats(I,depth,(1-config.lp)*100,config.lp*100,0.5);
+    end
+    Isingle=[];
 elseif config.statModel=="sandim"
    [sand,rect]=imcrop(I);
     dsand=depth(rect(2):rect(2)+rect(4),rect(1):rect(1)+rect(3));

@@ -3,7 +3,7 @@ folder = fileparts(which(mfilename));
 % Add that folder plus all subfolders to the path.
 addpath(genpath(folder));
 
-exp_root = '../sandbox/2020_05_01_plates_single';%'D:\sea_thru_experiments\04_21__13_48';
+exp_root = '../sandbox/2020_05_01_plates_multip';%'D:\sea_thru_experiments\04_21__13_48';
 data = readtable(fullfile(exp_root,'data.csv'),'Format','%s%s%s');
 config = parse_config(fullfile(exp_root,'config.json'));
 close all
@@ -12,10 +12,12 @@ for i = 1:size(data,1)
     %try
     config.MeanHist=['../statistics/' data.db{i} '_0.05.v5.csv'];
     [~,name,~] = fileparts(data.dng{i});
-%     if config.delPalette
-%         load(['evaluation/param_files/' name '_params.mat'])
-%     end
-    [Ifixed,results] = configed_fixProcess(data.dng{i},data.depth{i},config);
+    if config.delPalette
+        load(['evaluation/param_files/' name '_params.mat']);
+    else
+        content=[];
+    end
+    [Ifixed,results] = configed_fixProcess(data.dng{i},data.depth{i},config,content);
     %[I,info] = convert_dng2sensor(data.dng{i});
     %Ifixed=convert_sensors2viewable(I,info);
     %figure(); imshow(Ifixed,[]);

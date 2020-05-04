@@ -90,7 +90,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
         x0=[Binf_x0   0.25  log(max(Ihp(:,i))*1.5)     0  0                  0    0     0     log(max(Ivar(:,i)))      BSvar_x0  log(max(Ihp(:,i)))       log(max(Ilp(:,i)))];
         %   Binf      betaB  log(hpJD           betaD(a)  DC  betaD(b    c    d)     varJD                     minVar    meanJD                   lpJD )      
         
-        if singleStats
+        if ~singleStats
         fun = @(a) [  1 * (Ihp(:,i)  -exp(a(3) -(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       3 * (Ilp(:,i)  -exp(a(12)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       1 * (Imean(:,i)-exp(a(11)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
@@ -108,7 +108,7 @@ function [hpJD,betaD,Binf,betaB,C,photonEQ,ratiovec,z,Ihpf,Ilpf,Imef,Ivf] = fitP
                       3 * (Ilp(:,i)  -exp(a(12)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       1 * (Imean(:,i)-exp(a(11)-(a(4)./(z.^a(6)+a(7))).*z)-a(5)- a(1)*(1-exp(-a(2)*z))), ... %
                       5 *  sqrt(abs((Ivar(:,i) -exp(a(9)-2*(a(4)./(z.^a(6)+a(7))).*z)-a(10)*(1-exp(-a(2)*z)).^2))), ... %
-                      5 *  lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))), ...
+                      5 *  lambda(i) * (Jb(:,i) - a(1)*(1-exp(-a(2)*z))) .* (1-exp(-a(2)*z)), ...
                      mu * ones(size(Imean(:,i)))*(a(6)^2+(a(7)-1)^2+a(8)^2), ...
                      factorDC * ones(size(Imean(:,i)))*a(5), ...
                     100 * max(0,-Jb(:,i) + a(1)*(1-exp(-a(2)*z))), ...
