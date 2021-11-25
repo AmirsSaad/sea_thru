@@ -21,6 +21,7 @@ We designed the following Lagrangian $\mathcal{L}_{c}(v_{c},z)$ which we minimiz
 
 $$I_c(z) = \underbrace{J_{c}^{D}\cdot e^{-\beta_{c}^{D}\cdot z}}_{AL_{c}}+\underbrace{B_{c}^{\infty}\left(1-e^{-\beta_{c}^{B}\cdot z}\right)}_{BS_{c}}$$
 
+<img src="https://render.githubusercontent.com/render/math?math=I_c(z) = \underbrace{J_{c}^{D}\cdot e^{-\beta_{c}^{D}\cdot z}}_{AL_{c}}+\underbrace{B_{c}^{\infty}\left(1-e^{-\beta_{c}^{B}\cdot z}\right)}_{BS_{c}}">
 
 $$
 \begin{aligned}
